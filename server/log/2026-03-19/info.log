@@ -1,0 +1,12 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 22:59:28.936	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 22:59:28.939	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 22:59:28.955	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:01.864	[34minfo[0m	/Users/wangjingjun/work/promotion/server/api/v1/system/sys_initdb.go:57	数据库无需初始化
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:23.404	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:23.412	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:59	WEB服务已关闭
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:27.555	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:27.561	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/plugin.go:10	项目暂未初始化，无法安装插件，初始化后重启项目即可完成插件安装
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:27.562	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:00:37.524	[34minfo[0m	/Users/wangjingjun/work/promotion/server/api/v1/system/sys_initdb.go:57	前往初始化数据库
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:23:15.023	[34minfo[0m	/Users/wangjingjun/work/promotion/server/api/v1/system/sys_initdb.go:57	数据库无需初始化
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-19 23:23:19.280	[34minfo[0m	/Users/wangjingjun/work/promotion/server/api/v1/system/sys_initdb.go:57	数据库无需初始化

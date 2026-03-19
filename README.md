@@ -18,6 +18,61 @@
 
 [English](./README-en.md) | 简体中文
 
+## 本仓库项目识别与归档
+
+本仓库基于 gin-vue-admin（Go + Gin 后端 / Vue3 + Vite 前端）的全栈管理平台，聚焦「推广/营销运营」场景的业务建设与落地规划，包含前后端代码、运维部署脚本以及成体系的数据库方案设计与文档。
+
+- 项目定位：推广域名、推广链接、广告数据统计、活动数据、问答内容与客服分组等一体化管理
+- 技术栈：Go(Gin) + Gorm / MySQL / Redis；Vue3 + Vite + Element Plus
+- 工作区：VSCode 工作区支持后端与前端联调，见 [gin-vue-admin.code-workspace](file:///Users/wangjingjun/work/promotion/gin-vue-admin.code-workspace)
+- 关键目录：
+  - 后端服务：[server](file:///Users/wangjingjun/work/promotion/server)（REST API、权限体系、MCP 工具）
+  - 前端应用：[web](file:///Users/wangjingjun/work/promotion/web)（Vite 脚手架、业务页面）
+  - 业务规划文档与数据库脚本：[docs/plan](file:///Users/wangjingjun/work/promotion/docs/plan)
+  - 部署配置：[deploy](file:///Users/wangjingjun/work/promotion/deploy)
+
+### 核心业务与数据库方案
+
+以下 SQL 脚本均为 MySQL InnoDB，表及字段包含完整注释，落地即用：
+
+- 分组管理（地区/分组/成员）
+  - [group_management_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_schema.sql)
+  - [group_management_seed.sql](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_seed.sql)
+  - 说明文档：[group_management_api.md](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_api.md)
+- 问答模块（修改提问 / 修改回答 / 修改回复）
+  - [qa_management_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/qa_management_schema.sql)
+- 推广域名管理（域名/证书/绑定）
+  - [domain_management_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/domain_management_schema.sql)
+  - [domain_management_seed.sql](file:///Users/wangjingjun/work/promotion/docs/plan/domain_management_seed.sql)
+- 推广链接设置（基本设置、资质公司、代码、颜色调整、评论设置）
+  - [promotion_link_settings_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/promotion_link_settings_schema.sql)
+- 广告数据统计管理（平台/计划/关键词/点击明细/日汇总）
+  - [ad_stats_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/ad_stats_schema.sql)
+- 活动数据（市场/套餐/活动主数据）
+  - [activity_data_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/activity_data_schema.sql)
+
+以上设计彼此解耦又可互联：如推广链接可关联地区、分组与域名；广告统计可按链接/地区维度聚合；问答内容承载营销知识库，服务于客服分组。
+
+### AI 编辑器与 MCP 集成
+
+- 编辑器配置：项目根目录提供 AI 编辑器的 MCP 服务器配置 [.trae/config.json](file:///Users/wangjingjun/work/promotion/.trae/config.json)
+- 服务端参数：后端 MCP 服务见 [server/config.yaml](file:///Users/wangjingjun/work/promotion/server/config.yaml) 的 mcp 段落；MCP 工具示例可见：
+  - [server/mcp/dictionary_generator.go](file:///Users/wangjingjun/work/promotion/server/mcp/dictionary_generator.go)
+  - [server/mcp/dictionary_query.go](file:///Users/wangjingjun/work/promotion/server/mcp/dictionary_query.go)
+
+### 本地开发与运行（速览）
+
+- 后端：Go >= 1.22，进入 [server](file:///Users/wangjingjun/work/promotion/server) 目录执行 `go generate && go run .`
+- 前端：Node >= 18，进入 [web](file:///Users/wangjingjun/work/promotion/web) 目录执行 `npm install && npm run serve`
+- 工作区调试：打开 [gin-vue-admin.code-workspace](file:///Users/wangjingjun/work/promotion/gin-vue-admin.code-workspace)，选择 “Both (Backend & Frontend)” 同时启动
+
+### 部署参考
+
+- Docker 镜像与入口脚本：[deploy/docker](file:///Users/wangjingjun/work/promotion/deploy/docker)
+- K8s Ingress 示例：[deploy/kubernetes/web/gva-web-ingress.yaml](file:///Users/wangjingjun/work/promotion/deploy/kubernetes/web/gva-web-ingress.yaml)
+
+更多平台通用说明请继续阅读下方 gin-vue-admin 官方文档片段；本仓库的业务特性与落地脚本以本节为准。
+
 ## ✨一分钟生成前后端基础代码
 
 <table>
