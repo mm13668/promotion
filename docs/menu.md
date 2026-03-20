@@ -1,0 +1,166 @@
+**顶级菜单**
+- 展示名称: 推广运营
+- 路由Path: promotion
+- 路由Name: promotion
+- 文件路径: view/routerHolder.vue
+- 图标: management
+- 是否隐藏: 否
+- 排序: 10
+
+**基础管理**
+- 展示名称: 地区分类
+  - 路由Path: promotionRegion
+  - 路由Name: promotionRegion
+  - 文件路径: view/promotion/region/index.vue
+  - 图标: location
+- 展示名称: 分组管理
+  - 路由Path: promotionGroup
+  - 路由Name: promotionGroup
+  - 文件路径: view/promotion/group/index.vue
+  - 图标: user
+- 展示名称: 成员管理
+  - 路由Path: promotionMember
+  - 路由Name: promotionMember
+  - 文件路径: view/promotion/member/index.vue
+  - 图标: user-filled
+- 展示名称: 推广域名
+  - 路由Path: promotionDomain
+  - 路由Name: promotionDomain
+  - 文件路径: view/promotion/domain/index.vue
+  - 图标: link
+
+**推广链接**
+- 展示名称: 推广链接
+  - 路由Path: promotionLink
+  - 路由Name: promotionLink
+  - 文件路径: view/promotion/link/index.vue
+  - 图标: link
+- 展示名称: 资质公司
+  - 路由Path: promotionLinkCompany
+  - 路由Name: promotionLinkCompany
+  - 文件路径: view/promotion/link-company/index.vue
+  - 图标: office-building
+- 展示名称: 代码设置
+  - 路由Path: promotionLinkCode
+  - 路由Name: promotionLinkCode
+  - 文件路径: view/promotion/link-code/index.vue
+  - 图标: code
+- 展示名称: 颜色调整
+  - 路由Path: promotionLinkTheme
+  - 路由Name: promotionLinkTheme
+  - 文件路径: view/promotion/link-theme/index.vue
+  - 图标: brush
+- 展示名称: 评论设置
+  - 路由Path: promotionLinkComment
+  - 路由Name: promotionLinkComment
+  - 文件路径: view/promotion/link-comment/index.vue
+  - 图标: chat-dot-square
+
+**问答管理（父级为目录）**
+- 父级目录
+  - 展示名称: 问答管理
+  - 路由Path: qa
+  - 路由Name: qa
+  - 文件路径: view/routerHolder.vue
+  - 图标: chat-round
+- 子菜单
+  - 展示名称: 问题管理
+    - 路由Path: qaQuestion
+    - 路由Name: qaQuestion
+    - 文件路径: view/qa/question/index.vue
+    - 图标: chat-line-square
+  - 展示名称: 回答管理
+    - 路由Path: qaAnswer
+    - 路由Name: qaAnswer
+    - 文件路径: view/qa/answer/index.vue
+    - 图标: chat-square
+  - 展示名称: 回复管理
+    - 路由Path: qaReply
+    - 路由Name: qaReply
+    - 文件路径: view/qa/reply/index.vue
+    - 图标: chat-line-round
+
+**广告统计（父级为目录）**
+- 父级目录
+  - 展示名称: 广告统计
+  - 路由Path: ad
+  - 路由Name: ad
+  - 文件路径: view/routerHolder.vue
+  - 图标: histogram
+- 子菜单
+  - 展示名称: 推广平台
+    - 路由Path: adPlatform
+    - 路由Name: adPlatform
+    - 文件路径: view/ad/platform/index.vue
+    - 图标: monitor
+  - 展示名称: 活动计划
+    - 路由Path: adCampaign
+    - 路由Name: adCampaign
+    - 文件路径: view/ad/campaign/index.vue
+    - 图标: tickets
+  - 展示名称: 关键词
+    - 路由Path: adKeyword
+    - 路由Name: adKeyword
+    - 文件路径: view/ad/keyword/index.vue
+    - 图标: edit-pen
+  - 展示名称: 日汇总
+    - 路由Path: adSummary
+    - 路由Name: adSummary
+    - 文件路径: view/ad/summary/index.vue
+    - 图标: calendar
+
+**活动数据（父级为目录）**
+- 父级目录
+  - 展示名称: 活动数据
+  - 路由Path: activity
+  - 路由Name: activity
+  - 文件路径: view/routerHolder.vue
+  - 图标: collection
+- 子菜单
+  - 展示名称: 市场
+    - 路由Path: activityMarket
+    - 路由Name: activityMarket
+    - 文件路径: view/activity/market/index.vue
+    - 图标: location-information
+  - 展示名称: 套餐
+    - 路由Path: activityPackage
+    - 路由Name: activityPackage
+    - 文件路径: view/activity/package/index.vue
+    - 图标: box
+  - 展示名称: 活动
+    - 路由Path: activityData
+    - 路由Name: activityData
+    - 文件路径: view/activity/data/index.vue
+    - 图标: help
+
+**API 权限建议绑定（按页面批量）**
+- 地区/分组/成员/域名
+  - /promotion/createRegionCategory、/promotion/deleteRegionCategory、/promotion/updateRegionCategory、/promotion/getRegionCategoryList
+  - /promotion/createPromotionGroup、/promotion/deletePromotionGroup、/promotion/updatePromotionGroup、/promotion/getPromotionGroupList
+  - /promotion/createGroupMember、/promotion/deleteGroupMember、/promotion/updateGroupMember、/promotion/getGroupMemberList
+  - /promotion/createPromotionDomain、/promotion/deletePromotionDomain、/promotion/updatePromotionDomain、/promotion/getPromotionDomainList
+- 推广链接主列表
+  - /promotion/createPromotionLink、/promotion/deletePromotionLink、/promotion/updatePromotionLink、/promotion/getPromotionLinkList
+- 推广链接设置（四页）
+  - 公司：/promotion/getLinkCompany、/promotion/upsertLinkCompany
+  - 代码：/promotion/getLinkCode、/promotion/upsertLinkCode
+  - 颜色：/promotion/getLinkTheme、/promotion/upsertLinkTheme
+  - 评论：/promotion/getLinkComment、/promotion/upsertLinkComment
+- 问答管理
+  - 问题：/promotion/getQAQuestionList、/promotion/createQAQuestion、/promotion/updateQAQuestion、/promotion/deleteQAQuestion
+  - 回答：/promotion/getQAAnswerList、/promotion/createQAAnswer、/promotion/updateQAAnswer、/promotion/deleteQAAnswer
+  - 回复：/promotion/getQAReplyList、/promotion/createQAReply、/promotion/updateQAReply、/promotion/deleteQAReply
+- 广告统计
+  - 平台：/promotion/getAdPlatformList、/promotion/createAdPlatform、/promotion/updateAdPlatform、/promotion/deleteAdPlatform
+  - 活动：/promotion/getAdCampaignList、/promotion/createAdCampaign、/promotion/updateAdCampaign、/promotion/deleteAdCampaign
+  - 关键词：/promotion/getAdKeywordList、/promotion/createAdKeyword、/promotion/updateAdKeyword、/promotion/deleteAdKeyword
+  - 日汇总：/promotion/getAdDailySummaryList
+- 活动数据
+  - 市场：/promotion/getActivityMarketList、/promotion/createActivityMarket、/promotion/updateActivityMarket、/promotion/deleteActivityMarket
+  - 套餐：/promotion/getActivityPackageList、/promotion/createActivityPackage、/promotion/updateActivityPackage、/promotion/deleteActivityPackage
+  - 活动：/promotion/getActivityDataList、/promotion/createActivityData、/promotion/updateActivityData、/promotion/deleteActivityData
+
+**小提示**
+- 有子菜单的目录节点（问答管理/广告统计/活动数据）请选择文件路径为 view/routerHolder.vue。
+- 新建菜单后到“角色管理”为目标角色分配菜单与上述 API 权限；否则页面会加载失败或按钮无权限。
+- 图标可在系统内按需替换为团队统一图标集；以上为建议值。

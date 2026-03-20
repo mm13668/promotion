@@ -3,6 +3,7 @@
     <div class="gva-search-box">
       <div class="gva-btn-list">
         <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
+        <el-button type="primary" icon="plus" @click="getTableData()">查询</el-button>
       </div>
     </div>
     <div class="gva-table-box">

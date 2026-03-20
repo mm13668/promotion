@@ -4,6 +4,7 @@
       <el-form :inline="true">
         <el-form-item>
           <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
+          <el-button type="primary" icon="plus" @click="getTableData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
