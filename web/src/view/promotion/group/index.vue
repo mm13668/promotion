@@ -12,7 +12,11 @@
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="name" label="名称" min-width="160" />
-        <el-table-column prop="regionId" label="地区ID" width="120" />
+        <el-table-column label="地区" min-width="160">
+          <template #default="{ row }">
+            {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
+          </template>
+        </el-table-column>
         <el-table-column prop="sort" label="排序" width="100" />
         <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip />
         <el-table-column fixed="right" label="操作" width="180">
@@ -47,8 +51,10 @@
         <el-form-item label="名称">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="地区ID">
-          <el-input-number v-model="form.regionId" :min="1" />
+        <el-form-item label="地区">
+          <el-select v-model="form.regionId" filterable placeholder="请选择地区">
+            <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
+          </el-select>
         </el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="form.sort" />
@@ -64,7 +70,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getPromotionGroupList, createPromotionGroup, updatePromotionGroup, deletePromotionGroup } from '@/api/promotion'
+import { getPromotionGroupList, createPromotionGroup, updatePromotionGroup, deletePromotionGroup, getRegionCategoryList } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
 
@@ -72,6 +78,7 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const regionOptions = ref([])
 
 const getTableData = async () => {
   const res = await getPromotionGroupList({ page: page.value, pageSize: pageSize.value })
@@ -83,6 +90,11 @@ const getTableData = async () => {
   }
 }
 getTableData()
+const loadRegions = async () => {
+  const res = await getRegionCategoryList({ page: 1, pageSize: 10000 })
+  if (res.code === 0) regionOptions.value = res.data.list || []
+}
+loadRegions()
 
 const handleSizeChange = (val) => {
   pageSize.value = val
@@ -133,4 +145,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-

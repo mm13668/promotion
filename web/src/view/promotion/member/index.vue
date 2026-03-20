@@ -13,8 +13,16 @@
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="nickname" label="昵称" min-width="160" />
         <el-table-column prop="realName" label="姓名" min-width="120" />
-        <el-table-column prop="regionId" label="地区ID" width="100" />
-        <el-table-column prop="groupId" label="分组ID" width="100" />
+        <el-table-column label="地区" min-width="160">
+          <template #default="{ row }">
+            {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
+          </template>
+        </el-table-column>
+        <el-table-column label="分组" min-width="160">
+          <template #default="{ row }">
+            {{ (groupOptions.find(g => g.ID === row.groupId) || {}).name || row.groupId }}
+          </template>
+        </el-table-column>
         <el-table-column prop="mobile" label="手机号" width="140" />
         <el-table-column prop="wechat" label="微信" width="160" />
         <el-table-column prop="gender" label="性别" width="100" />
@@ -55,11 +63,15 @@
         <el-form-item label="姓名">
           <el-input v-model="form.realName" />
         </el-form-item>
-        <el-form-item label="地区ID">
-          <el-input-number v-model="form.regionId" :min="1" />
+        <el-form-item label="地区">
+          <el-select v-model="form.regionId" filterable placeholder="请选择地区">
+            <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="分组ID">
-          <el-input-number v-model="form.groupId" :min="1" />
+        <el-form-item label="分组">
+          <el-select v-model="form.groupId" filterable placeholder="请选择分组">
+            <el-option v-for="g in groupOptions" :key="g.ID" :label="g.name" :value="g.ID" />
+          </el-select>
         </el-form-item>
         <el-form-item label="手机号">
           <el-input v-model="form.mobile" />
@@ -88,7 +100,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getGroupMemberList, createGroupMember, updateGroupMember, deleteGroupMember } from '@/api/promotion'
+import { getGroupMemberList, createGroupMember, updateGroupMember, deleteGroupMember, getRegionCategoryList, getPromotionGroupList } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
 
@@ -96,6 +108,8 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const regionOptions = ref([])
+const groupOptions = ref([])
 
 const getTableData = async () => {
   const res = await getGroupMemberList({ page: page.value, pageSize: pageSize.value })
@@ -107,6 +121,15 @@ const getTableData = async () => {
   }
 }
 getTableData()
+const loadOptions = async () => {
+  const [rRes, gRes] = await Promise.all([
+    getRegionCategoryList({ page: 1, pageSize: 10000 }),
+    getPromotionGroupList({ page: 1, pageSize: 10000 })
+  ])
+  if (rRes.code === 0) regionOptions.value = rRes.data.list || []
+  if (gRes.code === 0) groupOptions.value = gRes.data.list || []
+}
+loadOptions()
 
 const handleSizeChange = (val) => {
   pageSize.value = val
@@ -157,4 +180,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-
