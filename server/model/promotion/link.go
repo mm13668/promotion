@@ -32,29 +32,16 @@ func (PromotionLink) TableName() string {
 
 type PromotionLinkBasic struct {
 	global.GVA_MODEL
-	LinkID                 uint   `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
-	TemplateMobileKey      string `json:"templateMobileKey" gorm:"type:varchar(64)"`
-	TemplatePcKey          string `json:"templatePcKey" gorm:"type:varchar(64)"`
-	MobileTemplateVariant  string `json:"mobileTemplateVariant" gorm:"type:varchar(32)"`
-	PcTemplateVariant      string `json:"pcTemplateVariant" gorm:"type:varchar(32)"`
-	WidgetsMobileSidebar   string `json:"widgetsMobileSidebarJson" gorm:"type:json"`
-	WidgetsPcSidebar       string `json:"widgetsPcSidebarJson" gorm:"type:json"`
-	WidgetsMobileBottom    string `json:"widgetsMobileBottomJson" gorm:"type:json"`
-	WidgetsPcBottom        string `json:"widgetsPcBottomJson" gorm:"type:json"`
-	MobileVideoWidgetKey   string `json:"mobileVideoWidgetKey" gorm:"type:varchar(64)"`
-	PcVideoWidgetKey       string `json:"pcVideoWidgetKey" gorm:"type:varchar(64)"`
-	MobileGalleryWidgetKey string `json:"mobileGalleryWidgetKey" gorm:"type:varchar(64)"`
-	PcGalleryWidgetKey     string `json:"pcGalleryWidgetKey" gorm:"type:varchar(64)"`
-	PcQrcodeWidgetKey      string `json:"pcQrcodeWidgetKey" gorm:"type:varchar(64)"`
-	ShowRecent120s         bool   `json:"showRecent120s"`
-	MobileSecondScreen     bool   `json:"mobileSecondScreen"`
-	PcSecondScreen         bool   `json:"pcSecondScreen"`
-	MobileBottomBar        bool   `json:"mobileBottomBar"`
-	Show12301Phone         bool   `json:"show12301Phone"`
-	MobileShowSecondPopup  bool   `json:"mobileShowSecondPopup"`
-	EnableCopyLeadsCode    bool   `json:"enableCopyLeadsCode"`
-	AutoRedirectPc         bool   `json:"autoRedirectPc"`
-	Remark                 string `json:"remark" gorm:"type:varchar(255)"`
+	LinkID              uint   `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
+	TemplateMobileKey   string `json:"templateMobileKey" gorm:"type:varchar(64);comment:手机端模板"`
+	TemplatePcKey       string `json:"templatePcKey" gorm:"type:varchar(64);comment:电脑端模板"`
+	MobileCopyWidgetKey string `json:"mobileCopyWidgetKey" gorm:"type:varchar(64);comment:手机复制插件"`
+	MobileBottomWidgetKey string `json:"mobileBottomWidgetKey" gorm:"type:varchar(64);comment:手机底部插件"`
+	PcQrcodeWidgetKey   string `json:"pcQrcodeWidgetKey" gorm:"type:varchar(64);comment:电脑端二维码插件"`
+	Show12301Phone      bool   `json:"show12301Phone" gorm:"comment:显示12301投诉电话"`
+	MobileShowQrcode    bool   `json:"mobileShowQrcode" gorm:"comment:移动端显示二维码"`
+	PcShowRightQrcode   bool   `json:"pcShowRightQrcode" gorm:"comment:电脑端右侧二维码"`
+	AutoDetectDevice    bool   `json:"autoDetectDevice" gorm:"comment:自动判断移动电脑端"`
 }
 
 func (PromotionLinkBasic) TableName() string {

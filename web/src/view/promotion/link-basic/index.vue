@@ -31,15 +31,15 @@
         <el-select v-model="form.mobileCopyWidgetKey" clearable filterable placeholder="请选择手机复制插件" style="width: 400px">
           <el-option label="微信复制弹窗1" value="copy_widget_01" />
           <el-option label="微信复制弹窗2" value="copy_widget_02" />
-          <el-option label="一键复制插件" value="copy_widget_03" />
+          <el-option label="微信复制弹窗3" value="copy_widget_03" />
         </el-select>
         <el-button type="primary" link @click="openWidgetSelector('copy')">选择插件</el-button>
       </el-form-item>
       <el-form-item label="手机底部插件">
         <el-select v-model="form.mobileBottomWidgetKey" clearable filterable placeholder="请选择手机底部插件" style="width: 400px">
-          <el-option label="底部联系栏" value="bottom_widget_01" />
-          <el-option label="底部悬浮按钮" value="bottom_widget_02" />
-          <el-option label="底部咨询栏" value="bottom_widget_03" />
+          <el-option label="手机底部插件1" value="bottom_widget_01" />
+          <el-option label="手机底部插件2" value="bottom_widget_02" />
+          <el-option label="手机底部插件3" value="bottom_widget_03" />
         </el-select>
         <el-button type="primary" link @click="openWidgetSelector('bottom')">选择插件</el-button>
       </el-form-item>

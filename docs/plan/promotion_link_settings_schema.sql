@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
   `group_id` BIGINT UNSIGNED NULL COMMENT '客服分组ID（关联 promotion_group.id）',
   `domain_id` BIGINT UNSIGNED NULL COMMENT '绑定域名ID（关联 promotion_domain.id）',
   `question_id` BIGINT UNSIGNED NULL COMMENT '选择提问ID（关联 qa_question.id）',
-  `tags_json` JSON NULL COMMENT '标签数组（如“电脑端”“移动端”等）',
+--  `tags_json` JSON NULL COMMENT '标签数组（如“电脑端”“移动端”等）',
   `visit_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '访问量统计',
   `inquiry_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '咨询量统计',
   `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：1-启用 2-停用',
@@ -42,38 +42,25 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-核心表';
 
 -- 基本设置（与核心表一对一，存储模板与组件开关）
-CREATE TABLE IF NOT EXISTS `promotion_link_basic` (
+ CREATE TABLE IF NOT EXISTS `promotion_link_basic` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `link_id` BIGINT UNSIGNED NOT NULL COMMENT '推广链接ID（关联 promotion_link.id）',
-  `template_mobile_key` VARCHAR(64) NULL COMMENT '手机端模板标识',
-  `template_pc_key` VARCHAR(64) NULL COMMENT '电脑端模板标识',
-  `mobile_template_variant` VARCHAR(32) NULL COMMENT '手机模板变体（横版/竖版等）',
-  `pc_template_variant` VARCHAR(32) NULL COMMENT '电脑模板变体',
-  `widgets_mobile_sidebar_json` JSON NULL COMMENT '手机端侧边栏组件列表（JSON 数组）',
-  `widgets_pc_sidebar_json` JSON NULL COMMENT '电脑端侧边栏组件列表（JSON 数组）',
-  `widgets_mobile_bottom_json` JSON NULL COMMENT '手机端底部组件列表（JSON 数组）',
-  `widgets_pc_bottom_json` JSON NULL COMMENT '电脑端底部组件列表（JSON 数组）',
-  `mobile_video_widget_key` VARCHAR(64) NULL COMMENT '手机视频组件',
-  `pc_video_widget_key` VARCHAR(64) NULL COMMENT '电脑视频组件',
-  `mobile_gallery_widget_key` VARCHAR(64) NULL COMMENT '手机图集组件',
-  `pc_gallery_widget_key` VARCHAR(64) NULL COMMENT '电脑图集组件',
-  `pc_qrcode_widget_key` VARCHAR(64) NULL COMMENT '电脑端二维码组件',
-  `show_recent_120s` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示最近120秒访客：0-否 1-是',
-  `mobile_second_screen` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端第二屏展示：0-否 1-是',
-  `pc_second_screen` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '电脑端第二屏展示：0-否 1-是',
-  `mobile_bottom_bar` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端底部悬浮条：0-否 1-是',
-  `show_12301_phone` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示12301投诉电话：0-否 1-是',
-  `mobile_show_second_popup` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端二级弹窗：0-否 1-是',
-  `enable_copy_leads_code` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '点击复制留资码：0-否 1-是',
-  `auto_redirect_pc` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '自动判断跳转电脑版：0-否 1-是',
-  `remark` VARCHAR(255) NULL COMMENT '备注信息',
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted_at` DATETIME NULL DEFAULT NULL COMMENT '删除时间',
+  `link_id` BIGINT UNSIGNED NOT NULL COMMENT '推广链接ID',
+  `template_mobile_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机端模板',
+  `template_pc_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '电脑端模板',
+  `mobile_copy_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机复制插件',
+  `mobile_bottom_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机底部插件',
+  `pc_qrcode_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '电脑端二维码插件',
+  `show_12301_phone` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示12301投诉电话',
+  `mobile_show_qrcode` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端显示二维码',
+  `pc_show_right_qrcode` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '电脑端右侧二维码',
+  `auto_detect_device` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '自动判断移动电脑端',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_basic_link` (`link_id`),
-  CONSTRAINT `fk_basic_link` FOREIGN KEY (`link_id`) REFERENCES `promotion_link`(`id`)
-    ON UPDATE RESTRICT ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-基本设置表';
+  UNIQUE INDEX `uk_basic_link` (`link_id` ASC),
+  INDEX `idx_deleted_at` (`deleted_at` ASC)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '推广链接基本设置表';
 
 -- 资质公司（与链接一对一，可按链接覆盖企业信息）
 CREATE TABLE IF NOT EXISTS `promotion_link_company` (
