@@ -26,6 +26,13 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.POST("upsertLinkComment", promoApi.LinkApi.UpsertComment)
 		group.GET("getLinkComment", promoApi.LinkApi.GetComment)
 
+		// 模板插件管理
+		group.POST("createTemplateWidget", promoApi.LinkApi.CreateTemplateWidget)
+		group.DELETE("deleteTemplateWidget", promoApi.LinkApi.DeleteTemplateWidget)
+		group.PUT("updateTemplateWidget", promoApi.LinkApi.UpdateTemplateWidget)
+		group.GET("findTemplateWidget", promoApi.LinkApi.FindTemplateWidget)
+		group.GET("getTemplateWidgetList", promoApi.LinkApi.GetTemplateWidgetList)
+
 		group.POST("createQAQuestion", promoApi.QAApi.CreateQuestion)
 		group.PUT("updateQAQuestion", promoApi.QAApi.UpdateQuestion)
 		group.DELETE("deleteQAQuestion", promoApi.QAApi.DeleteQuestion)

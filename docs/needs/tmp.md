@@ -26,3 +26,5 @@ import UploadImage from '@/components/upload/image.vue'
 # sql
 增加或修改跟推广链接相关的表，直接在目录下，找到对应的表，修改即可，重写创建表语句
 /Users/wangjingjun/work/promotion/docs/plan
+
+# 最后告诉我，怎么新建新的菜单

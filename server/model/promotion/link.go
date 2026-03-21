@@ -100,3 +100,15 @@ type PromotionLinkComment struct {
 func (PromotionLinkComment) TableName() string {
 	return "promotion_link_comment"
 }
+
+type PromotionTemplateWidget struct {
+	global.GVA_MODEL
+	Name    string `json:"name" gorm:"type:varchar(128);comment:名称"`
+	Content string `json:"content" gorm:"type:longtext;comment:内容（富文本）"`
+	Type    uint8  `json:"type" gorm:"index:idx_widget_type;comment:类型 1=手机端模板 2=电脑端模板 3=手机复制插件 4=手机底部插件 5=电脑端二维码插件"`
+	Status  uint8  `json:"status" gorm:"default:1;comment:状态 0=禁用 1=启用"`
+}
+
+func (PromotionTemplateWidget) TableName() string {
+	return "promotion_template_widget"
+}

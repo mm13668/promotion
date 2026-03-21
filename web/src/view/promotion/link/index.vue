@@ -139,48 +139,31 @@
       <el-form label-position="left" label-width="160px" :model="basic">
         <el-form-item label="手机端模板">
           <el-select v-model="basic.templateMobileKey" clearable filterable placeholder="请选择手机端模板" style="width: 300px">
-            <el-option label="移动端--模板--01" value="mobile_template_01" />
-            <el-option label="移动端--模板--02" value="mobile_template_02" />
-            <el-option label="移动端--模板--03" value="mobile_template_03" />
-            <el-option label="移动端--模板--04" value="mobile_template_04" />
-            <el-option label="移动端--模板--05" value="mobile_template_05" />
-            <el-option label="移动端--模板--06" value="mobile_template_06" />
-            <el-option label="移动端--模板--07" value="mobile_template_07" />
-            <el-option label="移动端--模板--08" value="mobile_template_08" />
+            <el-option v-for="item in mobileTemplateOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
         <el-form-item label="电脑端模板">
           <el-select v-model="basic.templatePcKey" clearable filterable placeholder="请选择电脑端模板" style="width: 300px">
-            <el-option label="电脑端--模板--01" value="pc_template_01" />
-            <el-option label="电脑端--模板--02" value="pc_template_02" />
-            <el-option label="电脑端--模板--03" value="pc_template_03" />
-            <el-option label="电脑端--模板--04" value="pc_template_04" />
-            <el-option label="电脑端--模板--05" value="pc_template_05" />
+            <el-option v-for="item in pcTemplateOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
         <el-form-item label="手机复制插件">
           <el-select v-model="basic.mobileCopyWidgetKey" clearable filterable placeholder="请选择手机复制插件" style="width: 300px">
-            <el-option label="微信复制弹窗1" value="copy_widget_01" />
-            <el-option label="微信复制弹窗2" value="copy_widget_02" />
-            <el-option label="微信复制弹窗3" value="copy_widget_03" />
+            <el-option v-for="item in copyWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
         <el-form-item label="手机底部插件">
           <el-select v-model="basic.mobileBottomWidgetKey" clearable filterable placeholder="请选择手机底部插件" style="width: 300px">
-            <el-option label="手机底部插件1" value="bottom_widget_01" />
-            <el-option label="手机底部插件2" value="bottom_widget_02" />
-            <el-option label="手机底部插件3" value="bottom_widget_03" />
+            <el-option v-for="item in bottomWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
         <el-form-item label="电脑端二维码插件">
           <el-select v-model="basic.pcQrcodeWidgetKey" clearable filterable placeholder="请选择电脑端二维码插件" style="width: 300px">
-            <el-option label="右侧固定二维码" value="qrcode_widget_01" />
-            <el-option label="弹窗二维码" value="qrcode_widget_02" />
-            <el-option label="底部二维码" value="qrcode_widget_03" />
+            <el-option v-for="item in qrcodeWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
@@ -229,10 +212,10 @@
           <el-input v-model="company.aboutUrl" />
         </el-form-item>
         <el-form-item label="PC LOGO">
-          <el-input v-model="company.logoPcUrl" />
+          <UploadImage v-model="company.logoPcUrl" />
         </el-form-item>
         <el-form-item label="移动 LOGO">
-          <el-input v-model="company.logoMobileUrl" />
+          <UploadImage v-model="company.logoMobileUrl" />
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -273,13 +256,13 @@
       </template>
       <el-form label-position="top" :model="theme">
         <el-form-item label="微信/电话颜色">
-          <el-input v-model="theme.colorWechatPhone" />
+          <el-color-picker v-model="theme.colorCopyright" show-alpha />
         </el-form-item>
         <el-form-item label="客服名称颜色">
-          <el-input v-model="theme.colorServiceName" />
+          <el-color-picker v-model="theme.colorServiceName" show-alpha />
         </el-form-item>
         <el-form-item label="版权颜色">
-          <el-input v-model="theme.colorCopyright" />
+          <el-color-picker v-model="theme.colorCopyright" show-alpha />
         </el-form-item>
         <el-form-item label="一键加粗">
           <el-switch v-model="theme.boldAll" />
@@ -324,9 +307,10 @@ import {
   getLinkTheme, upsertLinkTheme,
   getLinkComment, upsertLinkComment,
   getRegionCategoryList, getPromotionGroupList, getPromotionDomainList,
-  getAdPlatformList, getQAQuestionList
+  getAdPlatformList, getQAQuestionList, getTemplateWidgetList
 } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
+import UploadImage from "@/components/upload/image.vue";
 const appStore = useAppStore()
 
 const search = ref({ platformId: null, regionId: null, groupId: null, domainId: null })
@@ -339,6 +323,11 @@ const regionOptions = ref([])
 const groupOptions = ref([])
 const domainOptions = ref([])
 const qaQuestionOptions = ref([])
+const mobileTemplateOptions = ref([])
+const pcTemplateOptions = ref([])
+const copyWidgetOptions = ref([])
+const bottomWidgetOptions = ref([])
+const qrcodeWidgetOptions = ref([])
 // 服务端筛选，按需传递查询参数
 const getTableData = async () => {
   const res = await getPromotionLinkList({ page: page.value, pageSize: pageSize.value })
@@ -351,18 +340,28 @@ const getTableData = async () => {
 }
 getTableData()
 const loadBasicOptions = async () => {
-  const [p, r, g, d, q] = await Promise.all([
+  const [p, r, g, d, q, t1, t2, t3, t4, t5] = await Promise.all([
     getAdPlatformList({ page: 1, pageSize: 10000 }),
     getRegionCategoryList({ page: 1, pageSize: 10000 }),
     getPromotionGroupList({ page: 1, pageSize: 10000 }),
     getPromotionDomainList({ page: 1, pageSize: 10000 }),
-    getQAQuestionList({ page: 1, pageSize: 10000 })
+    getQAQuestionList({ page: 1, pageSize: 10000 }),
+    getTemplateWidgetList({ page: 1, pageSize: 10000, type: 1 }),
+    getTemplateWidgetList({ page: 1, pageSize: 10000, type: 2 }),
+    getTemplateWidgetList({ page: 1, pageSize: 10000, type: 3 }),
+    getTemplateWidgetList({ page: 1, pageSize: 10000, type: 4 }),
+    getTemplateWidgetList({ page: 1, pageSize: 10000, type: 5 })
   ])
   if (p.code === 0) platformOptions.value = p.data.list || []
   if (r.code === 0) regionOptions.value = r.data.list || []
   if (g.code === 0) groupOptions.value = g.data.list || []
   if (d.code === 0) domainOptions.value = d.data.list || []
   if (q.code === 0) qaQuestionOptions.value = q.data.list || []
+  if (t1.code === 0) mobileTemplateOptions.value = t1.data.list || []
+  if (t2.code === 0) pcTemplateOptions.value = t2.data.list || []
+  if (t3.code === 0) copyWidgetOptions.value = t3.data.list || []
+  if (t4.code === 0) bottomWidgetOptions.value = t4.data.list || []
+  if (t5.code === 0) qrcodeWidgetOptions.value = t5.data.list || []
 }
 loadBasicOptions()
 const onSubmit = async () => {

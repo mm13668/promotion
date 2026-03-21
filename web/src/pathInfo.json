@@ -61,6 +61,7 @@
   "/src/view/promotion/link-theme/index.vue": "Index",
   "/src/view/promotion/member/index.vue": "Index",
   "/src/view/promotion/region/index.vue": "Index",
+  "/src/view/promotion/template-widget/index.vue": "Index",
   "/src/view/qa/answer/index.vue": "Index",
   "/src/view/qa/question/index.vue": "Index",
   "/src/view/qa/reply/index.vue": "Index",

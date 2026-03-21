@@ -29,10 +29,10 @@
           <el-input v-model="form.aboutUrl" />
         </el-form-item>
         <el-form-item label="PC LOGO">
-          <el-input v-model="form.logoPcUrl" />
+          <UploadImage v-model="form.logoPcUrl" />
         </el-form-item>
         <el-form-item label="移动 LOGO">
-          <el-input v-model="form.logoMobileUrl" />
+          <UploadImage v-model="form.logoMobileUrl" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">保存</el-button>
@@ -45,6 +45,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import UploadImage from '@/components/upload/image.vue'
 import { getLinkCompany, upsertLinkCompany } from '@/api/promotion'
 
 const q = ref({ linkId: null })

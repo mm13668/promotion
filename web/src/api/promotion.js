@@ -203,6 +203,23 @@ export const getLinkComment = (params) => {
   return service({ url: '/promotion/getLinkComment', method: 'get', params })
 }
 
+// 模板插件管理
+export const createTemplateWidget = (data) => {
+  return service({ url: '/promotion/createTemplateWidget', method: 'post', data })
+}
+export const updateTemplateWidget = (data) => {
+  return service({ url: '/promotion/updateTemplateWidget', method: 'put', data })
+}
+export const deleteTemplateWidget = (data) => {
+  return service({ url: '/promotion/deleteTemplateWidget', method: 'delete', data })
+}
+export const findTemplateWidget = (params) => {
+  return service({ url: '/promotion/findTemplateWidget', method: 'get', params })
+}
+export const getTemplateWidgetList = (params) => {
+  return service({ url: '/promotion/getTemplateWidgetList', method: 'get', params })
+}
+
 export const createQAQuestion = (data) => service({ url: '/promotion/createQAQuestion', method: 'post', data })
 export const updateQAQuestion = (data) => service({ url: '/promotion/updateQAQuestion', method: 'put', data })
 export const deleteQAQuestion = (data) => service({ url: '/promotion/deleteQAQuestion', method: 'delete', data })

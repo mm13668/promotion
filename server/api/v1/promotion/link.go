@@ -262,3 +262,103 @@ func (a *LinkApi) GetComment(c *gin.Context) {
 	}
 	response.OkWithDetailed(gin.H{"data": data}, "获取成功", c)
 }
+
+// 模板插件管理API
+func (a *LinkApi) CreateTemplateWidget(c *gin.Context) {
+	var e promotion.PromotionTemplateWidget
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := linkService.CreateTemplateWidget(e); err != nil {
+		global.GVA_LOG.Error("create failed", zap.Error(err))
+		response.FailWithMessage("创建失败", c)
+		return
+	}
+	response.OkWithMessage("创建成功", c)
+}
+
+func (a *LinkApi) DeleteTemplateWidget(c *gin.Context) {
+	var e promotion.PromotionTemplateWidget
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := linkService.DeleteTemplateWidget(e); err != nil {
+		global.GVA_LOG.Error("delete failed", zap.Error(err))
+		response.FailWithMessage("删除失败", c)
+		return
+	}
+	response.OkWithMessage("删除成功", c)
+}
+
+func (a *LinkApi) UpdateTemplateWidget(c *gin.Context) {
+	var e promotion.PromotionTemplateWidget
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := linkService.UpdateTemplateWidget(&e); err != nil {
+		global.GVA_LOG.Error("update failed", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+		return
+	}
+	response.OkWithMessage("更新成功", c)
+}
+
+func (a *LinkApi) FindTemplateWidget(c *gin.Context) {
+	var e promotion.PromotionTemplateWidget
+	if err := c.ShouldBindQuery(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	data, err := linkService.FindTemplateWidget(e.ID)
+	if err != nil {
+		global.GVA_LOG.Error("find failed", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"data": data}, "获取成功", c)
+}
+
+func (a *LinkApi) GetTemplateWidgetList(c *gin.Context) {
+	var pageInfo request.PageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	var q struct {
+		Type *uint8 `form:"type"`
+	}
+	_ = c.ShouldBindQuery(&q)
+	list, total, err := linkService.GetTemplateWidgetList(pageInfo, promoService.TemplateWidgetFilter{
+		Type: q.Type,
+	})
+	if err != nil {
+		global.GVA_LOG.Error("list failed", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    total,
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+	}, "获取成功", c)
+}

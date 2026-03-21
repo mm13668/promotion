@@ -14,13 +14,13 @@
       <template #header>颜色调整</template>
       <el-form label-position="top" :model="form" class="max-w-3xl">
         <el-form-item label="微信/电话颜色">
-          <el-input v-model="form.colorWechatPhone" />
+          <el-color-picker v-model="form.colorWechatPhone" show-alpha />
         </el-form-item>
         <el-form-item label="客服名称颜色">
-          <el-input v-model="form.colorServiceName" />
+          <el-color-picker v-model="form.colorServiceName" show-alpha />
         </el-form-item>
         <el-form-item label="版权颜色">
-          <el-input v-model="form.colorCopyright" />
+          <el-color-picker v-model="form.colorCopyright" show-alpha />
         </el-form-item>
         <el-form-item label="一键加粗">
           <el-switch v-model="form.boldAll" />
