@@ -3,16 +3,14 @@
 -- 覆盖：基本设置、资质公司、代码、颜色调整、评论设置
 -- ===============================
 
--- 推广链接核心表（列表页主要字段）
 CREATE TABLE IF NOT EXISTS `promotion_link` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `code` VARCHAR(64) NOT NULL COMMENT '链接编号（唯一标识）',
-  `title` VARCHAR(200) NOT NULL COMMENT '链接标题',
-  `platform_key` VARCHAR(32) NOT NULL COMMENT '推广平台标识，例如 baidu_ocpc/baidu_cpc/360/shenma/toutiao/douyin/oppo/tencent',
+  `platform_id` BIGINT UNSIGNED NOT NULL COMMENT '推广平台ID（关联 ad_platform.id）',
   `account_id` BIGINT UNSIGNED NULL COMMENT '推广账户ID（外部系统或本系统账户表）',
   `region_id` BIGINT UNSIGNED NULL COMMENT '所属地区分类ID（关联 region_category.id）',
   `group_id` BIGINT UNSIGNED NULL COMMENT '客服分组ID（关联 promotion_group.id）',
   `domain_id` BIGINT UNSIGNED NULL COMMENT '绑定域名ID（关联 promotion_domain.id）',
+  `question_id` BIGINT UNSIGNED NULL COMMENT '选择提问ID（关联 qa_question.id）',
   `tags_json` JSON NULL COMMENT '标签数组（如“电脑端”“移动端”等）',
   `visit_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '访问量统计',
   `inquiry_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '咨询量统计',
@@ -26,11 +24,15 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` DATETIME NULL COMMENT '删除时间（软删除）',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_link_code` (`code`),
   KEY `idx_link_status` (`status`),
   KEY `idx_link_domain` (`domain_id`),
   KEY `idx_link_region` (`region_id`),
   KEY `idx_link_group` (`group_id`),
+  KEY `idx_link_platform` (`platform_id`),
+  CONSTRAINT `fk_link_platform` FOREIGN KEY (`platform_id`) REFERENCES `ad_platform`(`id`)
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT `fk_link_question` FOREIGN KEY (`question_id`) REFERENCES `qa_question`(`id`)
+    ON UPDATE RESTRICT ON DELETE SET NULL,
   CONSTRAINT `fk_link_domain` FOREIGN KEY (`domain_id`) REFERENCES `promotion_domain`(`id`)
     ON UPDATE RESTRICT ON DELETE SET NULL,
   CONSTRAINT `fk_link_region` FOREIGN KEY (`region_id`) REFERENCES `region_category`(`id`)
@@ -45,14 +47,25 @@ CREATE TABLE IF NOT EXISTS `promotion_link_basic` (
   `link_id` BIGINT UNSIGNED NOT NULL COMMENT '推广链接ID（关联 promotion_link.id）',
   `template_mobile_key` VARCHAR(64) NULL COMMENT '手机端模板标识',
   `template_pc_key` VARCHAR(64) NULL COMMENT '电脑端模板标识',
+  `mobile_template_variant` VARCHAR(32) NULL COMMENT '手机模板变体（横版/竖版等）',
+  `pc_template_variant` VARCHAR(32) NULL COMMENT '电脑模板变体',
   `widgets_mobile_sidebar_json` JSON NULL COMMENT '手机端侧边栏组件列表（JSON 数组）',
   `widgets_pc_sidebar_json` JSON NULL COMMENT '电脑端侧边栏组件列表（JSON 数组）',
   `widgets_mobile_bottom_json` JSON NULL COMMENT '手机端底部组件列表（JSON 数组）',
   `widgets_pc_bottom_json` JSON NULL COMMENT '电脑端底部组件列表（JSON 数组）',
+  `mobile_video_widget_key` VARCHAR(64) NULL COMMENT '手机视频组件',
+  `pc_video_widget_key` VARCHAR(64) NULL COMMENT '电脑视频组件',
+  `mobile_gallery_widget_key` VARCHAR(64) NULL COMMENT '手机图集组件',
+  `pc_gallery_widget_key` VARCHAR(64) NULL COMMENT '电脑图集组件',
+  `pc_qrcode_widget_key` VARCHAR(64) NULL COMMENT '电脑端二维码组件',
   `show_recent_120s` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示最近120秒访客：0-否 1-是',
   `mobile_second_screen` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端第二屏展示：0-否 1-是',
   `pc_second_screen` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '电脑端第二屏展示：0-否 1-是',
   `mobile_bottom_bar` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端底部悬浮条：0-否 1-是',
+  `show_12301_phone` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示12301投诉电话：0-否 1-是',
+  `mobile_show_second_popup` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端二级弹窗：0-否 1-是',
+  `enable_copy_leads_code` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '点击复制留资码：0-否 1-是',
+  `auto_redirect_pc` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '自动判断跳转电脑版：0-否 1-是',
   `remark` VARCHAR(255) NULL COMMENT '备注信息',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -127,4 +140,3 @@ CREATE TABLE IF NOT EXISTS `promotion_link_comment` (
   CONSTRAINT `fk_comment_link` FOREIGN KEY (`link_id`) REFERENCES `promotion_link`(`id`)
     ON UPDATE RESTRICT ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-评论设置表';
-

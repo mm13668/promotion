@@ -26,10 +26,29 @@ func (s *LinkService) FindPromotionLink(id uint) (promotion.PromotionLink, error
 	return data, err
 }
 
-func (s *LinkService) GetPromotionLinkList(info request.PageInfo) (list []promotion.PromotionLink, total int64, err error) {
+type LinkFilter struct {
+	PlatformID *uint
+	RegionID   *uint
+	GroupID    *uint
+	DomainID   *uint
+}
+
+func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) (list []promotion.PromotionLink, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.PromotionLink{})
+	if f.PlatformID != nil {
+		db = db.Where("platform_id = ?", *f.PlatformID)
+	}
+	if f.RegionID != nil {
+		db = db.Where("region_id = ?", *f.RegionID)
+	}
+	if f.GroupID != nil {
+		db = db.Where("group_id = ?", *f.GroupID)
+	}
+	if f.DomainID != nil {
+		db = db.Where("domain_id = ?", *f.DomainID)
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
@@ -117,4 +136,3 @@ func (s *LinkService) GetComment(linkId uint) (promotion.PromotionLinkComment, e
 	err := global.GVA_DB.Where("link_id = ?", linkId).First(&data).Error
 	return data, err
 }
-

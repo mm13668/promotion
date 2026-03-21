@@ -10,7 +10,11 @@
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="name" label="名称" min-width="200" />
-        <el-table-column prop="status" label="状态" width="100" />
+        <el-table-column label="状态" width="120">
+          <template #default="{ row }">
+            {{ (statusOptions.find(o => o.value === row.status) || {}).label || row.status }}
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
           <template #default="{ row }">
             <el-button type="primary" link @click="openForm(row)">编辑</el-button>
@@ -40,7 +44,9 @@
           <el-input-number v-model="form.defaultTotalAmount" :min="0" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-input-number v-model="form.status" />
+          <el-select v-model="form.status">
+            <el-option v-for="o in statusOptions" :key="o.value" :label="o.label" :value="o.value" />
+          </el-select>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -58,6 +64,10 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const statusOptions = ref([
+  { label: '启用', value: 1 },
+  { label: '停用', value: 2 }
+])
 const getTableData = async () => {
   const res = await getActivityPackageList({ page: page.value, pageSize: pageSize.value })
   if (res.code === 0) { tableData.value = res.data.list; total.value = res.data.total; page.value = res.data.page; pageSize.value = res.data.pageSize }
@@ -82,4 +92,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-

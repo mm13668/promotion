@@ -13,9 +13,21 @@
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="domain" label="域名" min-width="220" />
         <el-table-column prop="cnameTarget" label="CNAME" min-width="260" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="100" />
-        <el-table-column prop="httpsStatus" label="HTTPS" width="100" />
-        <el-table-column prop="certMode" label="证书模式" width="100" />
+        <el-table-column label="状态" width="120">
+          <template #default="{ row }">
+            {{ (statusOptions.find(o => o.value === row.status) || {}).label || row.status }}
+          </template>
+        </el-table-column>
+        <el-table-column label="HTTPS" width="120">
+          <template #default="{ row }">
+            {{ (httpsOptions.find(o => o.value === row.httpsStatus) || {}).label || row.httpsStatus }}
+          </template>
+        </el-table-column>
+        <el-table-column label="证书模式" width="120">
+          <template #default="{ row }">
+            {{ (certModeOptions.find(o => o.value === row.certMode) || {}).label || row.certMode }}
+          </template>
+        </el-table-column>
         <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip />
         <el-table-column fixed="right" label="操作" width="180">
           <template #default="{ row }">
@@ -53,13 +65,19 @@
           <el-input v-model="form.cnameTarget" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-input-number v-model="form.status" :min="0" />
+          <el-select v-model="form.status">
+            <el-option v-for="o in statusOptions" :key="o.value" :label="o.label" :value="o.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="HTTPS状态">
-          <el-input-number v-model="form.httpsStatus" :min="0" />
+          <el-select v-model="form.httpsStatus">
+            <el-option v-for="o in httpsOptions" :key="o.value" :label="o.label" :value="o.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="证书模式">
-          <el-input-number v-model="form.certMode" :min="0" />
+          <el-select v-model="form.certMode">
+            <el-option v-for="o in certModeOptions" :key="o.value" :label="o.label" :value="o.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" />
@@ -80,6 +98,21 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const statusOptions = ref([
+  { label: '启用', value: 1 },
+  { label: '停用', value: 2 }
+])
+const httpsOptions = ref([
+  { label: '未开启', value: 0 },
+  { label: '已开启', value: 1 },
+  { label: '申请中', value: 2 },
+  { label: '失败', value: 3 }
+])
+const certModeOptions = ref([
+  { label: '平台申请', value: 0 },
+  { label: '自有证书', value: 1 },
+  { label: '复用证书', value: 2 }
+])
 
 const getTableData = async () => {
   const res = await getPromotionDomainList({ page: page.value, pageSize: pageSize.value })
@@ -141,4 +174,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-

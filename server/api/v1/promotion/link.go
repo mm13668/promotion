@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	promoService "github.com/flipped-aurora/gin-vue-admin/server/service/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -91,7 +92,19 @@ func (a *LinkApi) GetPromotionLinkList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := linkService.GetPromotionLinkList(pageInfo)
+	var q struct {
+		PlatformID *uint `form:"platformId"`
+		RegionID   *uint `form:"regionId"`
+		GroupID    *uint `form:"groupId"`
+		DomainID   *uint `form:"domainId"`
+	}
+	_ = c.ShouldBindQuery(&q)
+	list, total, err := linkService.GetPromotionLinkList(pageInfo, promoService.LinkFilter{
+		PlatformID: q.PlatformID,
+		RegionID:   q.RegionID,
+		GroupID:    q.GroupID,
+		DomainID:   q.DomainID,
+	})
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -119,7 +132,9 @@ func (a *LinkApi) UpsertBasic(c *gin.Context) {
 	response.OkWithMessage("保存成功", c)
 }
 func (a *LinkApi) GetBasic(c *gin.Context) {
-	var q struct{ LinkID uint `form:"linkId"` }
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
 	if err := c.ShouldBindQuery(&q); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -146,7 +161,9 @@ func (a *LinkApi) UpsertCompany(c *gin.Context) {
 	response.OkWithMessage("保存成功", c)
 }
 func (a *LinkApi) GetCompany(c *gin.Context) {
-	var q struct{ LinkID uint `form:"linkId"` }
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
 	if err := c.ShouldBindQuery(&q); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -173,7 +190,9 @@ func (a *LinkApi) UpsertCode(c *gin.Context) {
 	response.OkWithMessage("保存成功", c)
 }
 func (a *LinkApi) GetCode(c *gin.Context) {
-	var q struct{ LinkID uint `form:"linkId"` }
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
 	if err := c.ShouldBindQuery(&q); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -200,7 +219,9 @@ func (a *LinkApi) UpsertTheme(c *gin.Context) {
 	response.OkWithMessage("保存成功", c)
 }
 func (a *LinkApi) GetTheme(c *gin.Context) {
-	var q struct{ LinkID uint `form:"linkId"` }
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
 	if err := c.ShouldBindQuery(&q); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -227,7 +248,9 @@ func (a *LinkApi) UpsertComment(c *gin.Context) {
 	response.OkWithMessage("保存成功", c)
 }
 func (a *LinkApi) GetComment(c *gin.Context) {
-	var q struct{ LinkID uint `form:"linkId"` }
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
 	if err := c.ShouldBindQuery(&q); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -239,4 +262,3 @@ func (a *LinkApi) GetComment(c *gin.Context) {
 	}
 	response.OkWithDetailed(gin.H{"data": data}, "获取成功", c)
 }
-

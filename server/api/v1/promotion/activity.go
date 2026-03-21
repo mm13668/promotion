@@ -4,6 +4,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	promoSvc "github.com/flipped-aurora/gin-vue-admin/server/service/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -176,11 +177,20 @@ func (a *ActivityApi) GetActivityList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := activityService.GetActivityList(pageInfo)
+	var q struct {
+		MarketID  *uint  `form:"marketId"`
+		PackageID *uint  `form:"packageId"`
+		Keyword   string `form:"keyword"`
+	}
+	_ = c.ShouldBindQuery(&q)
+	list, total, err := activityService.GetActivityList(pageInfo, promoSvc.ActivityFilter{
+		MarketID:  q.MarketID,
+		PackageID: q.PackageID,
+		Keyword:   q.Keyword,
+	})
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
-

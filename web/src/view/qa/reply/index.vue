@@ -17,7 +17,7 @@
             <el-button type="primary" link @click="openForm(row)">编辑</el-button>
             <el-button type="primary" link @click="remove(row)">删除</el-button>
           </template>
-        </el-column>
+        </el-table-column>
       </el-table>
       <el-pagination class="mt-4" background layout="total, sizes, prev, pager, next, jumper"
         :current-page="page" :page-size="pageSize" :total="total"
@@ -86,4 +86,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-

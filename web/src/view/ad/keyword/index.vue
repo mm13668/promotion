@@ -9,7 +9,11 @@
     <div class="gva-table-box">
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
-        <el-table-column prop="campaignId" label="活动ID" width="120" />
+        <el-table-column label="活动" min-width="200">
+          <template #default="{ row }">
+            {{ (campaignOptions.find(c => c.ID === row.campaignId) || {}).campaignName || row.campaignId }}
+          </template>
+        </el-table-column>
         <el-table-column prop="keyword" label="关键词" min-width="200" />
         <el-table-column prop="matchType" label="匹配" width="120" />
         <el-table-column prop="status" label="状态" width="100" />
@@ -35,8 +39,10 @@
         </div>
       </template>
       <el-form label-position="top" :model="form">
-        <el-form-item label="活动ID">
-          <el-input-number v-model="form.campaignId" :min="1" />
+        <el-form-item label="活动">
+          <el-select v-model="form.campaignId" filterable placeholder="请选择活动">
+            <el-option v-for="c in campaignOptions" :key="c.ID" :label="c.campaignName" :value="c.ID" />
+          </el-select>
         </el-form-item>
         <el-form-item label="关键词">
           <el-input v-model="form.keyword" />
@@ -55,7 +61,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getAdKeywordList, createAdKeyword, updateAdKeyword, deleteAdKeyword } from '@/api/promotion'
+import { getAdKeywordList, createAdKeyword, updateAdKeyword, deleteAdKeyword, getAdCampaignList } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
 
@@ -63,11 +69,17 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const campaignOptions = ref([])
 const getTableData = async () => {
   const res = await getAdKeywordList({ page: page.value, pageSize: pageSize.value })
   if (res.code === 0) { tableData.value = res.data.list; total.value = res.data.total; page.value = res.data.page; pageSize.value = res.data.pageSize }
 }
 getTableData()
+const loadCampaigns = async () => {
+  const res = await getAdCampaignList({ page: 1, pageSize: 10000 })
+  if (res.code === 0) campaignOptions.value = res.data.list || []
+}
+loadCampaigns()
 const handleSizeChange = (v) => { pageSize.value = v; getTableData() }
 const handleCurrentChange = (v) => { page.value = v; getTableData() }
 
@@ -87,4 +99,3 @@ const remove = async (row) => {
 </script>
 
 <style scoped></style>
-

@@ -59,10 +59,25 @@ func (s *ActivityService) UpdateActivity(e *promotion.ActivityData) error {
 func (s *ActivityService) DeleteActivity(e promotion.ActivityData) error {
 	return global.GVA_DB.Delete(&e).Error
 }
-func (s *ActivityService) GetActivityList(info request.PageInfo) (list []promotion.ActivityData, total int64, err error) {
+type ActivityFilter struct {
+	MarketID *uint
+	PackageID *uint
+	Keyword string
+}
+func (s *ActivityService) GetActivityList(info request.PageInfo, f ActivityFilter) (list []promotion.ActivityData, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.ActivityData{})
+	if f.MarketID != nil {
+		db = db.Where("market_id = ?", *f.MarketID)
+	}
+	if f.PackageID != nil {
+		db = db.Where("package_id = ?", *f.PackageID)
+	}
+	if f.Keyword != "" {
+		k := "%" + f.Keyword + "%"
+		db = db.Where("name_cn LIKE ? OR name_en LIKE ?", k, k)
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
@@ -70,4 +85,3 @@ func (s *ActivityService) GetActivityList(info request.PageInfo) (list []promoti
 	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
 	return
 }
-

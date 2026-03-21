@@ -4,6 +4,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	promoSvc "github.com/flipped-aurora/gin-vue-admin/server/service/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -110,7 +111,21 @@ func (a *AdApi) GetCampaignList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := adService.GetCampaignList(pageInfo)
+	var q struct {
+		PlatformID *uint  `form:"platformId"`
+		LinkID     *uint  `form:"linkId"`
+		RegionID   *uint  `form:"regionId"`
+		GroupID    *uint  `form:"groupId"`
+		Keyword    string `form:"keyword"`
+	}
+	_ = c.ShouldBindQuery(&q)
+	list, total, err := adService.GetCampaignList(pageInfo, promoSvc.CampaignFilter{
+		PlatformID: q.PlatformID,
+		LinkID:     q.LinkID,
+		RegionID:   q.RegionID,
+		GroupID:    q.GroupID,
+		Keyword:    q.Keyword,
+	})
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -182,11 +197,20 @@ func (a *AdApi) GetDailySummaryList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := adService.GetDailySummaryList(pageInfo)
+	var q struct {
+		PlatformID *uint   `form:"platformId"`
+		StartDate  *string `form:"startDate"`
+		EndDate    *string `form:"endDate"`
+	}
+	_ = c.ShouldBindQuery(&q)
+	list, total, err := adService.GetDailySummaryList(pageInfo, promoSvc.DailySummaryFilter{
+		PlatformID: q.PlatformID,
+		StartDate:  q.StartDate,
+		EndDate:    q.EndDate,
+	})
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
-
