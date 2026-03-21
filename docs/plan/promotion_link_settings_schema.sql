@@ -42,24 +42,30 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-核心表';
 
 -- 基本设置（与核心表一对一，存储模板与组件开关）
+ DROP TABLE IF EXISTS `promotion_link_basic` ;
  CREATE TABLE IF NOT EXISTS `promotion_link_basic` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` DATETIME NULL DEFAULT NULL COMMENT '删除时间',
   `link_id` BIGINT UNSIGNED NOT NULL COMMENT '推广链接ID',
-  `template_mobile_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机端模板',
-  `template_pc_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '电脑端模板',
-  `mobile_copy_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机复制插件',
-  `mobile_bottom_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '手机底部插件',
-  `pc_qrcode_widget_key` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '电脑端二维码插件',
+  `template_mobile_id` BIGINT UNSIGNED NULL COMMENT '手机端模板ID（关联 promotion_template_widget.id）',
+  `template_pc_id` BIGINT UNSIGNED NULL COMMENT '电脑端模板ID（关联 promotion_template_widget.id）',
+  `mobile_copy_widget_id` BIGINT UNSIGNED NULL COMMENT '手机复制插件ID（关联 promotion_template_widget.id）',
+  `mobile_bottom_widget_id` BIGINT UNSIGNED NULL COMMENT '手机底部插件ID（关联 promotion_template_widget.id）',
+  `pc_qrcode_widget_id` BIGINT UNSIGNED NULL COMMENT '电脑端二维码插件ID（关联 promotion_template_widget.id）',
   `show_12301_phone` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '显示12301投诉电话',
   `mobile_show_qrcode` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '移动端显示二维码',
   `pc_show_right_qrcode` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '电脑端右侧二维码',
   `auto_detect_device` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '自动判断移动电脑端',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `uk_basic_link` (`link_id` ASC),
-  INDEX `idx_deleted_at` (`deleted_at` ASC)
+  INDEX `idx_deleted_at` (`deleted_at` ASC),
+  CONSTRAINT `fk_basic_template_mobile` FOREIGN KEY (`template_mobile_id`) REFERENCES `promotion_template_widget`(`id`) ON UPDATE RESTRICT ON DELETE SET NULL,
+  CONSTRAINT `fk_basic_template_pc` FOREIGN KEY (`template_pc_id`) REFERENCES `promotion_template_widget`(`id`) ON UPDATE RESTRICT ON DELETE SET NULL,
+  CONSTRAINT `fk_basic_copy_widget` FOREIGN KEY (`mobile_copy_widget_id`) REFERENCES `promotion_template_widget`(`id`) ON UPDATE RESTRICT ON DELETE SET NULL,
+  CONSTRAINT `fk_basic_bottom_widget` FOREIGN KEY (`mobile_bottom_widget_id`) REFERENCES `promotion_template_widget`(`id`) ON UPDATE RESTRICT ON DELETE SET NULL,
+  CONSTRAINT `fk_basic_qrcode_widget` FOREIGN KEY (`pc_qrcode_widget_id`) REFERENCES `promotion_template_widget`(`id`) ON UPDATE RESTRICT ON DELETE SET NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '推广链接基本设置表';
 
 -- 资质公司（与链接一对一，可按链接覆盖企业信息）

@@ -138,32 +138,32 @@
       </template>
       <el-form label-position="left" label-width="160px" :model="basic">
         <el-form-item label="手机端模板">
-          <el-select v-model="basic.templateMobileKey" clearable filterable placeholder="请选择手机端模板" style="width: 300px">
-            <el-option v-for="item in mobileTemplateOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          <el-select v-model="basic.templateMobileId" clearable filterable placeholder="请选择手机端模板" style="width: 300px">
+            <el-option v-for="item in mobileTemplateOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
         <el-form-item label="电脑端模板">
-          <el-select v-model="basic.templatePcKey" clearable filterable placeholder="请选择电脑端模板" style="width: 300px">
-            <el-option v-for="item in pcTemplateOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          <el-select v-model="basic.templatePcId" clearable filterable placeholder="请选择电脑端模板" style="width: 300px">
+            <el-option v-for="item in pcTemplateOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
         <el-form-item label="手机复制插件">
-          <el-select v-model="basic.mobileCopyWidgetKey" clearable filterable placeholder="请选择手机复制插件" style="width: 300px">
-            <el-option v-for="item in copyWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          <el-select v-model="basic.mobileCopyWidgetId" clearable filterable placeholder="请选择手机复制插件" style="width: 300px">
+            <el-option v-for="item in copyWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
         <el-form-item label="手机底部插件">
-          <el-select v-model="basic.mobileBottomWidgetKey" clearable filterable placeholder="请选择手机底部插件" style="width: 300px">
-            <el-option v-for="item in bottomWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          <el-select v-model="basic.mobileBottomWidgetId" clearable filterable placeholder="请选择手机底部插件" style="width: 300px">
+            <el-option v-for="item in bottomWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
         <el-form-item label="电脑端二维码插件">
-          <el-select v-model="basic.pcQrcodeWidgetKey" clearable filterable placeholder="请选择电脑端二维码插件" style="width: 300px">
-            <el-option v-for="item in qrcodeWidgetOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          <el-select v-model="basic.pcQrcodeWidgetId" clearable filterable placeholder="请选择电脑端二维码插件" style="width: 300px">
+            <el-option v-for="item in qrcodeWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
           <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
@@ -212,10 +212,16 @@
           <el-input v-model="company.aboutUrl" />
         </el-form-item>
         <el-form-item label="PC LOGO">
-          <UploadImage v-model="company.logoPcUrl" />
+          <div class="flex items-center space-x-4">
+            <UploadImage v-model="company.logoPcUrl" @on-success="handleLogoPcUrlSuccess"/>
+            <img v-if="company.logoPcUrl" :src="`${getBaseUrl()}/${company.logoPcUrl}`" class="h-16 w-16 object-contain border rounded" />
+          </div>
         </el-form-item>
         <el-form-item label="移动 LOGO">
-          <UploadImage v-model="company.logoMobileUrl" />
+          <div class="flex items-center space-x-4">
+            <UploadImage v-model="company.logoMobileUrl" @on-success="handleLogoMobileUrlSuccess"/>
+            <img v-if="company.logoMobileUrl" :src="`${getBaseUrl()}/${company.logoMobileUrl}`" class="h-16 w-16 object-contain border rounded" />
+          </div>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -309,6 +315,7 @@ import {
   getRegionCategoryList, getPromotionGroupList, getPromotionDomainList,
   getAdPlatformList, getQAQuestionList, getTemplateWidgetList
 } from '@/api/promotion'
+import { getBaseUrl } from '@/utils/format'
 import { useAppStore } from '@/pinia/modules/app'
 import UploadImage from "@/components/upload/image.vue";
 const appStore = useAppStore()
@@ -406,11 +413,11 @@ const remove = async (row) => {
 const drawerBasic = ref(false)
 const basic = ref({
   linkId: 0,
-  templateMobileKey: '',
-  templatePcKey: '',
-  mobileCopyWidgetKey: '',
-  mobileBottomWidgetKey: '',
-  pcQrcodeWidgetKey: '',
+  templateMobileId: null,
+  templatePcId: null,
+  mobileCopyWidgetId: null,
+  mobileBottomWidgetId: null,
+  pcQrcodeWidgetId: null,
   show12301Phone: false,
   mobileShowQrcode: false,
   pcShowRightQrcode: false,
@@ -419,18 +426,22 @@ const basic = ref({
 const openBasic = async (row) => {
   basic.value = {
     linkId: row.ID,
-    templateMobileKey: '',
-    templatePcKey: '',
-    mobileCopyWidgetKey: '',
-    mobileBottomWidgetKey: '',
-    pcQrcodeWidgetKey: '',
+    templateMobileId: null,
+    templatePcId: null,
+    mobileCopyWidgetId: null,
+    mobileBottomWidgetId: null,
+    pcQrcodeWidgetId: null,
     show12301Phone: false,
     mobileShowQrcode: false,
     pcShowRightQrcode: false,
     autoDetectDevice: false
   }
-  const res = await getLinkBasic({ linkId: row.ID })
-  if (res.code === 0 && res.data && res.data.data) Object.assign(basic.value, res.data.data)
+  try {
+    const res = await getLinkBasic({ linkId: row.ID })
+    if (res.code === 0 && res.data && res.data.data) Object.assign(basic.value, res.data.data)
+  } catch (e) {
+    console.error('获取基本设置失败', e)
+  }
   drawerBasic.value = true
 }
 const submitBasic = async () => {
@@ -438,6 +449,16 @@ const submitBasic = async () => {
   if (res.code === 0) { ElMessage.success('保存成功'); drawerBasic.value = false }
 }
 
+const handleLogoPcUrlSuccess = (url, raw) => {
+  console.log(url)
+  console.log(raw)
+  company.value.logoPcUrl = url
+}
+const handleLogoMobileUrlSuccess = (url, raw) => {
+  console.log(url)
+  console.log(raw)
+  company.value.logoMobileUrl = url
+}
 const drawerCompany = ref(false)
 const company = ref({ linkId: 0, companyName: '', icpRecordNo: '', licenseNo: '', homepageUrl: '', aboutUrl: '', logoPcUrl: '', logoMobileUrl: '' })
 const openCompany = async (row) => {

@@ -32,16 +32,16 @@ func (PromotionLink) TableName() string {
 
 type PromotionLinkBasic struct {
 	global.GVA_MODEL
-	LinkID              uint   `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
-	TemplateMobileKey   string `json:"templateMobileKey" gorm:"type:varchar(64);comment:手机端模板"`
-	TemplatePcKey       string `json:"templatePcKey" gorm:"type:varchar(64);comment:电脑端模板"`
-	MobileCopyWidgetKey string `json:"mobileCopyWidgetKey" gorm:"type:varchar(64);comment:手机复制插件"`
-	MobileBottomWidgetKey string `json:"mobileBottomWidgetKey" gorm:"type:varchar(64);comment:手机底部插件"`
-	PcQrcodeWidgetKey   string `json:"pcQrcodeWidgetKey" gorm:"type:varchar(64);comment:电脑端二维码插件"`
-	Show12301Phone      bool   `json:"show12301Phone" gorm:"comment:显示12301投诉电话"`
-	MobileShowQrcode    bool   `json:"mobileShowQrcode" gorm:"comment:移动端显示二维码"`
-	PcShowRightQrcode   bool   `json:"pcShowRightQrcode" gorm:"comment:电脑端右侧二维码"`
-	AutoDetectDevice    bool   `json:"autoDetectDevice" gorm:"comment:自动判断移动电脑端"`
+	LinkID                uint   `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
+	TemplateMobileId      *uint  `json:"templateMobileId" gorm:"comment:手机端模板ID（关联promotion_template_widget.id）"`
+	TemplatePcId          *uint  `json:"templatePcId" gorm:"comment:电脑端模板ID（关联promotion_template_widget.id）"`
+	MobileCopyWidgetId    *uint  `json:"mobileCopyWidgetId" gorm:"comment:手机复制插件ID（关联promotion_template_widget.id）"`
+	MobileBottomWidgetId  *uint  `json:"mobileBottomWidgetId" gorm:"comment:手机底部插件ID（关联promotion_template_widget.id）"`
+	PcQrcodeWidgetId      *uint  `json:"pcQrcodeWidgetId" gorm:"comment:电脑端二维码插件ID（关联promotion_template_widget.id）"`
+	Show12301Phone        bool   `json:"show12301Phone" gorm:"comment:显示12301投诉电话"`
+	MobileShowQrcode      bool   `json:"mobileShowQrcode" gorm:"comment:移动端显示二维码"`
+	PcShowRightQrcode     bool   `json:"pcShowRightQrcode" gorm:"comment:电脑端右侧二维码"`
+	AutoDetectDevice      bool   `json:"autoDetectDevice" gorm:"comment:自动判断移动电脑端"`
 }
 
 func (PromotionLinkBasic) TableName() string {
