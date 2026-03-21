@@ -126,7 +126,7 @@
         </el-form-item>
       </el-form>
     </el-drawer>
-    <el-drawer v-model="drawerBasic" :show-close="false">
+    <el-drawer v-model="drawerBasic" :show-close="false" size="600">
       <template #header>
         <div class="flex justify-between items-center">
           <span class="text-lg">基本设置</span>
@@ -136,24 +136,69 @@
           </div>
         </div>
       </template>
-      <el-form label-position="top" :model="basic">
-        <el-form-item label="手机模板">
-          <el-input v-model="basic.templateMobileKey" />
+      <el-form label-position="left" label-width="160px" :model="basic">
+        <el-form-item label="手机端模板">
+          <el-select v-model="basic.templateMobileKey" clearable filterable placeholder="请选择手机端模板" style="width: 300px">
+            <el-option label="移动端--模板--01" value="mobile_template_01" />
+            <el-option label="移动端--模板--02" value="mobile_template_02" />
+            <el-option label="移动端--模板--03" value="mobile_template_03" />
+            <el-option label="移动端--模板--04" value="mobile_template_04" />
+            <el-option label="移动端--模板--05" value="mobile_template_05" />
+            <el-option label="移动端--模板--06" value="mobile_template_06" />
+            <el-option label="移动端--模板--07" value="mobile_template_07" />
+            <el-option label="移动端--模板--08" value="mobile_template_08" />
+          </el-select>
+          <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
-        <el-form-item label="电脑模板">
-          <el-input v-model="basic.templatePcKey" />
+        <el-form-item label="电脑端模板">
+          <el-select v-model="basic.templatePcKey" clearable filterable placeholder="请选择电脑端模板" style="width: 300px">
+            <el-option label="电脑端--模板--01" value="pc_template_01" />
+            <el-option label="电脑端--模板--02" value="pc_template_02" />
+            <el-option label="电脑端--模板--03" value="pc_template_03" />
+            <el-option label="电脑端--模板--04" value="pc_template_04" />
+            <el-option label="电脑端--模板--05" value="pc_template_05" />
+          </el-select>
+          <el-button type="primary" link class="ml-2">选择模板</el-button>
         </el-form-item>
-        <el-form-item label="显示最近120秒访客">
-          <el-switch v-model="basic.showRecent120s" />
+        <el-form-item label="手机复制插件">
+          <el-select v-model="basic.mobileCopyWidgetKey" clearable filterable placeholder="请选择手机复制插件" style="width: 300px">
+            <el-option label="微信复制弹窗1" value="copy_widget_01" />
+            <el-option label="微信复制弹窗2" value="copy_widget_02" />
+            <el-option label="一键复制插件" value="copy_widget_03" />
+          </el-select>
+          <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
-        <el-form-item label="移动端第二屏">
-          <el-switch v-model="basic.mobileSecondScreen" />
+        <el-form-item label="手机底部插件">
+          <el-select v-model="basic.mobileBottomWidgetKey" clearable filterable placeholder="请选择手机底部插件" style="width: 300px">
+            <el-option label="底部联系栏" value="bottom_widget_01" />
+            <el-option label="底部悬浮按钮" value="bottom_widget_02" />
+            <el-option label="底部咨询栏" value="bottom_widget_03" />
+          </el-select>
+          <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
-        <el-form-item label="PC第二屏">
-          <el-switch v-model="basic.pcSecondScreen" />
+        <el-form-item label="电脑端二维码插件">
+          <el-select v-model="basic.pcQrcodeWidgetKey" clearable filterable placeholder="请选择电脑端二维码插件" style="width: 300px">
+            <el-option label="右侧固定二维码" value="qrcode_widget_01" />
+            <el-option label="弹窗二维码" value="qrcode_widget_02" />
+            <el-option label="底部二维码" value="qrcode_widget_03" />
+          </el-select>
+          <el-button type="primary" link class="ml-2">选择插件</el-button>
         </el-form-item>
-        <el-form-item label="移动端底部条">
-          <el-switch v-model="basic.mobileBottomBar" />
+        <el-form-item label="显示12301投诉电话">
+          <el-switch v-model="basic.show12301Phone" active-text="是" inactive-text="否" />
+          <span class="ml-4 text-gray-500">开启后落地页上显示投诉电话</span>
+        </el-form-item>
+        <el-form-item label="移动端显示二维码">
+          <el-switch v-model="basic.mobileShowQrcode" active-text="是" inactive-text="否" />
+          <span class="ml-4 text-gray-500">开启后移动端显示微信二维码</span>
+        </el-form-item>
+        <el-form-item label="电脑端右侧二维码">
+          <el-switch v-model="basic.pcShowRightQrcode" active-text="是" inactive-text="否" />
+          <span class="ml-4 text-gray-500">开启后电脑端右侧显示二维码</span>
+        </el-form-item>
+        <el-form-item label="自动判断移动电脑端">
+          <el-switch v-model="basic.autoDetectDevice" active-text="是" inactive-text="否" />
+          <span class="ml-4 text-gray-500">开启自动跳转</span>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -268,7 +313,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+const router = useRouter()
 import {
   getPromotionLinkList, createPromotionLink, updatePromotionLink, deletePromotionLink,
   getLinkBasic, upsertLinkBasic,
@@ -358,9 +405,31 @@ const remove = async (row) => {
 }
 
 const drawerBasic = ref(false)
-const basic = ref({ linkId: 0, templateMobileKey: '', templatePcKey: '', showRecent120s: false, mobileSecondScreen: false, pcSecondScreen: false, mobileBottomBar: false })
+const basic = ref({
+  linkId: 0,
+  templateMobileKey: '',
+  templatePcKey: '',
+  mobileCopyWidgetKey: '',
+  mobileBottomWidgetKey: '',
+  pcQrcodeWidgetKey: '',
+  show12301Phone: false,
+  mobileShowQrcode: false,
+  pcShowRightQrcode: false,
+  autoDetectDevice: false
+})
 const openBasic = async (row) => {
-  basic.value = { linkId: row.ID, templateMobileKey: '', templatePcKey: '', showRecent120s: false, mobileSecondScreen: false, pcSecondScreen: false, mobileBottomBar: false }
+  basic.value = {
+    linkId: row.ID,
+    templateMobileKey: '',
+    templatePcKey: '',
+    mobileCopyWidgetKey: '',
+    mobileBottomWidgetKey: '',
+    pcQrcodeWidgetKey: '',
+    show12301Phone: false,
+    mobileShowQrcode: false,
+    pcShowRightQrcode: false,
+    autoDetectDevice: false
+  }
   const res = await getLinkBasic({ linkId: row.ID })
   if (res.code === 0 && res.data && res.data.data) Object.assign(basic.value, res.data.data)
   drawerBasic.value = true

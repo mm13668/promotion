@@ -54,6 +54,7 @@
   "/src/view/promotion/domain/index.vue": "Index",
   "/src/view/promotion/group/index.vue": "Index",
   "/src/view/promotion/link/index.vue": "Index",
+  "/src/view/promotion/link-basic/index.vue": "Index",
   "/src/view/promotion/link-code/index.vue": "Index",
   "/src/view/promotion/link-comment/index.vue": "Index",
   "/src/view/promotion/link-company/index.vue": "Index",
