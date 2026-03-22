@@ -1,9 +1,9 @@
 # 分组管理数据模型与接口设计（MySQL）
 
 ## 数据表
-- region_category：地区分类
-- promotion_group：分组，归属于某个地区
-- group_member：成员，归属于某个分组并关联地区
+- region_category：所属分类分类
+- promotion_group：分组，归属于某个所属分类
+- group_member：成员，归属于某个分组并关联所属分类
 
 ## 字段概览
 - region_category(id, name, parent_id, sort, remark, created_at, updated_at, deleted_at)
@@ -14,7 +14,7 @@
 - 男 / 女 / 未知
 
 ## 常用查询
-- 按地区列出分组  
+- 按所属分类列出分组  
   SELECT * FROM promotion_group WHERE region_id = ? ORDER BY sort DESC, id DESC;
 - 分页查询成员（带筛选）  
   SELECT * FROM group_member 
@@ -25,7 +25,7 @@
   LIMIT ?, ?;
 
 ## 典型接口（REST）
-- 地区
+- 所属分类
   - POST /api/regions
   - GET /api/regions?page=&pageSize=
   - PUT /api/regions/:id

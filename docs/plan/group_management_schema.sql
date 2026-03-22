@@ -1,10 +1,10 @@
 -- ===============================
--- 分组管理：地区分类表
--- 用于维护地区层级与排序
+-- 分组管理：所属分类分类表
+-- 用于维护所属分类层级与排序
 -- ===============================
 CREATE TABLE IF NOT EXISTS `region_category` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `name` VARCHAR(64) NOT NULL COMMENT '地区分类名称',
+  `name` VARCHAR(64) NOT NULL COMMENT '所属分类名称',
   `parent_id` BIGINT UNSIGNED NULL COMMENT '父级分类ID（顶级为空）',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',
   `remark` VARCHAR(255) NULL COMMENT '备注信息',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `region_category` (
   UNIQUE KEY `uk_region_name` (`name`),
   KEY `idx_region_parent` (`parent_id`),
   KEY `idx_region_sort` (`sort`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-地区分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-所属分类表';
 
 -- ===============================
 -- 分组管理：成员表
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `region_category` (
 CREATE TABLE IF NOT EXISTS `group_member` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `nickname` VARCHAR(64) NOT NULL COMMENT '昵称（界面显示名）',
-  `region_id` BIGINT UNSIGNED NOT NULL COMMENT '地区ID（关联region_category）',
+  `region_id` BIGINT UNSIGNED NOT NULL COMMENT '所属分类ID（关联region_category）',
   `group_id` BIGINT UNSIGNED NOT NULL COMMENT '所属分组ID（关联promotion_group）',
   `real_name` VARCHAR(64) NULL COMMENT '真实姓名',
   `wechat` VARCHAR(64) NULL COMMENT '微信号',
@@ -49,12 +49,12 @@ CREATE TABLE IF NOT EXISTS `group_member` (
 
 -- ===============================
 -- 分组管理：分组表
--- 归属于某个地区，可配置排序与备注
+-- 归属于某个所属分类，可配置排序与备注
 -- ===============================
 CREATE TABLE IF NOT EXISTS `promotion_group` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `name` VARCHAR(64) NOT NULL COMMENT '分组名称',
-  `region_id` BIGINT UNSIGNED NOT NULL COMMENT '所属地区ID（关联region_category）',
+  `region_id` BIGINT UNSIGNED NOT NULL COMMENT '所属分类ID（关联region_category）',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',
   `remark` VARCHAR(255) NULL COMMENT '备注信息',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

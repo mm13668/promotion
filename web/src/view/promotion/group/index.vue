@@ -12,7 +12,7 @@
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="name" label="名称" min-width="160" />
-        <el-table-column label="地区" min-width="160">
+        <el-table-column label="所属分类" min-width="160">
           <template #default="{ row }">
             {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
           </template>
@@ -51,8 +51,8 @@
         <el-form-item label="名称">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="form.regionId" filterable placeholder="请选择地区">
+        <el-form-item label="所属分类">
+          <el-select v-model="form.regionId" filterable placeholder="请选择所属分类">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
@@ -118,7 +118,7 @@ const openForm = (row) => {
 
 const submit = async () => {
   if (!form.value.name || !form.value.regionId) {
-    ElMessage.error('请输入名称和地区ID')
+    ElMessage.error('请输入名称和所属分类ID')
     return
   }
   let res

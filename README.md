@@ -35,7 +35,7 @@
 
 以下 SQL 脚本均为 MySQL InnoDB，表及字段包含完整注释，落地即用：
 
-- 分组管理（地区/分组/成员）
+- 分组管理（所属分类/分组/成员）
   - [group_management_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_schema.sql)
   - [group_management_seed.sql](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_seed.sql)
   - 说明文档：[group_management_api.md](file:///Users/wangjingjun/work/promotion/docs/plan/group_management_api.md)
@@ -51,7 +51,7 @@
 - 活动数据（市场/套餐/活动主数据）
   - [activity_data_schema.sql](file:///Users/wangjingjun/work/promotion/docs/plan/activity_data_schema.sql)
 
-以上设计彼此解耦又可互联：如推广链接可关联地区、分组与域名；广告统计可按链接/地区维度聚合；问答内容承载营销知识库，服务于客服分组。
+以上设计彼此解耦又可互联：如推广链接可关联所属分类、分组与域名；广告统计可按链接/所属分类维度聚合；问答内容承载营销知识库，服务于客服分组。
 
 ### AI 编辑器与 MCP 集成
 

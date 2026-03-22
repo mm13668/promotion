@@ -13,7 +13,7 @@
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="nickname" label="昵称" min-width="160" />
         <el-table-column prop="realName" label="姓名" min-width="120" />
-        <el-table-column label="地区" min-width="160">
+        <el-table-column label="所属分类" min-width="160">
           <template #default="{ row }">
             {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
           </template>
@@ -63,8 +63,8 @@
         <el-form-item label="姓名">
           <el-input v-model="form.realName" />
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="form.regionId" filterable placeholder="请选择地区">
+        <el-form-item label="所属分类">
+          <el-select v-model="form.regionId" filterable placeholder="请选择所属分类">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>

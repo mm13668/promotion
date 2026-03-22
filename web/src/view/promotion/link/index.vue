@@ -7,8 +7,8 @@
             <el-option v-for="p in platformOptions" :key="p.ID" :label="p.name" :value="p.ID" />
           </el-select>
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="search.regionId" clearable filterable placeholder="选择地区" style="width: 180px">
+        <el-form-item label="所属分类">
+          <el-select v-model="search.regionId" clearable filterable placeholder="选择所属分类" style="width: 180px">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
@@ -39,7 +39,7 @@
             {{ (platformOptions.find(p => p.ID === row.platformId) || {}).name || row.platformId }}
           </template>
         </el-table-column>
-        <el-table-column label="地区" min-width="160">
+        <el-table-column label="所属分类" min-width="160">
           <template #default="{ row }">
             {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
           </template>
@@ -54,7 +54,8 @@
             {{ (domainOptions.find(d => d.ID === row.domainId) || {}).domain || row.domainId }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="100" />
+
+        <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="visitCount" label="访问" width="80" />
         <el-table-column prop="copyCount" label="复制" width="80" />
         <el-table-column prop="inquiryCount" label="咨询" width="80" />
@@ -103,8 +104,8 @@
             <el-option v-for="p in platformOptions" :key="p.ID" :label="p.name" :value="p.ID" />
           </el-select>
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="form.regionId" filterable clearable placeholder="请选择地区">
+        <el-form-item label="所属分类">
+          <el-select v-model="form.regionId" filterable clearable placeholder="请选择所属分类">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
@@ -123,9 +124,7 @@
             <el-option v-for="q in qaQuestionOptions" :key="q.ID" :label="q.title" :value="q.ID" />
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-input-number v-model="form.status" :min="0" />
-        </el-form-item>
+
         <el-form-item label="排序">
           <el-input-number v-model="form.sort" />
         </el-form-item>
@@ -463,9 +462,9 @@ const handleSizeChange = (val) => { pageSize.value = val; getTableData() }
 const handleCurrentChange = (val) => { page.value = val; getTableData() }
 
 const drawer = ref(false)
-const form = ref({ ID: 0, platformId: null, regionId: null, groupId: null, domainId: null, questionId: null, status: 1, sort: 0, remark: '' })
+const form = ref({ ID: 0, platformId: null, regionId: null, groupId: null, domainId: null, questionId: null, sort: 0, remark: '' })
 const openForm = (row) => {
-  form.value = row ? { ...row } : { ID: 0, platformId: null, regionId: null, groupId: null, domainId: null, questionId: null, status: 1, sort: 0, remark: '' }
+  form.value = row ? { ...row } : { ID: 0, platformId: null, regionId: null, groupId: null, domainId: null, questionId: null, sort: 0, remark: '' }
   drawer.value = true
 }
 const submit = async () => {

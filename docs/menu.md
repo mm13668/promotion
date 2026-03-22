@@ -8,7 +8,7 @@
 - 排序: 10
 
 **基础管理**
-- 展示名称: 地区分类
+- 展示名称: 所属分类分类
   - 路由Path: promotionRegion
   - 路由Name: promotionRegion
   - 文件路径: view/promotion/region/index.vue
@@ -134,7 +134,7 @@
     - 图标: help
 
 **API 权限建议绑定（按页面批量）**
-- 地区/分组/成员/域名
+- 所属分类/分组/成员/域名
   - /promotion/createRegionCategory、/promotion/deleteRegionCategory、/promotion/updateRegionCategory、/promotion/getRegionCategoryList
   - /promotion/createPromotionGroup、/promotion/deletePromotionGroup、/promotion/updatePromotionGroup、/promotion/getPromotionGroupList
   - /promotion/createGroupMember、/promotion/deleteGroupMember、/promotion/updateGroupMember、/promotion/getGroupMemberList

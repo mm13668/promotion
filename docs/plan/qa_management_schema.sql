@@ -7,7 +7,7 @@
 DROP TABLE IF EXISTS `qa_question`;
 CREATE TABLE IF NOT EXISTS `qa_question` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `region_id` BIGINT UNSIGNED NULL COMMENT '所属地区ID',
+  `region_id` BIGINT UNSIGNED NULL COMMENT '所属分类ID',
   `title` VARCHAR(200) NOT NULL COMMENT '问题标题',
   `content` MEDIUMTEXT NOT NULL COMMENT '问题正文内容',
   `time_at` VARCHAR(50) NULL COMMENT '提问时间显示文本',

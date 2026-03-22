@@ -12,8 +12,8 @@
             <el-option v-for="l in linkOptions" :key="l.ID" :label="l.title" :value="l.ID" />
           </el-select>
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="search.regionId" clearable filterable placeholder="选择地区" style="width: 180px">
+        <el-form-item label="所属分类">
+          <el-select v-model="search.regionId" clearable filterable placeholder="选择所属分类" style="width: 180px">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
@@ -47,7 +47,7 @@
             {{ (linkOptions.find(l => l.ID === row.linkId) || {}).title || row.linkId }}
           </template>
         </el-table-column>
-        <el-table-column label="地区" min-width="160">
+        <el-table-column label="所属分类" min-width="160">
           <template #default="{ row }">
             {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
           </template>
@@ -96,8 +96,8 @@
             <el-option v-for="l in linkOptions" :key="l.ID" :label="l.title" :value="l.ID" />
           </el-select>
         </el-form-item>
-        <el-form-item label="地区">
-          <el-select v-model="form.regionId" filterable clearable placeholder="选择地区">
+        <el-form-item label="所属分类">
+          <el-select v-model="form.regionId" filterable clearable placeholder="选择所属分类">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>

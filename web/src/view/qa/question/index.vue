@@ -2,8 +2,8 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="search">
-        <el-form-item label="地区">
-          <el-select v-model="search.regionId" clearable filterable placeholder="选择地区" style="width: 180px">
+        <el-form-item label="所属分类">
+          <el-select v-model="search.regionId" clearable filterable placeholder="选择所属分类" style="width: 180px">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
@@ -19,7 +19,7 @@
     <div class="gva-table-box">
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
-        <el-table-column label="地区" min-width="160">
+        <el-table-column label="所属分类" min-width="160">
           <template #default="{ row }">
             {{ (regionOptions.find(r => r.ID === row.regionId) || {}).name || row.regionId }}
           </template>
@@ -120,8 +120,8 @@
         </div>
       </template>
       <el-form label-position="top" :model="form">
-        <el-form-item label="所属分类（地区）">
-          <el-select v-model="form.regionId" filterable clearable placeholder="请选择地区">
+        <el-form-item label="所属分类">
+          <el-select v-model="form.regionId" filterable clearable placeholder="请选择所属分类">
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
