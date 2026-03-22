@@ -282,7 +282,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	}
 
 	// 4. 查询所有客服信息，用于前端随机展示
-	var wechat, phone string = "kefu123", "400-123-4567"
 	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
@@ -290,16 +289,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			// 序列化所有客服为JSON字符串
 			if jsonBytes, err := json.Marshal(members); err == nil {
 				serviceListJSON = string(jsonBytes)
-			}
-			// 默认取第一个作为fallback
-			wechat = members[0].Wechat
-			phone = members[0].Mobile
-			// 处理空值
-			if wechat == "" {
-				wechat = "kefu123"
-			}
-			if phone == "" {
-				phone = "400-123-4567"
 			}
 		}
 	}
@@ -360,8 +349,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 生成移动端页面
 	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
 	// 替换客服信息
-	mobileData.Wechat = wechat
-	mobileData.Phone = phone
 	mobileData.ServiceListJSON = serviceListJSON
 	mobilePlugins := map[string]string{
 		"copy":   copyPluginName,
@@ -374,8 +361,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 生成PC端页面
 	pcData := generator.BuildTemplateData(link, basic, company, question, false)
 	// 替换客服信息
-	pcData.Wechat = wechat
-	pcData.Phone = phone
 	pcData.ServiceListJSON = serviceListJSON
 	pcPlugins := map[string]string{
 		"qrcode": qrcodePluginName,

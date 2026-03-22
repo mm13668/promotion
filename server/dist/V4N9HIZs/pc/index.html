@@ -357,7 +357,7 @@ body {
 
                     
                     <div class="question-content bg-white p-6 rounded-lg shadow-sm mb-6">
-                        <div class="ql-editor-content" id="questionContent"><p style="text-align: left;">##客服昵称##准备广西北海玩几天，计划5-6天行程怎么安排比较好？北海有哪些经典必去景点？大概要花多少钱？现在去 怎么玩好？哪些景点需要提前预订门票？北海住宿有推荐的吗？有没有近期去 北海涠洲 旅游的人解答我的疑问，谢谢！</p><p style="text-align: left;"><br></p><hr/><p style="text-indent: 2em; text-align: left;"><br></p><p style="text-indent: 2em; text-align: left;">计划去北海涠洲旅游5天，我打算带上我一家人去玩玩，问下去玩几天比较合适，请问去过得要怎么样玩比较省心省钱少走弯路？有哪些注意事项防止被坑？好点得景点和路线推荐下，如何才能够轻松自在，不操心？还有我要兼顾老人小孩，不想出什么差错，所以想考虑周全些，有能回答我的朋友十分感谢！</p><p><img src="/api/uploads/file/3755522c7727bbb58137af545608f72c_20260322133417.webp" alt="game_banner.webp" data-href="" style=""/></p></div>
+                        <div class="ql-editor-content" id="questionContent"><p style="text-align: left;"><strong>##客服昵称##</strong>准备广西北海玩几天，计划5-6天行程怎么安排比较好？北海有哪些经典必去景点？大概要花多少钱？现在去 怎么玩好？哪些景点需要提前预订门票？北海住宿有推荐的吗？有没有近期去 北海涠洲 旅游的人解答我的疑问，谢谢！</p><p style="text-align: left;"><br></p><hr/><p style="text-indent: 2em; text-align: left;"><br></p><p style="text-indent: 2em; text-align: left;">计划去北海涠洲旅游5天，我打算带上我一家人去玩玩，问下去玩几天比较合适，请问去过得要怎么样玩比较省心省钱少走弯路？有哪些注意事项防止被坑？好点得景点和路线推荐下，如何才能够轻松自在，不操心？还有我要兼顾老人小孩，不想出什么差错，所以想考虑周全些，有能回答我的朋友十分感谢！</p><p><img src="/api/uploads/file/3755522c7727bbb58137af545608f72c_20260322133417.webp" alt="game_banner.webp" data-href="" style=""/></p></div>
                     </div>
 
                     
@@ -400,7 +400,7 @@ body {
                     <div class="contact-info">
                         <div class="info-item">
                             <span class="label">客服微信：</span>
-                            <span class="value wechat">15099653940</span>
+                            <span class="value wechat"></span>
                         </div>
                         <div class="info-item">
                             <span class="label">公司名称：</span>
@@ -418,7 +418,7 @@ body {
     <div class="qrcode-card">
         <div class="qrcode-title">扫码咨询</div>
         <img src="https://picsum.photos/200/200" alt="微信二维码" class="qrcode-img">
-        <div class="qrcode-desc">微信：<span class="wechat">15099653940</span></div>
+        <div class="qrcode-desc">微信：<span class="wechat"></span></div>
         <button class="copy-btn" onclick="copyWechat()">复制微信</button>
     </div>
 </div>
@@ -470,7 +470,7 @@ body {
 (function() {
     window.copyWechat = function() {
         // 多重容错取微信账号
-        const wechat = window.currentService?.wechat || window.wechat || "15099653940" || "kefu123";
+        const wechat = window.currentService?.wechat || window.wechat || "" || "kefu123";
         navigator.clipboard.writeText(wechat).then(function() {
             alert('微信复制成功！');
         });
@@ -478,7 +478,7 @@ body {
 
     // 页面加载完成后替换微信显示
     document.addEventListener('DOMContentLoaded', function() {
-        const wechat = window.currentService?.wechat || window.wechat || "15099653940" || "kefu123";
+        const wechat = window.currentService?.wechat || window.wechat || "" || "kefu123";
         const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
         if (wechatEl) {
             wechatEl.textContent = wechat;
@@ -510,8 +510,8 @@ body {
             
             let currentService = {
                 nickname: "",
-                wechat: "15099653940" || "kefu123",
-                mobile: "15099653940" || "400-123-4567"
+                wechat: "kefu123",
+                mobile: "400-123-4567"
             };
 
             

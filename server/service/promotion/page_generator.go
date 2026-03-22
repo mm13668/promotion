@@ -50,12 +50,6 @@ type QaQuestion struct {
 
 // TemplateData 模板渲染数据
 type TemplateData struct {
-	Title             string
-	Question          string
-	Content           string
-	Nickname          string
-	Wechat            string
-	Phone             string
 	ServiceListJSON   string
 	LogoURL           string
 	CompanyName       string
@@ -159,11 +153,6 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 	}
 
 	data := TemplateData{
-		//Title:             "专业咨询服务",
-		//Question:          "您有什么问题需要咨询？",
-		//Content:           "我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。",
-		Wechat:            "kefu123",
-		Phone:             "400-123-4567",
 		CompanyName:       company.CompanyName,
 		IcpRecordNo:       company.IcpRecordNo,
 		HomepageURL:       company.HomepageURL,
@@ -213,9 +202,8 @@ func (g *PageGenerator) GeneratePageWithData(data TemplateData, templateName str
 
 	// 2. 注入插件
 	pluginData := map[string]string{
-		"nickname":  data.Nickname,
-		"wechat":    data.Wechat,
-		"phone":     data.Phone,
+		"wechat":    "",
+		"phone":     "",
 		"qrcodeUrl": data.QrcodeURL,
 	}
 
