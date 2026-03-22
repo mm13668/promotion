@@ -160,24 +160,22 @@
             window.wechat = currentService.wechat;
             window.phone = currentService.mobile;
 
-            // 全局复制微信方法
+            // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
-                const copyWechat = wechat || window.currentService.wechat;
+                const copyWechat = wechat || window.currentService?.wechat || window.wechat || "kefu123";
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         alert('微信复制成功，快去添加好友吧！');
                     }).catch(function() {
-                        const input = document.createElement('input');
-                        input.value = copyWechat;
-                        document.body.appendChild(input);
-                        input.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(input);
-                        alert('微信复制成功，快去添加好友吧！');
+                        fallbackCopy(copyWechat);
                     });
                 } else {
+                    fallbackCopy(copyWechat);
+                }
+
+                function fallbackCopy(text) {
                     const input = document.createElement('input');
-                    input.value = copyWechat;
+                    input.value = text;
                     document.body.appendChild(input);
                     input.select();
                     document.execCommand('copy');

@@ -87,8 +87,8 @@
             // 默认客服
             let currentService = {
                 nickname: "",
-                wechat: "kefu123",
-                mobile: "400-123-4567"
+                wechat: "",
+                mobile: ""
             };
 
             // 如果有客服列表，处理随机选择
@@ -123,28 +123,23 @@
 
             // 暴露全局变量给插件使用，确保一定有值
             window.currentService = currentService;
-            // 兼容旧版插件直接取wechat变量
-            window.wechat = currentService.wechat;
-            window.phone = currentService.mobile;
 
-            // 全局复制微信方法
+            // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
-                const copyWechat = wechat || window.currentService.wechat;
+                const copyWechat = wechat || window.currentService?.wechat;
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         alert('微信复制成功，快去添加好友吧！');
                     }).catch(function() {
-                        const input = document.createElement('input');
-                        input.value = copyWechat;
-                        document.body.appendChild(input);
-                        input.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(input);
-                        alert('微信复制成功，快去添加好友吧！');
+                        fallbackCopy(copyWechat);
                     });
                 } else {
+                    fallbackCopy(copyWechat);
+                }
+
+                function fallbackCopy(text) {
                     const input = document.createElement('input');
-                    input.value = copyWechat;
+                    input.value = text;
                     document.body.appendChild(input);
                     input.select();
                     document.execCommand('copy');
