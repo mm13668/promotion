@@ -288,3 +288,13 @@ export const deleteQATag = (data) => service({ url: '/promotion/deleteQATag', me
 export const getQATagList = (params) => service({ url: '/promotion/getQATagList', method: 'get', params })
 export const getAllEnabledQATag = (params) => service({ url: '/promotion/getAllEnabledQATag', method: 'get', params })
 export const getQAQuestionDetail = (id) => service({ url: `/promotion/getQAQuestionDetail/${id}`, method: 'get' })
+
+// 推广链接发布
+export const publishPromotionLink = (data) => {
+  return service({ url: '/promotion/publishPromotionLink', method: 'post', data })
+}
+
+// 更新OCPC配置
+export const updatePromotionLinkOcpc = (data) => {
+  return service({ url: '/promotion/updatePromotionLinkOcpc', method: 'put', data })
+}

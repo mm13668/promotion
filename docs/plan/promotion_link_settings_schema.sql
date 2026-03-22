@@ -17,9 +17,15 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
   `visit_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '访问量统计',
   `copy_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '复制量统计',
   `convert_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '转化量统计',
-  `follow_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '到粉量统计',
-  
-  `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：1-启用 2-停用',
+   `follow_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '到粉量统计',
+   `mobile_url` VARCHAR(255) NULL COMMENT '移动端推广链接',
+   `pc_url` VARCHAR(255) NULL COMMENT 'PC端推广链接',
+   `ocpc_key` VARCHAR(128) NULL COMMENT 'OCPC Key',
+   `ocpc_secret` VARCHAR(128) NULL COMMENT 'OCPC Secret',
+   `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义',
+   `ocpc_callback_type` TINYINT UNSIGNED NULL COMMENT 'OCPC回传方式：1=手动回传 2=自动回传',
+   
+   `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：1-启用 2-停用',
   `https_enabled` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否开启HTTPS：0-否 1-是',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',
   `remark` VARCHAR(255) NULL COMMENT '备注（仅后台展示）',
@@ -32,8 +38,8 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
   KEY `idx_link_status` (`status`),
   KEY `idx_link_domain` (`domain_id`),
   KEY `idx_link_region` (`region_id`),
-  KEY `idx_link_group` (`group_id`),
-  KEY `idx_link_platform` (`platform_id`),
+   KEY `idx_link_group` (`group_id`),
+   KEY `idx_link_platform` (`platform_id`),
   CONSTRAINT `fk_link_platform` FOREIGN KEY (`platform_id`) REFERENCES `ad_platform`(`id`)
     ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT `fk_link_question` FOREIGN KEY (`question_id`) REFERENCES `qa_question`(`id`)
@@ -113,9 +119,9 @@ CREATE TABLE IF NOT EXISTS `promotion_link_code` (
 CREATE TABLE IF NOT EXISTS `promotion_link_theme` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `link_id` BIGINT UNSIGNED NOT NULL COMMENT '推广链接ID（关联 promotion_link.id）',
-  `color_wechat_phone` VARCHAR(16) NULL COMMENT '“微信/电话”颜色（HEX 或 CSS 变量）',
-  `color_service_name` VARCHAR(16) NULL COMMENT '客服名称颜色（HEX 或 CSS 变量）',
-  `color_copyright` VARCHAR(16) NULL COMMENT '版权颜色（HEX 或 CSS 变量）',
+  `color_wechat_phone` VARCHAR(32) NULL COMMENT '“微信/电话”颜色（HEX 或 CSS 变量）',
+  `color_service_name` VARCHAR(32) NULL COMMENT '客服名称颜色（HEX 或 CSS 变量）',
+  `color_copyright` VARCHAR(32) NULL COMMENT '版权颜色（HEX 或 CSS 变量）',
   `bold_all` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '一键加粗：0-否 1-是',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -124,6 +130,12 @@ CREATE TABLE IF NOT EXISTS `promotion_link_theme` (
   CONSTRAINT `fk_theme_link` FOREIGN KEY (`link_id`) REFERENCES `promotion_link`(`id`)
     ON UPDATE RESTRICT ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-颜色调整表';
+
+-- 颜色字段长度升级SQL
+ALTER TABLE `promotion_link_theme` 
+MODIFY COLUMN `color_wechat_phone` VARCHAR(32) NULL COMMENT '“微信/电话”颜色（HEX 或 CSS 变量）',
+MODIFY COLUMN `color_service_name` VARCHAR(32) NULL COMMENT '客服名称颜色（HEX 或 CSS 变量）',
+MODIFY COLUMN `color_copyright` VARCHAR(32) NULL COMMENT '版权颜色（HEX 或 CSS 变量）';
 
 -- 评论设置（与链接一对一）
 CREATE TABLE IF NOT EXISTS `promotion_link_comment` (
@@ -138,3 +150,15 @@ CREATE TABLE IF NOT EXISTS `promotion_link_comment` (
   CONSTRAINT `fk_comment_link` FOREIGN KEY (`link_id`) REFERENCES `promotion_link`(`id`)
     ON UPDATE RESTRICT ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广链接-评论设置表';
+
+-- 已有表升级SQL（如果表已存在，执行以下语句新增字段）
+ALTER TABLE `promotion_link` 
+ADD COLUMN `copy_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '复制量统计' AFTER `visit_count`,
+ADD COLUMN `conversion_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '转化量统计' AFTER `inquiry_count`,
+ADD COLUMN `follow_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '到粉量统计' AFTER `conversion_count`,
+ADD COLUMN `mobile_url` VARCHAR(255) NULL COMMENT '移动端推广链接' AFTER `follow_count`,
+ADD COLUMN `pc_url` VARCHAR(255) NULL COMMENT 'PC端推广链接' AFTER `mobile_url`,
+ADD COLUMN `ocpc_key` VARCHAR(128) NULL COMMENT 'OCPC Key' AFTER `pc_url`,
+ADD COLUMN `ocpc_secret` VARCHAR(128) NULL COMMENT 'OCPC Secret' AFTER `ocpc_key`,
+ADD COLUMN `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义' AFTER `ocpc_secret`,
+ADD COLUMN `ocpc_callback_type` TINYINT UNSIGNED NULL COMMENT 'OCPC回传方式：1=手动回传 2=自动回传' AFTER `ocpc_conversion_type`;

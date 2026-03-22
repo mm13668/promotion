@@ -55,6 +55,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100" />
+        <el-table-column prop="visitCount" label="访问" width="80" />
+        <el-table-column prop="copyCount" label="复制" width="80" />
+        <el-table-column prop="inquiryCount" label="咨询" width="80" />
+        <el-table-column prop="conversionCount" label="转化" width="80" />
+        <el-table-column prop="followCount" label="到粉" width="80" />
         <el-table-column prop="sort" label="排序" width="100" />
         <el-table-column fixed="right" label="操作" width="560">
           <template #default="{ row }">
@@ -64,6 +69,9 @@
             <el-button type="primary" link @click="openCode(row)">代码设置</el-button>
             <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>
             <el-button type="primary" link @click="openComment(row)">评论设置</el-button>
+            <el-button type="success" link @click="showLink(row)">推广链接</el-button>
+            <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
+            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
             <el-button type="primary" link @click="remove(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -262,7 +270,7 @@
       </template>
       <el-form label-position="top" :model="theme">
         <el-form-item label="微信/电话颜色">
-          <el-color-picker v-model="theme.colorCopyright" show-alpha />
+          <el-color-picker v-model="theme.colorWechatPhone" show-alpha />
         </el-form-item>
         <el-form-item label="客服名称颜色">
           <el-color-picker v-model="theme.colorServiceName" show-alpha />
@@ -297,6 +305,67 @@
         </el-form-item>
       </el-form>
     </el-drawer>
+
+    <!-- 推广链接弹窗 -->
+    <el-dialog v-model="linkDialogVisible" title="推广链接" width="600px">
+      <el-form label-width="100px">
+        <el-form-item label="移动端链接">
+          <el-input v-model="currentLink.mobileUrl" readonly>
+            <template #append>
+              <el-button @click="copyLink(currentLink.mobileUrl)">复制</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="PC端链接">
+          <el-input v-model="currentLink.pcUrl" readonly>
+            <template #append>
+              <el-button @click="copyLink(currentLink.pcUrl)">复制</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="linkDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- OCPC配置弹窗 -->
+    <el-dialog v-model="ocpcDialogVisible" title="OCPC配置" width="600px">
+      <el-form label-width="120px" :model="ocpcForm">
+        <el-form-item label="推广平台">
+          <el-select v-model="ocpcForm.platformId" disabled filterable placeholder="推广平台不可修改">
+            <el-option v-for="p in platformOptions" :key="p.ID" :label="p.name" :value="p.ID" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Key">
+          <el-input v-model="ocpcForm.ocpcKey" placeholder="请输入Key" />
+        </el-form-item>
+        <el-form-item label="Secret">
+          <el-input v-model="ocpcForm.ocpcSecret" placeholder="请输入Secret" />
+        </el-form-item>
+        <el-form-item label="转化类型">
+          <el-select v-model="ocpcForm.ocpcConversionType" placeholder="请选择转化类型">
+            <el-option label="表单提交(线索转化)" :value="1" />
+            <el-option label="有效电话拨打" :value="2" />
+            <el-option label="一句话咨询(咨询转化)" :value="3" />
+            <el-option label="订单(订单转化)" :value="4" />
+            <el-option label="注册(注册转化)" :value="5" />
+            <el-option label="创建角色(创建角色转化)" :value="6" />
+            <el-option label="客户自定义类型" :value="7" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="回传方式">
+          <el-select v-model="ocpcForm.ocpcCallbackType" placeholder="请选择回传方式">
+            <el-option label="手动回传" :value="1" />
+            <el-option label="自动回传" :value="2" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="ocpcDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveOcpc">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -313,7 +382,8 @@ import {
   getLinkTheme, upsertLinkTheme,
   getLinkComment, upsertLinkComment,
   getRegionCategoryList, getPromotionGroupList, getPromotionDomainList,
-  getAdPlatformList, getQAQuestionList, getTemplateWidgetList
+  getAdPlatformList, getQAQuestionList, getTemplateWidgetList,
+  publishPromotionLink, updatePromotionLinkOcpc
 } from '@/api/promotion'
 import { getBaseUrl } from '@/utils/format'
 import { useAppStore } from '@/pinia/modules/app'
@@ -496,6 +566,60 @@ const submitTheme = async () => {
 
 const drawerComment = ref(false)
 const comment = ref({ linkId: 0, enableComment: false, permission: 'mobile_login' })
+
+// 推广链接相关
+const linkDialogVisible = ref(false)
+const ocpcDialogVisible = ref(false)
+const currentLink = ref({ mobileUrl: '', pcUrl: '' })
+const ocpcForm = ref({ ID: 0, platformId: null, ocpcKey: '', ocpcSecret: '', ocpcConversionType: null, ocpcCallbackType: null })
+
+// 显示推广链接
+const showLink = (row) => {
+  currentLink.value = { mobileUrl: row.mobileUrl || '', pcUrl: row.pcUrl || '' }
+  linkDialogVisible.value = true
+}
+
+// 打开OCPC配置
+const openOcpc = (row) => {
+  ocpcForm.value = {
+    ID: row.ID,
+    platformId: row.platformId || null,
+    ocpcKey: row.ocpcKey || '',
+    ocpcSecret: row.ocpcSecret || '',
+    ocpcConversionType: row.ocpcConversionType || null,
+    ocpcCallbackType: row.ocpcCallbackType || null
+  }
+  ocpcDialogVisible.value = true
+}
+
+// 复制链接
+const copyLink = async (url) => {
+  await navigator.clipboard.writeText(url)
+  ElMessage.success('复制成功')
+}
+
+// 发布更新链接
+const publishLink = async (row) => {
+  await ElMessageBox.confirm('确认发布更新？发布后将重新生成移动端和PC端推广页面', '提示')
+  const res = await publishPromotionLink({ ID: row.ID })
+  if (res.code === 0) {
+    ElMessage.success('发布成功')
+    getTableData()
+  }
+}
+
+
+
+// 保存OCPC配置
+const saveOcpc = async () => {
+  const res = await updatePromotionLinkOcpc(ocpcForm.value)
+  if (res.code === 0) {
+    ElMessage.success('OCPC配置保存成功')
+    ocpcDialogVisible.value = false
+    getTableData()
+  }
+}
+
 const openComment = async (row) => {
   comment.value = { linkId: row.ID, enableComment: false, permission: 'mobile_login' }
   const res = await getLinkComment({ linkId: row.ID })

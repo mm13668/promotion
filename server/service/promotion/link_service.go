@@ -174,3 +174,17 @@ func (s *LinkService) GetTemplateWidgetList(info request.PageInfo, f TemplateWid
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
+
+// PublishPromotionLink 发布推广链接，生成移动端和PC端页面
+func (s *LinkService) PublishPromotionLink(linkId uint) error {
+	// 1. 查询链接信息
+	var link promotion.PromotionLink
+	if err := global.GVA_DB.Where("id = ?", linkId).First(&link).Error; err != nil {
+		return err
+	}
+	// TODO: 实现生成HTML页面的实际业务逻辑，根据模板、内容生成静态页面
+	// 示例：生成链接，实际需要替换为真实的页面生成逻辑
+	link.MobileUrl = "/p/m/" + string(rune(linkId))
+	link.PcUrl = "/p/pc/" + string(rune(linkId))
+	return global.GVA_DB.Save(&link).Error
+}

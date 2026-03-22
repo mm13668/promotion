@@ -263,6 +263,56 @@ func (a *LinkApi) GetComment(c *gin.Context) {
 	response.OkWithDetailed(gin.H{"data": data}, "获取成功", c)
 }
 
+// PublishPromotionLink 发布推广链接，生成移动端和PC端页面
+func (a *LinkApi) PublishPromotionLink(c *gin.Context) {
+	var e promotion.PromotionLink
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := linkService.PublishPromotionLink(e.ID); err != nil {
+		global.GVA_LOG.Error("publish failed", zap.Error(err))
+		response.FailWithMessage("发布失败", c)
+		return
+	}
+	response.OkWithMessage("发布成功", c)
+}
+
+// UpdatePromotionLinkOcpc 更新OCPC配置
+func (a *LinkApi) UpdatePromotionLinkOcpc(c *gin.Context) {
+	var e promotion.PromotionLink
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 先查询已有记录，避免覆盖其他字段
+	exist, err := linkService.FindPromotionLink(e.ID)
+	if err != nil {
+		global.GVA_LOG.Error("find link failed", zap.Error(err))
+		response.FailWithMessage("推广链接不存在", c)
+		return
+	}
+	// 只更新OCPC相关字段
+	exist.OcpcKey = e.OcpcKey
+	exist.OcpcSecret = e.OcpcSecret
+	exist.OcpcConversionType = e.OcpcConversionType
+	exist.OcpcCallbackType = e.OcpcCallbackType
+	if err := linkService.UpdatePromotionLink(&exist); err != nil {
+		global.GVA_LOG.Error("update ocpc failed", zap.Error(err))
+		response.FailWithMessage("OCPC配置更新失败", c)
+		return
+	}
+	response.OkWithMessage("OCPC配置保存成功", c)
+}
+
 // 模板插件管理API
 func (a *LinkApi) CreateTemplateWidget(c *gin.Context) {
 	var e promotion.PromotionTemplateWidget

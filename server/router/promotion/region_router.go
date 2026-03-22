@@ -25,6 +25,8 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.GET("getLinkTheme", promoApi.LinkApi.GetTheme)
 		group.POST("upsertLinkComment", promoApi.LinkApi.UpsertComment)
 		group.GET("getLinkComment", promoApi.LinkApi.GetComment)
+		group.POST("publishPromotionLink", promoApi.LinkApi.PublishPromotionLink)
+		group.PUT("updatePromotionLinkOcpc", promoApi.LinkApi.UpdatePromotionLinkOcpc)
 
 		// 模板插件管理
 		group.POST("createTemplateWidget", promoApi.LinkApi.CreateTemplateWidget)
