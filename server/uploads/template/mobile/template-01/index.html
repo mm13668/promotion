@@ -129,7 +129,12 @@
                 const copyWechat = wechat || window.currentService?.wechat;
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
-                        alert('微信复制成功，快去添加好友吧！');
+                        // 调用插件的全局弹窗方法
+                        if (window.showCopySuccessPopup) {
+                            showCopySuccessPopup();
+                        } else {
+                            alert('微信复制成功，快去添加好友吧！');
+                        }
                     }).catch(function() {
                         fallbackCopy(copyWechat);
                     });
@@ -144,7 +149,12 @@
                     input.select();
                     document.execCommand('copy');
                     document.body.removeChild(input);
-                    alert('微信复制成功，快去添加好友吧！');
+                    // 调用插件的全局弹窗方法
+                    if (window.showCopySuccessPopup) {
+                        showCopySuccessPopup();
+                    } else {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }
                 }
             }
 

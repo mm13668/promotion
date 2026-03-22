@@ -555,7 +555,12 @@ body {
                 const copyWechat = wechat || window.currentService?.wechat || window.wechat || "kefu123";
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
-                        alert('微信复制成功，快去添加好友吧！');
+                        
+                        if (window.showCopySuccessPopup) {
+                            showCopySuccessPopup();
+                        } else {
+                            alert('微信复制成功，快去添加好友吧！');
+                        }
                     }).catch(function() {
                         fallbackCopy(copyWechat);
                     });
@@ -570,7 +575,12 @@ body {
                     input.select();
                     document.execCommand('copy');
                     document.body.removeChild(input);
-                    alert('微信复制成功，快去添加好友吧！');
+                    
+                    if (window.showCopySuccessPopup) {
+                        showCopySuccessPopup();
+                    } else {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }
                 }
             }
 
