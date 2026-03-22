@@ -1,0 +1,60 @@
+<div class="plugin-bottom-bar-1">
+    <div class="bar-item" onclick="callPhone()">
+        <span class="icon">📞</span>
+        <span class="text">电话咨询</span>
+    </div>
+    <div class="bar-item wechat" onclick="copyWechat()">
+        <span class="icon">💬</span>
+        <span class="text">复制微信</span>
+    </div>
+</div>
+<style>
+.plugin-bottom-bar-1 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    z-index: 9998;
+}
+.plugin-bottom-bar-1 .bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+.plugin-bottom-bar-1 .bar-item.wechat {
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+}
+.plugin-bottom-bar-1 .icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+.plugin-bottom-bar-1 .text {
+    font-size: 12px;
+}
+</style>
+<script>
+(function() {
+    window.callPhone = function() {
+        window.location.href = "tel:{{phone}}";
+    }
+
+    window.copyWechat = function() {
+        const wechat = "{{wechat}}";
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                alert('微信复制成功！');
+            });
+        }
+    }
+})();
+</script>

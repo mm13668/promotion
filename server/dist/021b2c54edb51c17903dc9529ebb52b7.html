@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业咨询服务</title>
+    <link rel="stylesheet" href="style.css">
+<style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+.container {
+    max-width: 750px;
+    margin: 0 auto;
+    background-color: #fff;
+    min-height: 100vh;
+}
+.header {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.logo {
+    height: 60px;
+    width: auto;
+}
+.content {
+    padding: 30px 20px;
+}
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+.question {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #667eea;
+    padding: 15px;
+    background-color: #f0f4ff;
+    border-radius: 8px;
+}
+.description {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #666;
+    line-height: 1.8;
+}
+.wechat-info {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+.wechat-info p {
+    font-size: 18px;
+    color: #333;
+}
+.wechat {
+    color: #07c160;
+    font-weight: bold;
+    font-size: 20px;
+}</style></head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="uploads/file/d708d3b6d61633b9bd848ec6acdb8838_20260321235758.png" alt="logo" class="logo">
+        </div>
+        <div class="content">
+            <h1 class="title">专业咨询服务</h1>
+            <div class="question">您有什么问题需要咨询？</div>
+            <div class="description">我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。</div>
+            <div class="wechat-info">
+                <p>客服微信：<span class="wechat">kefu123</span></p>
+            </div>
+        </div>
+        
+        <div class="plugin-wechat-copy-1">
+    <button class="copy-btn" onclick="pluginWechatCopy1()">复制微信</button>
+</div>
+<style>
+.plugin-wechat-copy-1 {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+.plugin-wechat-copy-1 .copy-btn {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
+    cursor: pointer;
+}
+.plugin-wechat-copy-1 .copy-btn:active {
+    transform: scale(0.98);
+}
+</style>
+<script>
+(function() {
+    window.pluginWechatCopy1 = function() {
+        const wechat = "kefu123";
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                alert('微信复制成功，快去添加好友吧！');
+            }).catch(function() {
+                fallbackCopy(wechat);
+            });
+        } else {
+            fallbackCopy(wechat);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('微信复制成功，快去添加好友吧！');
+    }
+})();
+</script>
+        <div class="plugin-bottom-bar-1">
+    <div class="bar-item" onclick="callPhone()">
+        <span class="icon">📞</span>
+        <span class="text">电话咨询</span>
+    </div>
+    <div class="bar-item wechat" onclick="copyWechat()">
+        <span class="icon">💬</span>
+        <span class="text">复制微信</span>
+    </div>
+</div>
+<style>
+.plugin-bottom-bar-1 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    z-index: 9998;
+}
+.plugin-bottom-bar-1 .bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+}
+.plugin-bottom-bar-1 .bar-item.wechat {
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+}
+.plugin-bottom-bar-1 .icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+.plugin-bottom-bar-1 .text {
+    font-size: 12px;
+}
+</style>
+<script>
+(function() {
+    window.callPhone = function() {
+        window.location.href = "tel:400-123-4567";
+    }
+
+    window.copyWechat = function() {
+        const wechat = "kefu123";
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                alert('微信复制成功！');
+            });
+        }
+    }
+})();
+</script>
+    </div>
+    <script src="script.js"></script>
+<script>// 模板基础脚本
+document.addEventListener('DOMContentLoaded', function() {
+    // 页面加载完成后执行
+    console.log('Template loaded successfully');
+});</script></body>
+</html>

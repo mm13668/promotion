@@ -182,9 +182,40 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	if err := global.GVA_DB.Where("id = ?", linkId).First(&link).Error; err != nil {
 		return err
 	}
-	// TODO: 实现生成HTML页面的实际业务逻辑，根据模板、内容生成静态页面
-	// 示例：生成链接，实际需要替换为真实的页面生成逻辑
-	link.MobileUrl = "/p/m/" + string(rune(linkId))
-	link.PcUrl = "/p/pc/" + string(rune(linkId))
+
+	// 2. 查询关联配置
+	var basic promotion.PromotionLinkBasic
+	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&basic).Error; err != nil {
+		return err
+	}
+
+	var company promotion.PromotionLinkCompany
+	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&company).Error; err != nil {
+		return err
+	}
+
+	// 3. 生成页面
+	generator := &PageGenerator{}
+	const distBasePath = "/Users/wangjingjun/work/promotion/server/dist/"
+
+	// 生成移动端页面
+	mobilePath, err := generator.GeneratePage(link, basic, company, true)
+	if err != nil {
+		return err
+	}
+	// 生成PC端页面
+	pcPath, err := generator.GeneratePage(link, basic, company, false)
+	if err != nil {
+		return err
+	}
+
+	// 4. 更新链接地址
+	// 提取文件名，生成访问路径：/p/m/xxx.html、/p/pc/xxx.html
+	mobileFileName := mobilePath[len(distBasePath):]
+	pcFileName := pcPath[len(distBasePath):]
+
+	link.MobileUrl = "/p/m/" + mobileFileName
+	link.PcUrl = "/p/pc/" + pcFileName
+
 	return global.GVA_DB.Save(&link).Error
 }

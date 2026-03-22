@@ -130,3 +130,36 @@ net/http.serverHandler.ServeHTTP
 	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/net/http/server.go:3301
 net/http.(*conn).serve
 	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/net/http/server.go:2102
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 17:45:40.014	[31merror[0m	/Users/wangjingjun/work/promotion/server/api/v1/promotion/link.go:278	publish failed	{"error": "template: index.html:12:24: executing \"index.html\" at <.LogoUrl>: can't evaluate field LogoUrl in type promotion.TemplateData"}
+github.com/flipped-aurora/gin-vue-admin/server/api/v1/promotion.(*LinkApi).PublishPromotionLink
+	/Users/wangjingjun/work/promotion/server/api/v1/promotion/link.go:278
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/flipped-aurora/gin-vue-admin/server/router/promotion.(*RegionRouter).InitRegionRouter.OperationRecord.func1
+	/Users/wangjingjun/work/promotion/server/middleware/operation.go:93
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/flipped-aurora/gin-vue-admin/server/initialize.Routers.CasbinHandler.func6
+	/Users/wangjingjun/work/promotion/server/middleware/casbin_rbac.go:30
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/flipped-aurora/gin-vue-admin/server/initialize.Routers.JWTAuth.func5
+	/Users/wangjingjun/work/promotion/server/middleware/jwt.go:69
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.LoggerWithConfig.func1
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/flipped-aurora/gin-vue-admin/server/initialize.Routers.GinRecovery.func4
+	/Users/wangjingjun/work/promotion/server/middleware/error.go:78
+github.com/gin-gonic/gin.(*Context).Next
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185
+github.com/gin-gonic/gin.(*Engine).handleHTTPRequest
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633
+github.com/gin-gonic/gin.(*Engine).ServeHTTP
+	/Users/wangjingjun/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589
+net/http.serverHandler.ServeHTTP
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/net/http/server.go:3301
+net/http.(*conn).serve
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/net/http/server.go:2102

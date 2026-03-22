@@ -1,0 +1,52 @@
+<div class="plugin-wechat-copy-1">
+    <button class="copy-btn" onclick="pluginWechatCopy1()">复制微信</button>
+</div>
+<style>
+.plugin-wechat-copy-1 {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+.plugin-wechat-copy-1 .copy-btn {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
+    cursor: pointer;
+}
+.plugin-wechat-copy-1 .copy-btn:active {
+    transform: scale(0.98);
+}
+</style>
+<script>
+(function() {
+    window.pluginWechatCopy1 = function() {
+        const wechat = "{{wechat}}";
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                alert('微信复制成功，快去添加好友吧！');
+            }).catch(function() {
+                fallbackCopy(wechat);
+            });
+        } else {
+            fallbackCopy(wechat);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('微信复制成功，快去添加好友吧！');
+    }
+})();
+</script>

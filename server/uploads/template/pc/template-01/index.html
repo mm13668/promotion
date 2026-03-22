@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <img src="{{.LogoURL}}" alt="logo" class="logo">
+                <nav class="nav">
+                    <a href="{{.HomepageURL}}" target="_blank">官网首页</a>
+                    <a href="{{.AboutURL}}" target="_blank">关于我们</a>
+                </nav>
+            </div>
+        </header>
+        <main class="main">
+            <div class="content-wrap">
+                <div class="main-content">
+                    <h1 class="title">{{.Title}}</h1>
+                    <div class="question">{{.Question}}</div>
+                    <div class="description">{{.Content}}</div>
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <span class="label">客服微信：</span>
+                            <span class="value wechat">{{.Wechat}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">公司名称：</span>
+                            <span class="value">{{.CompanyName}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">ICP备案号：</span>
+                            <span class="value">{{.IcpRecordNo}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                    <!-- 二维码插件插槽 -->
+                    <div id="plugin-qrcode"></div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <p>© {{.Year}} {{.CompanyName}} 版权所有 | ICP备案号：{{.IcpRecordNo}}</p>
+            {{if .Show12301Phone}}
+            <p class="phone-12301">全国文化市场举报电话：12318 | 12301旅游投诉热线</p>
+            {{end}}
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

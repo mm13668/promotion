@@ -16,6 +16,10 @@
 ```业务生成推广链接代码
 // PublishPromotionLink 发布推广链接，生成移动端和PC端页面
 func (s *LinkService) PublishPromotionLink(
+
+
+	link.PcUrl = "/p/{{随机编号}}/pc/" + string(rune(linkId))
+	这个随机编号也需要保存在表 promotion_link 里面
 ```
 
 # 模版
@@ -89,3 +93,5 @@ window.copyWechat = copyWechat;
 
 # 生成简单代码示例
 /Users/wangjingjun/work/promotion/docs/needs/gen_code.md
+
+/Users/wangjingjun/work/promotion/web/src/view/qa/question/preview.vue，其实我想要生成的就是类似这样的页面，只不过不是vue写的，而是静态的html页面+模板和插件

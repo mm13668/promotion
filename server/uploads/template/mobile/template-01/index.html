@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{.LogoURL}}" alt="logo" class="logo">
+        </div>
+        <div class="content">
+            <h1 class="title">{{.Title}}</h1>
+            <div class="question">{{.Question}}</div>
+            <div class="description">{{.Content}}</div>
+            <div class="wechat-info">
+                <p>客服微信：<span class="wechat">{{.Wechat}}</span></p>
+            </div>
+        </div>
+        <!-- 插件插槽 -->
+        <div id="plugin-copy"></div>
+        <div id="plugin-bottom"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
