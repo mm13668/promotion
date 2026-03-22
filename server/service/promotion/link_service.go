@@ -204,32 +204,60 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		return err
 	}
 
-	// 查询问题详情（临时填充模拟数据，后续可对接真实QA表）
+	// 查询问题详情
 	var question QaQuestion
 	if link.QuestionID != nil {
-		// 这里可以扩展查询真实的问题和回答数据
+		// 1. 查询问题基本信息
+		var qaQuestion promotion.QAQuestion
+		if err := global.GVA_DB.Where("id = ?", *link.QuestionID).First(&qaQuestion).Error; err != nil {
+			return err
+		}
+
+		// 2. 查询回答列表
+		var qaAnswers []promotion.QAAnswer
+		if err := global.GVA_DB.Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
+			return err
+		}
+
+		// 3. 组装回答和回复
+		answers := make([]Answer, 0, len(qaAnswers))
+		for _, qaAnswer := range qaAnswers {
+			// 查询每个回答的回复
+			var qaReplies []promotion.QAReply
+			if err := global.GVA_DB.Where("answer_id = ? AND status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
+				return err
+			}
+
+			// 组装回复
+			replies := make([]Reply, 0, len(qaReplies))
+			for _, qaReply := range qaReplies {
+				replies = append(replies, Reply{
+					AvatarUrl: qaReply.AvatarURL,
+					Nickname:  qaReply.Nickname,
+					Content:   qaReply.Content,
+				})
+			}
+
+			// 组装回答
+			answers = append(answers, Answer{
+				AvatarUrl: qaAnswer.AvatarURL,
+				Nickname:  qaAnswer.Nickname,
+				TimeText:  qaAnswer.TimeText,
+				Content:   qaAnswer.Content,
+				Replies:   replies,
+			})
+		}
+
+		// 组装问题
 		question = QaQuestion{
-			Title:     "常见问题咨询",
-			Label:     []string{"咨询", "服务", "专业"},
-			Nickname:  "匿名用户",
-			AvatarUrl: "https://picsum.photos/100/100",
-			TimeAt:    time.Now().Format("2006-01-02 15:04"),
-			Content:   "我想咨询一下相关服务的具体流程和收费标准是怎样的？",
-			Answers: []Answer{
-				{
-					AvatarUrl: "https://picsum.photos/100/100",
-					Nickname:  "客服小王",
-					TimeText:  "1小时前",
-					Content:   "您好，我们的服务流程非常简单，您只需要添加我们的客服微信，说明您的需求，我们会为您安排专业的顾问对接，收费根据您的需求而定，透明公开，没有隐形消费。",
-					Replies: []Reply{
-						{
-							AvatarUrl: "https://picsum.photos/100/100",
-							Nickname:  "匿名用户",
-							Content:   "好的，我现在就加微信咨询，谢谢！",
-						},
-					},
-				},
-			},
+			Title:     qaQuestion.Title,
+			Label:     qaQuestion.Label,
+			Nickname:  qaQuestion.Nickname,
+			AvatarUrl: qaQuestion.AvatarURL,
+			TitleName: qaQuestion.TitleName,
+			TimeAt:    qaQuestion.TimeAt,
+			Content:   qaQuestion.Content,
+			Answers:   answers,
 		}
 	} else {
 		// 默认问题
@@ -267,8 +295,8 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	}
 
 	// 5. 更新链接地址
-	link.MobileUrl = "/p/" + link.RandomCode + "/m/"
-	link.PcUrl = "/p/" + link.RandomCode + "/pc/"
+	link.MobileUrl = "/p/" + link.RandomCode + "/m/index.html"
+	link.PcUrl = "/p/" + link.RandomCode + "/pc/index.html"
 
 	return global.GVA_DB.Save(&link).Error
 }
