@@ -18,8 +18,8 @@
               v-model="row.status" 
               :active-value="2" 
               :inactive-value="3" 
-              active-text="已发布" 
-              inactive-text="下线"
+              active-text="启用"
+              inactive-text="关闭"
               @change="updateQuestionStatus(row)"
             />
           </template>
@@ -52,19 +52,17 @@
       </template>
       <el-table :data="answerList" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
-        <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="120">
+        <el-table-column prop="nickname" label="昵称" width="120" />
+        <el-table-column prop="level" label="等级" width="80" />
+        <el-table-column prop="auditStatus" label="审核状态" width="100">
           <template #default="{ row }">
-            <el-switch 
-              v-model="row.status" 
-              :active-value="2" 
-              :inactive-value="3" 
-              active-text="已发布" 
-              inactive-text="下线"
-              @change="updateAnswerStatus(row)"
-            />
+            <el-tag :type="row.auditStatus === 1 ? 'success' : 'warning'">
+              {{ row.auditStatus === 1 ? '已审核' : '未审核' }}
+            </el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="likeCount" label="点赞" width="80" />
         <el-table-column prop="reply_count" label="回复数" width="100" />
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
@@ -89,6 +87,15 @@
       </template>
       <el-table :data="replyList" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
+        <el-table-column prop="nickname" label="昵称" width="120" />
+        <el-table-column prop="level" label="等级" width="80" />
+        <el-table-column prop="auditStatus" label="审核状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.auditStatus === 1 ? 'success' : 'warning'">
+              {{ row.auditStatus === 1 ? '已审核' : '未审核' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
         <el-table-column prop="parent_id" label="父级ID" width="100" />
         <el-table-column prop="status" label="状态" width="120">
@@ -157,17 +164,91 @@
         </div>
       </template>
       <el-form label-position="top" :model="answerForm">
+        <el-form-item label="昵称">
+          <el-input v-model="answerForm.nickname" />
+        </el-form-item>
+        <el-form-item label="头像">
+          <div class="flex items-center space-x-4">
+            <UploadImage v-model="answerForm.avatarUrl" @on-success="(url) => answerForm.avatarUrl = url"/>
+            <img v-if="answerForm.avatarUrl" :src="answerForm.avatarUrl" class="h-16 w-16 object-contain border rounded" />
+          </div>
+        </el-form-item>
+        <el-form-item label="称号">
+          <el-select v-model="answerForm.title" clearable filterable placeholder="选填称号" style="width: 100%">
+            <el-option label="选择称号" value="" />
+            <el-option label="旅游达人" value="旅游达人" />
+            <el-option label="精彩旅行家" value="精彩旅行家" />
+            <el-option label="热爱旅行者" value="热爱旅行者" />
+            <el-option label="行走的梦想家" value="行走的梦想家" />
+            <el-option label="观光旅客" value="观光旅客" />
+            <el-option label="旅游探索者" value="旅游探索者" />
+            <el-option label="追求自由旅行" value="追求自由旅行" />
+            <el-option label="海边星辰" value="海边星辰" />
+            <el-option label="潜水家" value="潜水家" />
+            <el-option label="自助旅行狂人" value="自助旅行狂人" />
+            <el-option label="奇幻旅程" value="奇幻旅程" />
+            <el-option label="放飞梦想的旅人" value="放飞梦想的旅人" />
+            <el-option label="世界游走者" value="世界游走者" />
+            <el-option label="发现者" value="发现者" />
+            <el-option label="探索者" value="探索者" />
+            <el-option label="漫游者" value="漫游者" />
+            <el-option label="放心旅行者" value="放心旅行者" />
+            <el-option label="细心旅行家" value="细心旅行家" />
+            <el-option label="狂热旅客" value="狂热旅客" />
+            <el-option label="登山勇士" value="登山勇士" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="个性签名">
+          <el-select v-model="answerForm.signature" clearable filterable  placeholder="选填" style="width: 100%">
+            <el-option label="选择个性签名" value="" />
+            <el-option label="假如生活欺骗了你，不如一路向西去大理。" value="假如生活欺骗了你，不如一路向西去大理。" />
+            <el-option label="旅行对我来说，是恢复青春的活力水。" value="旅行对我来说，是恢复青春的活力水。" />
+            <el-option label="接受突如其来的失去，珍惜不期而遇的惊喜。" value="接受突如其来的失去，珍惜不期而遇的惊喜。" />
+            <el-option label="世界这么大，我要出去给人看看。" value="世界这么大，我要出去给人看看。" />
+            <el-option label="步履不停，脚步不止。" value="步履不停，脚步不止。" />
+            <el-option label="脚长在自己身上，往前走就对了。" value="脚长在自己身上，往前走就对了。" />
+            <el-option label="旅行，就是从自己活腻的地方到别人活腻的地方去。" value="旅行，就是从自己活腻的地方到别人活腻的地方去。" />
+            <el-option label="旅行要学会随遇而安，淡然一点，走走停停。" value="旅行要学会随遇而安，淡然一点，走走停停。" />
+            <el-option label="旅行，就是一次心灵的逃避，一种精神的徜徉。" value="旅行，就是一次心灵的逃避，一种精神的徜徉。" />
+            <el-option label="旅行，就是离开生活常态，去寻找另一个自己的过程。" value="旅行，就是离开生活常态，去寻找另一个自己的过程。" />
+            <el-option label="漫无目的的流浪，任凭大自然左右，不做生活的奴隶。" value="漫无目的的流浪，任凭大自然左右，不做生活的奴隶。" />
+            <el-option label="感受不同的风景，充实自己的心灵，留下一份美好的回忆。" value="感受不同的风景，充实自己的心灵，留下一份美好的回忆。" />
+            <el-option label="人生不止有苟且，还有诗和远方" value="人生不止有苟且，还有诗和远方" />
+            <el-option label="旅行，是平凡生活的必备梦想" value="旅行，是平凡生活的必备梦想" />
+            <el-option label="跟我的司机永远在路上" value="跟我的司机永远在路上" />
+            <el-option label="下一站，你去哪儿" value="下一站，你去哪儿" />
+            <el-option label="仗剑走天涯 四海皆为家" value="仗剑走天涯 四海皆为家" />
+            <el-option label="旅行之于我，是一个迷失自己，然后发现自己的过程。" value="旅行之于我，是一个迷失自己，然后发现自己的过程。" />
+            <el-option label="梦想便是想仗剑走天涯，看一看世界的繁华。" value="梦想便是想仗剑走天涯，看一看世界的繁华。" />
+            <el-option label="每一次旅行对我而言都是一份礼物，开心的、新奇的、惊喜的、真实的。" value="每一次旅行对我而言都是一份礼物，开心的、新奇的、惊喜的、真实的。" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="等级">
+          <el-input-number v-model="answerForm.level" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="赞">
+          <el-input-number v-model="answerForm.likeCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="关注">
+          <el-input-number v-model="answerForm.followCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="收藏">
+          <el-input-number v-model="answerForm.favoriteCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-input v-model="answerForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
+        </el-form-item>
+        <el-form-item label="擅长">
+          <el-input v-model="answerForm.skill" placeholder="例如：行程规划，私人定制" />
+        </el-form-item>
+        <el-form-item label="审核状态">
+          <el-radio-group v-model="answerForm.auditStatus">
+            <el-radio :label="1">已审核</el-radio>
+            <el-radio :label="0">未审核</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="内容">
           <RichEdit v-model="answerForm.content" :height="300" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-switch 
-            v-model="answerForm.status" 
-            :active-value="2" 
-            :inactive-value="3" 
-            active-text="已发布" 
-            inactive-text="下线"
-          />
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -184,6 +265,67 @@
         </div>
       </template>
       <el-form label-position="top" :model="replyForm">
+        <el-form-item label="昵称">
+          <el-input v-model="replyForm.nickname" />
+        </el-form-item>
+        <el-form-item label="头像">
+          <div class="flex items-center space-x-4">
+            <UploadImage v-model="replyForm.avatarUrl" @on-success="(url) => replyForm.avatarUrl = url"/>
+            <img v-if="replyForm.avatarUrl" :src="replyForm.avatarUrl" class="h-16 w-16 object-contain border rounded" />
+          </div>
+        </el-form-item>
+        <el-form-item label="称号">
+          <el-select v-model="answerForm.title" placeholder="选填" style="width: 100%">
+            <el-option label="选择称号" value="" />
+            <el-option label="旅游达人" value="旅游达人" />
+            <el-option label="精彩旅行家" value="精彩旅行家" />
+            <el-option label="热爱旅行者" value="热爱旅行者" />
+            <el-option label="行走的梦想家" value="行走的梦想家" />
+            <el-option label="观光旅客" value="观光旅客" />
+            <el-option label="旅游探索者" value="旅游探索者" />
+            <el-option label="追求自由旅行" value="追求自由旅行" />
+            <el-option label="海边星辰" value="海边星辰" />
+            <el-option label="潜水家" value="潜水家" />
+            <el-option label="自助旅行狂人" value="自助旅行狂人" />
+            <el-option label="奇幻旅程" value="奇幻旅程" />
+            <el-option label="放飞梦想的旅人" value="放飞梦想的旅人" />
+            <el-option label="世界游走者" value="世界游走者" />
+            <el-option label="发现者" value="发现者" />
+            <el-option label="探索者" value="探索者" />
+            <el-option label="漫游者" value="漫游者" />
+            <el-option label="放心旅行者" value="放心旅行者" />
+            <el-option label="细心旅行家" value="细心旅行家" />
+            <el-option label="狂热旅客" value="狂热旅客" />
+            <el-option label="登山勇士" value="登山勇士" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="个性签名">
+          <el-input v-model="replyForm.signature" placeholder="选填" />
+        </el-form-item>
+        <el-form-item label="等级">
+          <el-input-number v-model="replyForm.level" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="赞">
+          <el-input-number v-model="replyForm.likeCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="关注">
+          <el-input-number v-model="replyForm.followCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="收藏">
+          <el-input-number v-model="replyForm.favoriteCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-input v-model="replyForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
+        </el-form-item>
+        <el-form-item label="擅长">
+          <el-input v-model="replyForm.skill" placeholder="例如：行程规划，私人定制" />
+        </el-form-item>
+        <el-form-item label="审核状态">
+          <el-radio-group v-model="replyForm.auditStatus">
+            <el-radio :label="1">已审核</el-radio>
+            <el-radio :label="0">未审核</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="内容">
           <RichEdit v-model="replyForm.content" :height="200" />
         </el-form-item>
@@ -208,6 +350,7 @@
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import RichEdit from '@/components/richtext/rich-edit.vue'
+import UploadImage from "@/components/upload/image.vue";
 import { 
   getQAQuestionList, createQAQuestion, updateQAQuestion, deleteQAQuestion,
   getQAAnswerList, createQAAnswer, updateQAAnswer, deleteQAAnswer,
@@ -290,9 +433,9 @@ const removeAnswer = async (row) => {
 }
 
 const drawerAnswerForm = ref(false)
-const answerForm = ref({ ID: 0, questionId: 0, content: '', status: 2 })
+const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 })
 const openAnswerForm = (row) => {
-  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, content: '', status: 2 }
+  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 }
   drawerAnswerForm.value = true
 }
 const submitAnswer = async () => {
@@ -330,9 +473,9 @@ const removeReply = async (row) => {
 }
 
 const drawerReplyForm = ref(false)
-const replyForm = ref({ ID: 0, answerId: 0, parentId: null, content: '', status: 1 })
+const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 })
 const openReplyForm = (row) => {
-  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, content: '', status: 1 }
+  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 }
   drawerReplyForm.value = true
 }
 const submitReply = async () => {
