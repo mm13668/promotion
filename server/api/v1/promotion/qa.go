@@ -1,6 +1,8 @@
 package promotion
 
 import (
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -85,6 +87,22 @@ func (a *QAApi) GetQuestionList(c *gin.Context) {
 		return
 	}
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+}
+
+func (a *QAApi) GetQuestionDetail(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		response.FailWithMessage("参数错误", c)
+		return
+	}
+	detail, err := qaService.GetQuestionDetail(uint(id))
+	if err != nil {
+		global.GVA_LOG.Error("获取问题详情失败", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(detail, "获取成功", c)
 }
 
 func (a *QAApi) CreateAnswer(c *gin.Context) {

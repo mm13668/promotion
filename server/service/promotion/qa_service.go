@@ -23,6 +23,43 @@ func (s *QAService) FindQuestion(id uint) (promotion.QAQuestion, error) {
 	return data, err
 }
 
+type QAAnswerWithReply struct {
+	promotion.QAAnswer
+	Replies []promotion.QAReply `json:"replies"`
+}
+
+type QAQuestionDetail struct {
+	promotion.QAQuestion
+	Answers []QAAnswerWithReply `json:"answers"`
+}
+
+func (s *QAService) GetQuestionDetail(id uint) (QAQuestionDetail, error) {
+	var detail QAQuestionDetail
+	// 查询问题详情
+	err := global.GVA_DB.Where("id = ?", id).First(&detail.QAQuestion).Error
+	if err != nil {
+		return detail, err
+	}
+	// 查询回答列表
+	var answers []promotion.QAAnswer
+	err = global.GVA_DB.Where("question_id = ?", id).Order("id asc").Find(&answers).Error
+	if err != nil {
+		return detail, err
+	}
+	// 查询每个回答的回复
+	detail.Answers = make([]QAAnswerWithReply, len(answers))
+	for i, answer := range answers {
+		detail.Answers[i].QAAnswer = answer
+		var replies []promotion.QAReply
+		err = global.GVA_DB.Where("answer_id = ?", answer.ID).Order("id asc").Find(&replies).Error
+		if err != nil {
+			return detail, err
+		}
+		detail.Answers[i].Replies = replies
+	}
+	return detail, nil
+}
+
 func (s *QAService) GetQuestionList(info promotion.QAQuestionSearch) (list []promotion.QAQuestion, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)

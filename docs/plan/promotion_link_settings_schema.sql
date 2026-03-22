@@ -12,8 +12,13 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
   `domain_id` BIGINT UNSIGNED NULL COMMENT '绑定域名ID（关联 promotion_domain.id）',
   `question_id` BIGINT UNSIGNED NULL COMMENT '选择提问ID（关联 qa_question.id）',
 --  `tags_json` JSON NULL COMMENT '标签数组（如“电脑端”“移动端”等）',
-  `visit_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '访问量统计',
   `inquiry_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '咨询量统计',
+
+  `visit_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '访问量统计',
+  `copy_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '复制量统计',
+  `convert_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '转化量统计',
+  `follow_count` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '到粉量统计',
+  
   `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：1-启用 2-停用',
   `https_enabled` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否开启HTTPS：0-否 1-是',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',

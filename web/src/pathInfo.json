@@ -59,6 +59,7 @@
   "/src/view/promotion/template-widget/index.vue": "Index",
   "/src/view/qa/avatar-nickname/index.vue": "Index",
   "/src/view/qa/question/index.vue": "Index",
+  "/src/view/qa/question/preview.vue": "Preview",
   "/src/view/qa/signature/index.vue": "Index",
   "/src/view/qa/tag/index.vue": "Index",
   "/src/view/qa/title/index.vue": "Index",

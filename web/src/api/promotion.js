@@ -287,3 +287,4 @@ export const updateQATag = (data) => service({ url: '/promotion/updateQATag', me
 export const deleteQATag = (data) => service({ url: '/promotion/deleteQATag', method: 'delete', data })
 export const getQATagList = (params) => service({ url: '/promotion/getQATagList', method: 'get', params })
 export const getAllEnabledQATag = (params) => service({ url: '/promotion/getAllEnabledQATag', method: 'get', params })
+export const getQAQuestionDetail = (id) => service({ url: `/promotion/getQAQuestionDetail/${id}`, method: 'get' })

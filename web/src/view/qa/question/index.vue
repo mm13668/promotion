@@ -30,9 +30,10 @@
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
-            <el-button type="primary" link @click="openAnswerPanel(row)">查看回答</el-button>
-            <el-button type="primary" link @click="openForm(row)">编辑</el-button>
-            <el-button type="primary" link @click="remove(row)">删除</el-button>
+            <el-button size="small" type="primary" link @click="openAnswerPanel(row)">查看回答</el-button>
+            <el-button size="small" type="primary" link @click="openForm(row)">编辑</el-button>
+            <el-button size="small" type="success" link @click="openPreview(row)">预览</el-button>
+            <el-button size="small" type="primary" link @click="remove(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -320,8 +321,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 import RichEdit from '@/components/richtext/rich-edit.vue'
 import UploadImage from "@/components/upload/image.vue";
 import {
@@ -417,6 +420,13 @@ const remove = async (row) => {
   await ElMessageBox.confirm('确认删除该记录？', '提示')
   const res = await deleteQAQuestion({ ID: row.ID })
   if (res.code === 0) { ElMessage.success('删除成功'); getTableData() }
+}
+
+const openPreview = (row) => {
+  const routeUrl = router.resolve({
+    path: `/qa/question/preview/${row.ID}`,
+  })
+  window.open(routeUrl.href, '_blank')
 }
 
 const handleAvatarUrlSuccess = (url, raw) => {
