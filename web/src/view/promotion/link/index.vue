@@ -450,13 +450,9 @@ const submitBasic = async () => {
 }
 
 const handleLogoPcUrlSuccess = (url, raw) => {
-  console.log(url)
-  console.log(raw)
   company.value.logoPcUrl = url
 }
 const handleLogoMobileUrlSuccess = (url, raw) => {
-  console.log(url)
-  console.log(raw)
   company.value.logoMobileUrl = url
 }
 const drawerCompany = ref(false)
