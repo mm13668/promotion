@@ -1,6 +1,7 @@
 package promotion
 
 import (
+	"fmt"
 	"html/template"
 	"math/rand"
 	"os"
@@ -273,7 +274,53 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		}
 	}
 
-	// 4. 生成页面
+	// 4. 查询模板和插件信息
+	var mobileTemplateName, pcTemplateName string
+	var copyPluginName, bottomPluginName, qrcodePluginName string
+
+	// 查询移动端模板
+	if basic.TemplateMobileId != nil {
+		var widget promotion.PromotionTemplateWidget
+		if err := global.GVA_DB.Where("id = ?", *basic.TemplateMobileId).First(&widget).Error; err == nil {
+			mobileTemplateName = widget.Name
+		}
+	}
+
+	// 查询PC端模板
+	if basic.TemplatePcId != nil {
+		var widget promotion.PromotionTemplateWidget
+		if err := global.GVA_DB.Where("id = ?", *basic.TemplatePcId).First(&widget).Error; err == nil {
+			pcTemplateName = widget.Name
+		}
+	}
+	fmt.Println("mobileTemplateName", mobileTemplateName)
+	fmt.Println("pcTemplateName", pcTemplateName)
+
+	// 查询微信复制插件
+	if basic.MobileCopyWidgetId != nil {
+		var widget promotion.PromotionTemplateWidget
+		if err := global.GVA_DB.Where("id = ?", *basic.MobileCopyWidgetId).First(&widget).Error; err == nil {
+			copyPluginName = widget.Name
+		}
+	}
+
+	// 查询底部栏插件
+	if basic.MobileBottomWidgetId != nil {
+		var widget promotion.PromotionTemplateWidget
+		if err := global.GVA_DB.Where("id = ?", *basic.MobileBottomWidgetId).First(&widget).Error; err == nil {
+			bottomPluginName = widget.Name
+		}
+	}
+
+	// 查询PC端二维码插件
+	if basic.PcQrcodeWidgetId != nil {
+		var widget promotion.PromotionTemplateWidget
+		if err := global.GVA_DB.Where("id = ?", *basic.PcQrcodeWidgetId).First(&widget).Error; err == nil {
+			qrcodePluginName = widget.Name
+		}
+	}
+
+	// 5. 生成页面
 	generator := &PageGenerator{}
 	const distBasePath = "/Users/wangjingjun/work/promotion/server/dist/"
 
@@ -284,13 +331,20 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 	// 生成移动端页面
 	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
-	_, err := generator.GeneratePageWithData(link, basic, mobileData, true, filepath.Join(randomDir, "m", "index.html"))
+	mobilePlugins := map[string]string{
+		"copy":   copyPluginName,
+		"bottom": bottomPluginName,
+	}
+	_, err := generator.GeneratePageWithData(mobileData, mobileTemplateName, mobilePlugins, true, filepath.Join(randomDir, "m", "index.html"))
 	if err != nil {
 		return err
 	}
 	// 生成PC端页面
 	pcData := generator.BuildTemplateData(link, basic, company, question, false)
-	_, err = generator.GeneratePageWithData(link, basic, pcData, false, filepath.Join(randomDir, "pc", "index.html"))
+	pcPlugins := map[string]string{
+		"qrcode": qrcodePluginName,
+	}
+	_, err = generator.GeneratePageWithData(pcData, pcTemplateName, pcPlugins, false, filepath.Join(randomDir, "pc", "index.html"))
 	if err != nil {
 		return err
 	}

@@ -186,13 +186,15 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 }
 
 // GeneratePageWithData 使用指定数据生成页面并保存到指定路径
-func (g *PageGenerator) GeneratePageWithData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, data TemplateData, isMobile bool, outputPath string) (string, error) {
+func (g *PageGenerator) GeneratePageWithData(data TemplateData, templateName string, plugins map[string]string, isMobile bool, outputPath string) (string, error) {
 	// 1. 加载模板
 	var templatePath string
-	if isMobile && basic.TemplateMobileId != nil {
-		templatePath = fmt.Sprintf("mobile/template-%02d", *basic.TemplateMobileId%8+1)
-	} else if !isMobile && basic.TemplatePcId != nil {
-		templatePath = fmt.Sprintf("pc/template-%02d", *basic.TemplatePcId%5+1)
+	if templateName != "" {
+		if isMobile {
+			templatePath = fmt.Sprintf("mobile/%s", templateName)
+		} else {
+			templatePath = fmt.Sprintf("pc/%s", templateName)
+		}
 	} else {
 		// 默认模板
 		if isMobile {
@@ -216,25 +218,22 @@ func (g *PageGenerator) GeneratePageWithData(link promotion.PromotionLink, basic
 
 	if isMobile {
 		// 注入微信复制插件
-		if basic.MobileCopyWidgetId != nil && *basic.MobileCopyWidgetId > 0 {
-			pluginName := fmt.Sprintf("wechat-copy-%d", *basic.MobileCopyWidgetId%3+1)
-			if pluginHtml, err := g.LoadPlugin(pluginName, pluginData); err == nil {
+		if copyPluginName, ok := plugins["copy"]; ok && copyPluginName != "" {
+			if pluginHtml, err := g.LoadPlugin(copyPluginName, pluginData); err == nil {
 				html = g.InjectPlugin(html, `<div id="plugin-copy"></div>`, pluginHtml)
 			}
 		}
 
 		// 注入底部栏插件
-		if basic.MobileBottomWidgetId != nil && *basic.MobileBottomWidgetId > 0 {
-			pluginName := fmt.Sprintf("bottom-bar-%d", *basic.MobileBottomWidgetId%3+1)
-			if pluginHtml, err := g.LoadPlugin(pluginName, pluginData); err == nil {
+		if bottomPluginName, ok := plugins["bottom"]; ok && bottomPluginName != "" {
+			if pluginHtml, err := g.LoadPlugin(bottomPluginName, pluginData); err == nil {
 				html = g.InjectPlugin(html, `<div id="plugin-bottom"></div>`, pluginHtml)
 			}
 		}
 	} else {
 		// 注入PC端二维码插件
-		if basic.PcQrcodeWidgetId != nil && *basic.PcQrcodeWidgetId > 0 {
-			pluginName := fmt.Sprintf("pc-qrcode-%d", *basic.PcQrcodeWidgetId%3+1)
-			if pluginHtml, err := g.LoadPlugin(pluginName, pluginData); err == nil {
+		if qrcodePluginName, ok := plugins["qrcode"]; ok && qrcodePluginName != "" {
+			if pluginHtml, err := g.LoadPlugin(qrcodePluginName, pluginData); err == nil {
 				html = g.InjectPlugin(html, `<div id="plugin-qrcode"></div>`, pluginHtml)
 			}
 		}

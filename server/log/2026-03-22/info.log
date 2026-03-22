@@ -63,3 +63,7 @@
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 18:22:04.803	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 18:22:04.804	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 18:22:04.812	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 19:46:07.027	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 19:46:19.515	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 19:46:19.517	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 19:46:19.527	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
