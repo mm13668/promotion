@@ -1,5 +1,8 @@
 <div class="plugin-wechat-copy-1">
-    <button class="copy-btn" onclick="pluginWechatCopy1()">复制微信</button>
+    <button class="copy-btn" onclick="copyWechat()">
+        <span class="icon">💬</span>
+        复制微信
+    </button>
 </div>
 <style>
 .plugin-wechat-copy-1 {
@@ -19,14 +22,20 @@
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 .plugin-wechat-copy-1 .copy-btn:active {
     transform: scale(0.98);
 }
+.plugin-wechat-copy-1 .icon {
+    font-size: 20px;
+}
 </style>
 <script>
 (function() {
-    window.pluginWechatCopy1 = function() {
+    window.copyWechat = function() {
         const wechat = "{{wechat}}";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
