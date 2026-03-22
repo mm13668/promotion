@@ -10,7 +10,7 @@
 ## 然后根据这些模版插件，完善一个实现生成静态推广页面，并返回生成推广链接的后端逻辑
 
 # 推广链接相关
-sql: /Users/wangjingjun/work/promotion/docs/plan/promotion_link_settings_schema.sql
+所有的sql放在这个目录下，请详细读: /Users/wangjingjun/work/promotion/docs/plan
 管理后台前端页面：/Users/wangjingjun/work/promotion/web/src/view/promotion/link/index.vue
 业务生成推广链接代码：
 ```业务生成推广链接代码
