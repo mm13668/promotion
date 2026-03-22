@@ -4,22 +4,25 @@ import "github.com/flipped-aurora/gin-vue-admin/server/global"
 
 type QAQuestion struct {
 	global.GVA_MODEL
-	AccountID     uint   `json:"accountId" gorm:"index:idx_question_account"`
-	CategoryID    *uint  `json:"categoryId" gorm:"index:idx_question_category"`
-	Title         string `json:"title" gorm:"type:varchar(200)"`
-	Content       string `json:"content" gorm:"type:mediumtext"`
-	CoverURL      string `json:"coverUrl" gorm:"type:varchar(255)"`
-	Status        uint8  `json:"status" gorm:"index:idx_question_status"`
-	IsPinned      bool   `json:"isPinned"`
-	IsPrivate     bool   `json:"isPrivate"`
-	ViewCount     uint   `json:"viewCount"`
-	LikeCount     uint   `json:"likeCount"`
-	FavoriteCount uint   `json:"favoriteCount"`
-	AnswerCount   uint   `json:"answerCount"`
-	Sort          int    `json:"sort" gorm:"index:idx_question_sort"`
-	Remark        string `json:"remark" gorm:"type:varchar(255)"`
-	CreatedBy     *uint  `json:"createdBy"`
-	UpdatedBy     *uint  `json:"updatedBy"`
+	RegionID      *uint    `json:"regionId" gorm:"index:idx_question_region"`
+	Title         string   `json:"title" gorm:"type:varchar(200)"`
+	Content       string   `json:"content" gorm:"type:mediumtext"`
+	TimeAt        string   `json:"timeAt" gorm:"type:varchar(50)"`
+	Remark        string   `json:"remark" gorm:"type:varchar(255)"`
+	Nickname      string   `json:"nickname" gorm:"type:varchar(50)"`
+	AvatarURL     string   `json:"avatarUrl" gorm:"type:varchar(255)"`
+	TitleName     string   `json:"titleName" gorm:"type:varchar(50)"`
+	Signature     string   `json:"signature" gorm:"type:varchar(255)"`
+	FollowCount   uint     `json:"followCount"`
+	LookCount     uint     `json:"lookCount"`
+	FavoriteCount uint     `json:"favoriteCount"`
+	LikeCount     uint     `json:"likeCount"`
+	Label         []string `json:"label" gorm:"type:json;serializer:json"`
+	Sort          int      `json:"sort" gorm:"index:idx_question_sort"`
+	AnswerCount   uint     `json:"answerCount"`
+	Status        uint8    `json:"status" gorm:"index:idx_question_status"`
+	CreatedBy     *uint    `json:"createdBy"`
+	UpdatedBy     *uint    `json:"updatedBy"`
 }
 
 func (QAQuestion) TableName() string {
@@ -29,24 +32,19 @@ func (QAQuestion) TableName() string {
 type QAAnswer struct {
 	global.GVA_MODEL
 	QuestionID    uint   `json:"questionId" gorm:"index:idx_answer_question"`
-	AuthorID      uint   `json:"authorId" gorm:"index:idx_answer_author"`
-	Nickname      string `json:"nickname" gorm:"type:varchar(100)"`
+	Nickname      string `json:"nickname" gorm:"type:varchar(50)"`
 	AvatarURL     string `json:"avatarUrl" gorm:"type:varchar(255)"`
-	Title         string `json:"title" gorm:"type:varchar(100)"`
+	TitleName     string `json:"titleName" gorm:"type:varchar(50)"`
 	Signature     string `json:"signature" gorm:"type:varchar(255)"`
 	Level         *uint  `json:"level"`
 	Content       string `json:"content" gorm:"type:mediumtext"`
-	ImagesJSON    string `json:"imagesJson" gorm:"type:json"`
 	FollowCount   uint   `json:"followCount"`
 	FavoriteCount uint   `json:"favoriteCount"`
+	LikeCount     uint   `json:"likeCount"`
 	TimeText      string `json:"timeText" gorm:"type:varchar(50)"`
 	Skill         string `json:"skill" gorm:"type:varchar(255)"`
-	AuditStatus   bool   `json:"auditStatus" gorm:"default:0"`
-	IsAccepted    bool   `json:"isAccepted"`
-	LikeCount     uint   `json:"likeCount"`
+	AuditStatus   uint8  `json:"auditStatus" gorm:"default:0"`
 	ReplyCount    uint   `json:"replyCount"`
-	Sort          int    `json:"sort"`
-	Remark        string `json:"remark" gorm:"type:varchar(255)"`
 	CreatedBy     *uint  `json:"createdBy"`
 	UpdatedBy     *uint  `json:"updatedBy"`
 }
@@ -59,21 +57,19 @@ type QAReply struct {
 	global.GVA_MODEL
 	AnswerID      uint   `json:"answerId" gorm:"index:idx_reply_answer"`
 	ParentID      *uint  `json:"parentId" gorm:"index:idx_reply_parent"`
-	AuthorID      uint   `json:"authorId"`
-	Nickname      string `json:"nickname" gorm:"type:varchar(100)"`
+	Nickname      string `json:"nickname" gorm:"type:varchar(50)"`
 	AvatarURL     string `json:"avatarUrl" gorm:"type:varchar(255)"`
-	Title         string `json:"title" gorm:"type:varchar(100)"`
+	TitleName     string `json:"titleName" gorm:"type:varchar(50)"`
 	Signature     string `json:"signature" gorm:"type:varchar(255)"`
 	Level         *uint  `json:"level"`
 	Content       string `json:"content" gorm:"type:text"`
 	FollowCount   uint   `json:"followCount"`
 	FavoriteCount uint   `json:"favoriteCount"`
+	LikeCount     uint   `json:"likeCount"`
 	TimeText      string `json:"timeText" gorm:"type:varchar(50)"`
 	Skill         string `json:"skill" gorm:"type:varchar(255)"`
-	AuditStatus   bool   `json:"auditStatus" gorm:"default:0"`
+	AuditStatus   uint8  `json:"auditStatus" gorm:"default:0"`
 	Status        uint8  `json:"status" gorm:"index:idx_reply_status"`
-	LikeCount     uint   `json:"likeCount"`
-	Remark        string `json:"remark" gorm:"type:varchar(255)"`
 	CreatedBy     *uint  `json:"createdBy"`
 	UpdatedBy     *uint  `json:"updatedBy"`
 }

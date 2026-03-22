@@ -1,0 +1,36 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 11:43:39.483	[31mfatal[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:56	WEB服务关闭异常	{"error": "context deadline exceeded"}
+github.com/flipped-aurora/gin-vue-admin/server/core.initServer
+	/Users/wangjingjun/work/promotion/server/core/server_run.go:56
+github.com/flipped-aurora/gin-vue-admin/server/core.RunServer
+	/Users/wangjingjun/work/promotion/server/core/server.go:53
+main.main
+	/Users/wangjingjun/work/promotion/server/main.go:34
+runtime.main
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/runtime/proc.go:283
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 11:47:19.923	[31mfatal[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:56	WEB服务关闭异常	{"error": "context deadline exceeded"}
+github.com/flipped-aurora/gin-vue-admin/server/core.initServer
+	/Users/wangjingjun/work/promotion/server/core/server_run.go:56
+github.com/flipped-aurora/gin-vue-admin/server/core.RunServer
+	/Users/wangjingjun/work/promotion/server/core/server.go:53
+main.main
+	/Users/wangjingjun/work/promotion/server/main.go:34
+runtime.main
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/runtime/proc.go:283
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 11:48:58.001	[31mfatal[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:56	WEB服务关闭异常	{"error": "context deadline exceeded"}
+github.com/flipped-aurora/gin-vue-admin/server/core.initServer
+	/Users/wangjingjun/work/promotion/server/core/server_run.go:56
+github.com/flipped-aurora/gin-vue-admin/server/core.RunServer
+	/Users/wangjingjun/work/promotion/server/core/server.go:53
+main.main
+	/Users/wangjingjun/work/promotion/server/main.go:34
+runtime.main
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/runtime/proc.go:283
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-22 11:52:34.900	[31mfatal[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:56	WEB服务关闭异常	{"error": "context deadline exceeded"}
+github.com/flipped-aurora/gin-vue-admin/server/core.initServer
+	/Users/wangjingjun/work/promotion/server/core/server_run.go:56
+github.com/flipped-aurora/gin-vue-admin/server/core.RunServer
+	/Users/wangjingjun/work/promotion/server/core/server.go:53
+main.main
+	/Users/wangjingjun/work/promotion/server/main.go:34
+runtime.main
+	/Users/wangjingjun/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.2.darwin-arm64/src/runtime/proc.go:283

@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column prop="title" label="标题" min-width="200" />
         <el-table-column prop="sort" label="排序" width="100" />
-        <el-table-column prop="answer_count" label="回答数" width="100" />
+<!--        <el-table-column prop="answer_count" label="回答数" width="100" />-->
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
@@ -61,7 +61,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="reply_count" label="回复数" width="100" />
+<!--        <el-table-column prop="reply_count" label="回复数" width="100" />-->
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
             <el-button type="primary" link @click="openReplyPanel(row)">查看回复</el-button>
@@ -146,7 +146,7 @@
         </el-form-item>
 
         <el-form-item label="称号">
-          <el-select v-model="form.title" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
+          <el-select v-model="form.titleName" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
             <el-option v-for="item in titleOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
         </el-form-item>
@@ -205,11 +205,11 @@
         <el-form-item label="头像">
           <div class="flex items-center space-x-4">
             <UploadImage v-model="answerForm.avatarUrl" @on-success="(url) => answerForm.avatarUrl = url"/>
-            <img v-if="answerForm.avatarUrl" :src="answerForm.avatarUrl" class="h-16 w-16 object-contain border rounded" />
+            <img v-if="answerForm.avatarUrl" :src="`${getBaseUrl()}/${answerForm.avatarUrl}`" class="h-16 w-16 object-contain border rounded" />
           </div>
         </el-form-item>
         <el-form-item label="称号">
-          <el-select v-model="answerForm.title" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
+          <el-select v-model="answerForm.titleName" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
             <el-option v-for="item in titleOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
         </el-form-item>
@@ -271,11 +271,11 @@
         <el-form-item label="头像">
           <div class="flex items-center space-x-4">
             <UploadImage v-model="replyForm.avatarUrl" @on-success="(url) => replyForm.avatarUrl = url"/>
-            <img v-if="replyForm.avatarUrl" :src="replyForm.avatarUrl" class="h-16 w-16 object-contain border rounded" />
+            <img v-if="replyForm.avatarUrl" :src="`${getBaseUrl()}/${replyForm.avatarUrl}`" class="h-16 w-16 object-contain border rounded" />
           </div>
         </el-form-item>
         <el-form-item label="称号">
-          <el-select v-model="replyForm.title" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
+          <el-select v-model="replyForm.titleName" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
             <el-option v-for="item in titleOptions" :key="item.ID" :label="item.name" :value="item.name" />
           </el-select>
         </el-form-item>
@@ -399,9 +399,9 @@ const handleSizeChange = (v) => { pageSize.value = v; getTableData() }
 const handleCurrentChange = (v) => { page.value = v; getTableData() }
 
 const drawer = ref(false)
-const form = ref({ ID: 0,regionId: null, title: '', content: '', status: 2, sort: 0 })
+const form = ref({ ID: 0,regionId: null, title: '', content: '', status: 2, sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] })
 const openForm = (row) => { 
-  form.value = row ? { ...row } : { ID: 0, title: '', content: '', status: 2, sort: 0 }; 
+  form.value = row ? { ...row } : { ID: 0,regionId: null, title: '', content: '', status: 2, sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] }; 
   drawer.value = true 
 }
 const submit = async () => {
@@ -469,9 +469,9 @@ const removeAnswer = async (row) => {
 }
 
 const drawerAnswerForm = ref(false)
-const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 })
+const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 })
 const openAnswerForm = (row) => {
-  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 }
+  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 }
   drawerAnswerForm.value = true
 }
 const submitAnswer = async () => {
@@ -509,9 +509,9 @@ const removeReply = async (row) => {
 }
 
 const drawerReplyForm = ref(false)
-const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 })
+const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 })
 const openReplyForm = (row) => {
-  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, nickname: '', avatarUrl: '', title: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 }
+  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 }
   drawerReplyForm.value = true
 }
 const submitReply = async () => {
