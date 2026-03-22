@@ -20,25 +20,61 @@ const (
 	distBasePath     = "/Users/wangjingjun/work/promotion/server/dist/"
 )
 
-// PageGenerator 页面生成器
-type PageGenerator struct{}
+// Reply 回复结构
+type Reply struct {
+	AvatarUrl string
+	Nickname  string
+	Content   string
+}
+
+// Answer 回答结构
+type Answer struct {
+	AvatarUrl string
+	Nickname  string
+	TimeText  string
+	Content   string
+	Replies   []Reply
+}
+
+// QaQuestion 问题结构
+type QaQuestion struct {
+	Title     string
+	Label     []string
+	Nickname  string
+	AvatarUrl string
+	TitleName string
+	TimeAt    string
+	Content   string
+	Answers   []Answer
+}
 
 // TemplateData 模板渲染数据
 type TemplateData struct {
-	Title          string
-	Question       string
-	Content        string
-	Wechat         string
-	Phone          string
-	LogoURL        string
-	CompanyName    string
-	IcpRecordNo    string
-	HomepageURL    string
-	AboutURL       string
-	QrcodeURL      string
-	Year           int
-	Show12301Phone bool
+	Title             string
+	Question          string
+	Content           string
+	Wechat            string
+	Phone             string
+	LogoURL           string
+	CompanyName       string
+	IcpRecordNo       string
+	HomepageURL       string
+	AboutURL          string
+	QrcodeURL         string
+	Year              int
+	Show12301Phone    bool
+	QuestionTitle     string
+	QuestionTags      []string
+	QuestionAvatar    string
+	QuestionNickname  string
+	QuestionTitleName string
+	QuestionTimeAt    string
+	QuestionContent   string
+	Answers           []Answer
 }
+
+// PageGenerator 页面生成器
+type PageGenerator struct{}
 
 // LoadTemplate 加载模板
 func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (string, error) {
@@ -98,38 +134,40 @@ func (g *PageGenerator) InjectPlugin(html string, selector string, pluginHTML st
 	return strings.Replace(html, selector, pluginHTML, 1)
 }
 
-// GeneratePage 生成页面
-func (g *PageGenerator) GeneratePage(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, isMobile bool) (string, error) {
-	// 1. 生成缓存key，判断是否已生成
-	cacheKey := g.generateCacheKey(link, basic, company, isMobile)
-	cachePath := filepath.Join(distBasePath, fmt.Sprintf("%s.html", cacheKey))
-	if _, err := os.Stat(cachePath); err == nil {
-		// 已存在，直接返回路径
-		return cachePath, nil
-	}
-
-	// 2. 准备模板数据
+// BuildTemplateData 组装模板数据
+func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, question QaQuestion, isMobile bool) TemplateData {
 	data := TemplateData{
-		Title:          "专业咨询服务",
-		Question:       "您有什么问题需要咨询？",
-		Content:        "我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。",
-		Wechat:         "kefu123",
-		Phone:          "400-123-4567",
-		LogoURL:        company.LogoMobileURL,
-		CompanyName:    company.CompanyName,
-		IcpRecordNo:    company.IcpRecordNo,
-		HomepageURL:    company.HomepageURL,
-		AboutURL:       company.AboutURL,
-		QrcodeURL:      "https://picsum.photos/200/200",
-		Year:           time.Now().Year(),
-		Show12301Phone: basic.Show12301Phone,
+		Title:             "专业咨询服务",
+		Question:          "您有什么问题需要咨询？",
+		Content:           "我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。",
+		Wechat:            "kefu123",
+		Phone:             "400-123-4567",
+		CompanyName:       company.CompanyName,
+		IcpRecordNo:       company.IcpRecordNo,
+		HomepageURL:       company.HomepageURL,
+		AboutURL:          company.AboutURL,
+		QrcodeURL:         "https://picsum.photos/200/200",
+		Year:              time.Now().Year(),
+		Show12301Phone:    basic.Show12301Phone,
+		QuestionTitle:     question.Title,
+		QuestionTags:      question.Label,
+		QuestionNickname:  question.Nickname,
+		QuestionTitleName: question.TitleName,
+		QuestionTimeAt:    question.TimeAt,
+		QuestionContent:   question.Content,
+		Answers:           question.Answers,
 	}
-
-	if !isMobile {
+	if isMobile {
+		data.LogoURL = company.LogoMobileURL
+	} else {
 		data.LogoURL = company.LogoPcURL
 	}
+	return data
+}
 
-	// 3. 加载模板
+// GeneratePageWithData 使用指定数据生成页面并保存到指定路径
+func (g *PageGenerator) GeneratePageWithData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, data TemplateData, isMobile bool, outputPath string) (string, error) {
+	// 1. 加载模板
 	var templatePath string
 	if isMobile && basic.TemplateMobileId != nil {
 		templatePath = fmt.Sprintf("mobile/template-%02d", *basic.TemplateMobileId%8+1)
@@ -149,7 +187,7 @@ func (g *PageGenerator) GeneratePage(link promotion.PromotionLink, basic promoti
 		return "", err
 	}
 
-	// 4. 注入插件
+	// 2. 注入插件
 	pluginData := map[string]string{
 		"wechat":    data.Wechat,
 		"phone":     data.Phone,
@@ -182,13 +220,13 @@ func (g *PageGenerator) GeneratePage(link promotion.PromotionLink, basic promoti
 		}
 	}
 
-	// 5. 写入文件
-	err = os.WriteFile(cachePath, []byte(html), 0644)
+	// 3. 写入文件
+	err = os.WriteFile(outputPath, []byte(html), 0644)
 	if err != nil {
 		return "", err
 	}
 
-	return cachePath, nil
+	return outputPath, nil
 }
 
 // generateCacheKey 生成缓存key

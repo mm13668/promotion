@@ -1,6 +1,11 @@
 package promotion
 
 import (
+	"math/rand"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
@@ -183,7 +188,12 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		return err
 	}
 
-	// 2. 查询关联配置
+	// 2. 生成随机编号（如果不存在）
+	if link.RandomCode == "" {
+		link.RandomCode = generateRandomCode(8)
+	}
+
+	// 3. 查询关联配置
 	var basic promotion.PromotionLinkBasic
 	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&basic).Error; err != nil {
 		return err
@@ -194,28 +204,81 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		return err
 	}
 
-	// 3. 生成页面
+	// 查询问题详情（临时填充模拟数据，后续可对接真实QA表）
+	var question QaQuestion
+	if link.QuestionID != nil {
+		// 这里可以扩展查询真实的问题和回答数据
+		question = QaQuestion{
+			Title:     "常见问题咨询",
+			Label:     []string{"咨询", "服务", "专业"},
+			Nickname:  "匿名用户",
+			AvatarUrl: "https://picsum.photos/100/100",
+			TimeAt:    time.Now().Format("2006-01-02 15:04"),
+			Content:   "我想咨询一下相关服务的具体流程和收费标准是怎样的？",
+			Answers: []Answer{
+				{
+					AvatarUrl: "https://picsum.photos/100/100",
+					Nickname:  "客服小王",
+					TimeText:  "1小时前",
+					Content:   "您好，我们的服务流程非常简单，您只需要添加我们的客服微信，说明您的需求，我们会为您安排专业的顾问对接，收费根据您的需求而定，透明公开，没有隐形消费。",
+					Replies: []Reply{
+						{
+							AvatarUrl: "https://picsum.photos/100/100",
+							Nickname:  "匿名用户",
+							Content:   "好的，我现在就加微信咨询，谢谢！",
+						},
+					},
+				},
+			},
+		}
+	} else {
+		// 默认问题
+		question = QaQuestion{
+			Title:     "专业咨询服务",
+			Label:     []string{"服务", "咨询", "一对一"},
+			Nickname:  "官方客服",
+			AvatarUrl: "https://picsum.photos/100/100",
+			TimeAt:    time.Now().Format("2006-01-02 15:04"),
+			Content:   "我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。",
+			Answers:   []Answer{},
+		}
+	}
+
+	// 4. 生成页面
 	generator := &PageGenerator{}
 	const distBasePath = "/Users/wangjingjun/work/promotion/server/dist/"
 
+	// 创建随机编号目录
+	randomDir := filepath.Join(distBasePath, link.RandomCode)
+	os.MkdirAll(filepath.Join(randomDir, "m"), 0755)
+	os.MkdirAll(filepath.Join(randomDir, "pc"), 0755)
+
 	// 生成移动端页面
-	mobilePath, err := generator.GeneratePage(link, basic, company, true)
+	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
+	_, err := generator.GeneratePageWithData(link, basic, mobileData, true, filepath.Join(randomDir, "m", "index.html"))
 	if err != nil {
 		return err
 	}
 	// 生成PC端页面
-	pcPath, err := generator.GeneratePage(link, basic, company, false)
+	pcData := generator.BuildTemplateData(link, basic, company, question, false)
+	_, err = generator.GeneratePageWithData(link, basic, pcData, false, filepath.Join(randomDir, "pc", "index.html"))
 	if err != nil {
 		return err
 	}
 
-	// 4. 更新链接地址
-	// 提取文件名，生成访问路径：/p/m/xxx.html、/p/pc/xxx.html
-	mobileFileName := mobilePath[len(distBasePath):]
-	pcFileName := pcPath[len(distBasePath):]
-
-	link.MobileUrl = "/p/m/" + mobileFileName
-	link.PcUrl = "/p/pc/" + pcFileName
+	// 5. 更新链接地址
+	link.MobileUrl = "/p/" + link.RandomCode + "/m/"
+	link.PcUrl = "/p/" + link.RandomCode + "/pc/"
 
 	return global.GVA_DB.Save(&link).Error
+}
+
+// generateRandomCode 生成指定长度的随机字符串
+func generateRandomCode(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(b)
 }

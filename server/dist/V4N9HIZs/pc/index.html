@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业咨询服务</title>
+    <link rel="stylesheet" href="style.css">
+<style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.header {
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    height: 50px;
+    width: auto;
+}
+.nav a {
+    margin-left: 30px;
+    color: #666;
+    text-decoration: none;
+    font-size: 16px;
+}
+.nav a:hover {
+    color: #667eea;
+}
+.main {
+    flex: 1;
+    padding: 40px 20px;
+}
+.content-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+}
+.main-content {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+}
+.question {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    color: #667eea;
+    padding: 20px;
+    background-color: #f0f4ff;
+    border-radius: 8px;
+}
+.description {
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: #666;
+    line-height: 1.8;
+}
+.contact-info {
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+.info-item {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+.label {
+    font-weight: 500;
+    color: #333;
+    width: 120px;
+    display: inline-block;
+}
+.value {
+    color: #666;
+}
+.wechat {
+    color: #07c160;
+    font-weight: bold;
+}
+.sidebar {
+    width: 320px;
+}
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+}
+.footer p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+.phone-12301 {
+    font-size: 12px;
+    color: #999;
+}</style></head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <img src="uploads/file/d708d3b6d61633b9bd848ec6acdb8838_20260321235742.png" alt="logo" class="logo">
+                <nav class="nav">
+                    <a href="1" target="_blank">官网首页</a>
+                    <a href="1" target="_blank">关于我们</a>
+                </nav>
+            </div>
+        </header>
+        <main class="main">
+            <div class="content-wrap">
+                <div class="main-content">
+                    <h1 class="title">专业咨询服务</h1>
+                    <div class="question">您有什么问题需要咨询？</div>
+                    <div class="description">我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。</div>
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <span class="label">客服微信：</span>
+                            <span class="value wechat">kefu123</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">公司名称：</span>
+                            <span class="value">1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">ICP备案号：</span>
+                            <span class="value">1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                    
+                    <div class="plugin-pc-qrcode-1">
+    <div class="qrcode-card">
+        <div class="qrcode-title">扫码咨询</div>
+        <img src="https://picsum.photos/200/200" alt="微信二维码" class="qrcode-img">
+        <div class="qrcode-desc">微信：<span class="wechat">kefu123</span></div>
+        <button class="copy-btn" onclick="copyWechat()">复制微信</button>
+    </div>
+</div>
+<style>
+.plugin-pc-qrcode-1 {
+    position: sticky;
+    top: 40px;
+}
+.plugin-pc-qrcode-1 .qrcode-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.plugin-pc-qrcode-1 .qrcode-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+.plugin-pc-qrcode-1 .qrcode-img {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+.plugin-pc-qrcode-1 .qrcode-desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+.plugin-pc-qrcode-1 .wechat {
+    color: #07c160;
+    font-weight: bold;
+}
+.plugin-pc-qrcode-1 .copy-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #07c160;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+</style>
+<script>
+(function() {
+    window.copyWechat = function() {
+        const wechat = "kefu123";
+        navigator.clipboard.writeText(wechat).then(function() {
+            alert('微信复制成功！');
+        });
+    }
+})();
+</script>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <p>© 2026 1 版权所有 | ICP备案号：1</p>
+            
+            <p class="phone-12301">全国文化市场举报电话：12318 | 12301旅游投诉热线</p>
+            
+        </footer>
+    </div>
+    <script src="script.js"></script>
+<script>// PC端模板基础脚本
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('PC Template loaded successfully');
+});</script></body>
+</html>

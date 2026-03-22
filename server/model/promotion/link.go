@@ -18,6 +18,7 @@ type PromotionLink struct {
 	FollowCount        uint                  `json:"followCount" gorm:"comment:到粉次数"`
 	MobileUrl          string                `json:"mobileUrl" gorm:"type:varchar(255);comment:移动端推广链接"`
 	PcUrl              string                `json:"pcUrl" gorm:"type:varchar(255);comment:PC端推广链接"`
+	RandomCode         string                `json:"randomCode" gorm:"type:varchar(32);uniqueIndex:uk_random_code;comment:随机编号，用于静态页面路径"`
 	OcpcKey            string                `json:"ocpcKey" gorm:"type:varchar(128);comment:OCPC Key"`
 	OcpcSecret         string                `json:"ocpcSecret" gorm:"type:varchar(128);comment:OCPC Secret"`
 	OcpcConversionType uint8                 `json:"ocpcConversionType" gorm:"comment:OCPC转化类型 1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义"`

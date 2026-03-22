@@ -3,22 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}}</title>
+    <title>{{.QuestionTitle}}</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="{{.LogoURL}}" alt="logo" class="logo">
-        </div>
-        <div class="content">
-            <h1 class="title">{{.Title}}</h1>
-            <div class="question">{{.Question}}</div>
-            <div class="description">{{.Content}}</div>
-            <div class="wechat-info">
-                <p>客服微信：<span class="wechat">{{.Wechat}}</span></p>
+    <div class="min-h-screen bg-gray-50 pb-20">
+        <!-- 问题头部 -->
+        <div class="bg-white p-4 shadow-sm mb-3">
+            <h1 class="text-xl font-bold text-gray-800 mb-3">{{.QuestionTitle}}</h1>
+            <div class="flex flex-wrap gap-2 mb-4">
+                {{range .QuestionTags}}
+                <span class="px-2 py-1 bg-green-50 text-green-600 rounded-md text-xs">{{.}}</span>
+                {{end}}
+            </div>
+            <div class="flex items-center">
+                <img src="{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base font-medium text-orange-500">{{.QuestionNickname}}</span>
+                        {{if .QuestionTitleName}}
+                        <span class="px-2 py-0.5 bg-red-500 text-white text-xs rounded">{{.QuestionTitleName}}</span>
+                        {{end}}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">{{.QuestionTimeAt}}</div>
+                </div>
             </div>
         </div>
+
+        <!-- 问题内容 -->
+        <div class="bg-white p-4 shadow-sm mb-3">
+            <div class="ql-editor-content">{{.QuestionContent}}</div>
+            <div class="text-center mt-5" id="showMoreBtn" style="display: none;">
+                <span class="text-blue-500 text-sm" onclick="toggleContent()">显示全部</span>
+            </div>
+        </div>
+
+        <!-- 回答列表 -->
+        <div class="space-y-3 px-2">
+            {{range .Answers}}
+            <div class="bg-white p-4 shadow-sm rounded">
+                <div class="flex items-center mb-3">
+                    <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-blue-500">昵称：{{.Nickname}}</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">时间：{{.TimeText}}</div>
+                    </div>
+                </div>
+                <div class="ql-editor-content mb-3 text-gray-700 leading-relaxed">{{.Content}}</div>
+
+                <!-- 回复列表 -->
+                {{range .Replies}}
+                <div class="bg-yellow-50 p-3 rounded mb-2">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar">
+                        <span class="text-green-600 font-medium text-sm">{{.Nickname}}</span>
+                    </div>
+                    <div class="ql-editor-content text-gray-700 ml-8 leading-relaxed text-sm">{{.Content}}</div>
+                </div>
+                {{end}}
+            </div>
+            {{end}}
+        </div>
+
         <!-- 插件插槽 -->
         <div id="plugin-copy"></div>
         <div id="plugin-bottom"></div>
