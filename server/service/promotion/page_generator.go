@@ -24,7 +24,7 @@ const (
 type Reply struct {
 	AvatarUrl string
 	Nickname  string
-	Content   string
+	Content   template.HTML
 }
 
 // Answer 回答结构
@@ -32,7 +32,7 @@ type Answer struct {
 	AvatarUrl string
 	Nickname  string
 	TimeText  string
-	Content   string
+	Content   template.HTML
 	Replies   []Reply
 }
 
@@ -44,7 +44,7 @@ type QaQuestion struct {
 	AvatarUrl string
 	TitleName string
 	TimeAt    string
-	Content   string
+	Content   template.HTML
 	Answers   []Answer
 }
 
@@ -69,7 +69,7 @@ type TemplateData struct {
 	QuestionNickname  string
 	QuestionTitleName string
 	QuestionTimeAt    string
-	QuestionContent   string
+	QuestionContent   template.HTML
 	Answers           []Answer
 }
 
@@ -136,6 +136,26 @@ func (g *PageGenerator) InjectPlugin(html string, selector string, pluginHTML st
 
 // BuildTemplateData 组装模板数据
 func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, question QaQuestion, isMobile bool) TemplateData {
+	// 处理回答和回复的富文本内容
+	processedAnswers := make([]Answer, 0, len(question.Answers))
+	for _, ans := range question.Answers {
+		processedReplies := make([]Reply, 0, len(ans.Replies))
+		for _, reply := range ans.Replies {
+			processedReplies = append(processedReplies, Reply{
+				AvatarUrl: reply.AvatarUrl,
+				Nickname:  reply.Nickname,
+				Content:   template.HTML(reply.Content),
+			})
+		}
+		processedAnswers = append(processedAnswers, Answer{
+			AvatarUrl: ans.AvatarUrl,
+			Nickname:  ans.Nickname,
+			TimeText:  ans.TimeText,
+			Content:   template.HTML(ans.Content),
+			Replies:   processedReplies,
+		})
+	}
+
 	data := TemplateData{
 		Title:             "专业咨询服务",
 		Question:          "您有什么问题需要咨询？",
@@ -154,8 +174,8 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		QuestionNickname:  question.Nickname,
 		QuestionTitleName: question.TitleName,
 		QuestionTimeAt:    question.TimeAt,
-		QuestionContent:   question.Content,
-		Answers:           question.Answers,
+		QuestionContent:   template.HTML(question.Content),
+		Answers:           processedAnswers,
 	}
 	if isMobile {
 		data.LogoURL = company.LogoMobileURL

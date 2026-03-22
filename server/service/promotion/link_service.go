@@ -1,6 +1,7 @@
 package promotion
 
 import (
+	"html/template"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -234,7 +235,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 				replies = append(replies, Reply{
 					AvatarUrl: qaReply.AvatarURL,
 					Nickname:  qaReply.Nickname,
-					Content:   qaReply.Content,
+					Content:   template.HTML(qaReply.Content),
 				})
 			}
 
@@ -243,7 +244,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 				AvatarUrl: qaAnswer.AvatarURL,
 				Nickname:  qaAnswer.Nickname,
 				TimeText:  qaAnswer.TimeText,
-				Content:   qaAnswer.Content,
+				Content:   template.HTML(qaAnswer.Content),
 				Replies:   replies,
 			})
 		}
@@ -256,7 +257,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			AvatarUrl: qaQuestion.AvatarURL,
 			TitleName: qaQuestion.TitleName,
 			TimeAt:    qaQuestion.TimeAt,
-			Content:   qaQuestion.Content,
+			Content:   template.HTML(qaQuestion.Content),
 			Answers:   answers,
 		}
 	} else {
@@ -267,7 +268,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			Nickname:  "官方客服",
 			AvatarUrl: "https://picsum.photos/100/100",
 			TimeAt:    time.Now().Format("2006-01-02 15:04"),
-			Content:   "我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。",
+			Content:   template.HTML("我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。"),
 			Answers:   []Answer{},
 		}
 	}
