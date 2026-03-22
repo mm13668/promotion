@@ -1,7 +1,6 @@
 package promotion
 
 import (
-	"fmt"
 	"html/template"
 	"math/rand"
 	"os"
@@ -12,6 +11,12 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 )
+
+// GroupMember 客服成员结构体
+type GroupMember struct {
+	Wechat string `json:"wechat"`
+	Mobile string `json:"mobile"`
+}
 
 type LinkService struct{}
 
@@ -274,7 +279,26 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		}
 	}
 
-	// 4. 查询模板和插件信息
+	// 4. 查询随机客服信息
+	var wechat, phone string = "kefu123", "400-123-4567"
+	if link.RegionID != nil && link.GroupID != nil {
+		var members []GroupMember
+		if err := global.GVA_DB.Table("group_member").Select("wechat, mobile").Where("region_id = ? AND group_id = ? AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
+			// 随机取一个客服
+			randomIndex := rand.Intn(len(members))
+			wechat = members[randomIndex].Wechat
+			phone = members[randomIndex].Mobile
+			// 处理空值
+			if wechat == "" {
+				wechat = "kefu123"
+			}
+			if phone == "" {
+				phone = "400-123-4567"
+			}
+		}
+	}
+
+	// 5. 查询模板和插件信息
 	var mobileTemplateName, pcTemplateName string
 	var copyPluginName, bottomPluginName, qrcodePluginName string
 
@@ -293,8 +317,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			pcTemplateName = widget.Name
 		}
 	}
-	fmt.Println("mobileTemplateName", mobileTemplateName)
-	fmt.Println("pcTemplateName", pcTemplateName)
 
 	// 查询微信复制插件
 	if basic.MobileCopyWidgetId != nil {
@@ -331,6 +353,9 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 	// 生成移动端页面
 	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
+	// 替换客服信息
+	mobileData.Wechat = wechat
+	mobileData.Phone = phone
 	mobilePlugins := map[string]string{
 		"copy":   copyPluginName,
 		"bottom": bottomPluginName,
@@ -341,6 +366,9 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	}
 	// 生成PC端页面
 	pcData := generator.BuildTemplateData(link, basic, company, question, false)
+	// 替换客服信息
+	pcData.Wechat = wechat
+	pcData.Phone = phone
 	pcPlugins := map[string]string{
 		"qrcode": qrcodePluginName,
 	}
