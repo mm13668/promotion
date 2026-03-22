@@ -297,7 +297,8 @@ body {
 <script>
 (function() {
     window.copyWechat = function() {
-        const wechat = "kefu123";
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat || "15099653940" || "kefu123";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 alert('微信复制成功，快去添加好友吧！');
@@ -367,11 +368,14 @@ body {
 <script>
 (function() {
     window.callPhone = function() {
-        window.location.href = "tel:400-123-4567";
+        // 多重容错取电话号码
+        const phone = window.currentService?.mobile || window.phone || "15099653940" || "400-123-4567";
+        window.location.href = "tel:" + phone;
     }
 
     window.copyWechat = function() {
-        const wechat = "kefu123";
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat || "15099653940" || "kefu123";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 alert('微信复制成功！');
@@ -381,6 +385,74 @@ body {
 })();
 </script>
     </div>
+    <script>
+        
+        (function() {
+            
+            let serviceList = [];
+            try {
+                
+                const serviceListStr = "[{\"wechat\":\"15099653940\",\"mobile\":\"15099653940\"},{\"wechat\":\"17801728054\",\"mobile\":\"17801728054\"}]" || "[]";
+                serviceList = JSON.parse(serviceListStr);
+            } catch (e) {
+                console.error('客服列表解析失败', e);
+                serviceList = [];
+            }
+            
+            let currentService = {
+                wechat: "15099653940" || "kefu123",
+                mobile: "15099653940" || "400-123-4567"
+            };
+
+            
+            if (Array.isArray(serviceList) && serviceList.length > 0) {
+                
+                serviceList = serviceList.filter(item => item && item.wechat);
+                if (serviceList.length > 0) {
+                    
+                    const savedService = localStorage.getItem('promotion_service_' + window.location.pathname);
+                    if (savedService) {
+                        try {
+                            const parsed = JSON.parse(savedService);
+                            if (parsed && parsed.wechat) {
+                                currentService = parsed;
+                            } else {
+                                
+                                currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                                localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                            }
+                        } catch (e) {
+                            
+                            currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                            localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                        }
+                    } else {
+                        
+                        currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                        localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                    }
+                }
+            }
+
+            
+            window.currentService = currentService;
+            
+            window.wechat = currentService.wechat;
+            window.phone = currentService.mobile;
+
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                
+                document.querySelectorAll('.wechat').forEach(el => {
+                    el.textContent = currentService.wechat;
+                });
+                
+                document.querySelectorAll('.phone').forEach(el => {
+                    el.textContent = currentService.mobile;
+                });
+            });
+        })();
+    </script>
     <script src="script.js"></script>
 <script>// 模板基础脚本
 let showAllContent = false;

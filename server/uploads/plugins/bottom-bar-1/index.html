@@ -45,11 +45,14 @@
 <script>
 (function() {
     window.callPhone = function() {
-        window.location.href = "tel:{{phone}}";
+        // 多重容错取电话号码
+        const phone = window.currentService?.mobile || window.phone || "{{phone}}" || "400-123-4567";
+        window.location.href = "tel:" + phone;
     }
 
     window.copyWechat = function() {
-        const wechat = "{{wechat}}";
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 alert('微信复制成功！');

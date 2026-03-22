@@ -36,7 +36,7 @@
 <script>
 (function() {
     window.copyWechat = function() {
-        const wechat = "{{wechat}}";
+        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 alert('微信复制成功，快去添加好友吧！');

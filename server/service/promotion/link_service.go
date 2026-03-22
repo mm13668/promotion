@@ -1,6 +1,7 @@
 package promotion
 
 import (
+	"encoding/json"
 	"html/template"
 	"math/rand"
 	"os"
@@ -279,15 +280,19 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		}
 	}
 
-	// 4. 查询随机客服信息
+	// 4. 查询所有客服信息，用于前端随机展示
 	var wechat, phone string = "kefu123", "400-123-4567"
+	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
 		if err := global.GVA_DB.Table("group_member").Select("wechat, mobile").Where("region_id = ? AND group_id = ? AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
-			// 随机取一个客服
-			randomIndex := rand.Intn(len(members))
-			wechat = members[randomIndex].Wechat
-			phone = members[randomIndex].Mobile
+			// 序列化所有客服为JSON字符串
+			if jsonBytes, err := json.Marshal(members); err == nil {
+				serviceListJSON = string(jsonBytes)
+			}
+			// 默认取第一个作为fallback
+			wechat = members[0].Wechat
+			phone = members[0].Mobile
 			// 处理空值
 			if wechat == "" {
 				wechat = "kefu123"
@@ -356,6 +361,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 替换客服信息
 	mobileData.Wechat = wechat
 	mobileData.Phone = phone
+	mobileData.ServiceListJSON = serviceListJSON
 	mobilePlugins := map[string]string{
 		"copy":   copyPluginName,
 		"bottom": bottomPluginName,
@@ -369,6 +375,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 替换客服信息
 	pcData.Wechat = wechat
 	pcData.Phone = phone
+	pcData.ServiceListJSON = serviceListJSON
 	pcPlugins := map[string]string{
 		"qrcode": qrcodePluginName,
 	}

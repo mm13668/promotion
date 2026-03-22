@@ -53,10 +53,20 @@
 <script>
 (function() {
     window.copyWechat = function() {
-        const wechat = "{{wechat}}";
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
         navigator.clipboard.writeText(wechat).then(function() {
             alert('微信复制成功！');
         });
     }
+
+    // 页面加载完成后替换微信显示
+    document.addEventListener('DOMContentLoaded', function() {
+        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
+        const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
+        if (wechatEl) {
+            wechatEl.textContent = wechat;
+        }
+    });
 })();
 </script>

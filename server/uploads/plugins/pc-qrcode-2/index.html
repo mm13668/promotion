@@ -53,7 +53,7 @@
 <script>
 (function() {
     window.copyWechat = function() {
-        const wechat = "{{wechat}}";
+        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
         navigator.clipboard.writeText(wechat).then(function() {
             alert('微信复制成功！');
         });

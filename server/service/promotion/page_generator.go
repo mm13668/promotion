@@ -50,12 +50,13 @@ type QaQuestion struct {
 
 // TemplateData 模板渲染数据
 type TemplateData struct {
-	//Title             string
-	//Question          string
-	//Content           string
+	Title             string
+	Question          string
+	Content           string
 	Nickname          string
 	Wechat            string
 	Phone             string
+	ServiceListJSON   string
 	LogoURL           string
 	CompanyName       string
 	IcpRecordNo       string
