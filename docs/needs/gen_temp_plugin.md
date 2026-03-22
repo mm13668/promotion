@@ -21,7 +21,7 @@ func (s *LinkService) PublishPromotionLink(
 	link.PcUrl = "/p/{{随机编号}}/pc/" + string(rune(linkId))
 	这个随机编号也需要保存在表 promotion_link 里面
 ```
-##客服昵称##
+##客服昵称## 替换为 大熊 13144424688
 
 # 模版
 ## 模板目录结构

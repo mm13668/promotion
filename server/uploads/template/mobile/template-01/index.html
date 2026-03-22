@@ -32,7 +32,7 @@
 
         <!-- 问题内容 -->
         <div class="bg-white p-4 shadow-sm mb-3">
-            <div class="ql-editor-content">{{.QuestionContent}}</div>
+                    <div class="ql-editor-content" id="questionContent">{{.QuestionContent}}</div>
             <div class="text-center mt-5" id="showMoreBtn" style="display: none;">
                 <span class="text-blue-500 text-sm" onclick="toggleContent()">显示全部</span>
             </div>
@@ -86,6 +86,7 @@
             }
             // 默认客服
             let currentService = {
+                nickname: "",
                 wechat: "{{.Wechat}}" || "kefu123",
                 mobile: "{{.Phone}}" || "400-123-4567"
             };
@@ -126,8 +127,48 @@
             window.wechat = currentService.wechat;
             window.phone = currentService.mobile;
 
+            // 全局复制微信方法
+            window.copyWechatGlobal = function(wechat) {
+                const copyWechat = wechat || window.currentService.wechat;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(copyWechat).then(function() {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }).catch(function() {
+                        const input = document.createElement('input');
+                        input.value = copyWechat;
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(input);
+                        alert('微信复制成功，快去添加好友吧！');
+                    });
+                } else {
+                    const input = document.createElement('input');
+                    input.value = copyWechat;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    alert('微信复制成功，快去添加好友吧！');
+                }
+            }
+
             // 页面加载完成后替换所有微信和电话显示
             document.addEventListener('DOMContentLoaded', function() {
+                // 替换模板中的##客服昵称##为可点击的客服昵称+微信
+                const contentEls = document.querySelectorAll('.ql-editor-content');
+                contentEls.forEach(el => {
+                    let html = el.innerHTML;
+                    // 替换所有##客服昵称##为带点击事件的客服信息
+                    let displayText = currentService.wechat;
+                    if (currentService.nickname) {
+                        displayText = `${currentService.nickname}（微信：${currentService.wechat}）`;
+                    }
+                    const wechatHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${displayText}</span>`;
+                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    el.innerHTML = html;
+                });
+
                 // 替换页面上所有微信显示
                 document.querySelectorAll('.wechat').forEach(el => {
                     el.textContent = currentService.wechat;

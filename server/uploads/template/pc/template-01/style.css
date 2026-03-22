@@ -301,3 +301,12 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
+.wechat-clickable {
+    color: #07c160;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.wechat-clickable:hover {
+    color: #06ad56;
+}

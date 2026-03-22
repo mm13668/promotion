@@ -215,7 +215,7 @@ body {
 
         
         <div class="bg-white p-4 shadow-sm mb-3">
-            <div class="ql-editor-content"><p style="text-align: left;">准备广西北海玩几天，计划5-6天行程怎么安排比较好？北海有哪些经典必去景点？大概要花多少钱？现在去 怎么玩好？哪些景点需要提前预订门票？北海住宿有推荐的吗？有没有近期去 北海涠洲 旅游的人解答我的疑问，谢谢！</p><p style="text-align: left;"><br></p><hr/><p style="text-indent: 2em; text-align: left;"><br></p><p style="text-indent: 2em; text-align: left;">计划去北海涠洲旅游5天，我打算带上我一家人去玩玩，问下去玩几天比较合适，请问去过得要怎么样玩比较省心省钱少走弯路？有哪些注意事项防止被坑？好点得景点和路线推荐下，如何才能够轻松自在，不操心？还有我要兼顾老人小孩，不想出什么差错，所以想考虑周全些，有能回答我的朋友十分感谢！</p><p><img src="/api/uploads/file/3755522c7727bbb58137af545608f72c_20260322133417.webp" alt="game_banner.webp" data-href="" style=""/></p></div>
+                    <div class="ql-editor-content" id="questionContent"><p style="text-align: left;">##客服昵称##准备广西北海玩几天，计划5-6天行程怎么安排比较好？北海有哪些经典必去景点？大概要花多少钱？现在去 怎么玩好？哪些景点需要提前预订门票？北海住宿有推荐的吗？有没有近期去 北海涠洲 旅游的人解答我的疑问，谢谢！</p><p style="text-align: left;"><br></p><hr/><p style="text-indent: 2em; text-align: left;"><br></p><p style="text-indent: 2em; text-align: left;">计划去北海涠洲旅游5天，我打算带上我一家人去玩玩，问下去玩几天比较合适，请问去过得要怎么样玩比较省心省钱少走弯路？有哪些注意事项防止被坑？好点得景点和路线推荐下，如何才能够轻松自在，不操心？还有我要兼顾老人小孩，不想出什么差错，所以想考虑周全些，有能回答我的朋友十分感谢！</p><p><img src="/api/uploads/file/3755522c7727bbb58137af545608f72c_20260322133417.webp" alt="game_banner.webp" data-href="" style=""/></p></div>
             <div class="text-center mt-5" id="showMoreBtn" style="display: none;">
                 <span class="text-blue-500 text-sm" onclick="toggleContent()">显示全部</span>
             </div>
@@ -392,7 +392,7 @@ body {
             let serviceList = [];
             try {
                 
-                const serviceListStr = "[{\"wechat\":\"15099653940\",\"mobile\":\"15099653940\"},{\"wechat\":\"17801728054\",\"mobile\":\"17801728054\"}]" || "[]";
+                const serviceListStr = "[{\"nickname\":\"浅浅\",\"wechat\":\"15099653940\",\"mobile\":\"15099653940\"},{\"nickname\":\"阿木\",\"wechat\":\"17801728054\",\"mobile\":\"17801728054\"}]" || "[]";
                 serviceList = JSON.parse(serviceListStr);
             } catch (e) {
                 console.error('客服列表解析失败', e);
@@ -400,6 +400,7 @@ body {
             }
             
             let currentService = {
+                nickname: "",
                 wechat: "15099653940" || "kefu123",
                 mobile: "15099653940" || "400-123-4567"
             };
@@ -441,7 +442,47 @@ body {
             window.phone = currentService.mobile;
 
             
+            window.copyWechatGlobal = function(wechat) {
+                const copyWechat = wechat || window.currentService.wechat;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(copyWechat).then(function() {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }).catch(function() {
+                        const input = document.createElement('input');
+                        input.value = copyWechat;
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(input);
+                        alert('微信复制成功，快去添加好友吧！');
+                    });
+                } else {
+                    const input = document.createElement('input');
+                    input.value = copyWechat;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    alert('微信复制成功，快去添加好友吧！');
+                }
+            }
+
+            
             document.addEventListener('DOMContentLoaded', function() {
+                
+                const contentEls = document.querySelectorAll('.ql-editor-content');
+                contentEls.forEach(el => {
+                    let html = el.innerHTML;
+                    
+                    let displayText = currentService.wechat;
+                    if (currentService.nickname) {
+                        displayText = `${currentService.nickname}（微信：${currentService.wechat}）`;
+                    }
+                    const wechatHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${displayText}</span>`;
+                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    el.innerHTML = html;
+                });
+
                 
                 document.querySelectorAll('.wechat').forEach(el => {
                     el.textContent = currentService.wechat;
