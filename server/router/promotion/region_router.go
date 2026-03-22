@@ -46,6 +46,34 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.DELETE("deleteQAReply", promoApi.QAApi.DeleteReply)
 		group.GET("getQAReplyList", promoApi.QAApi.GetReplyList)
 
+		// 头像昵称管理
+		group.POST("createQAAvatarNickname", promoApi.QAApi.CreateAvatarNickname)
+		group.PUT("updateQAAvatarNickname", promoApi.QAApi.UpdateAvatarNickname)
+		group.DELETE("deleteQAAvatarNickname", promoApi.QAApi.DeleteAvatarNickname)
+		group.GET("getQAAvatarNicknameList", promoApi.QAApi.GetAvatarNicknameList)
+		group.GET("getAllEnabledQAAvatarNickname", promoApi.QAApi.GetAllEnabledAvatarNickname)
+
+		// 称号管理
+		group.POST("createQATitle", promoApi.QAApi.CreateTitle)
+		group.PUT("updateQATitle", promoApi.QAApi.UpdateTitle)
+		group.DELETE("deleteQATitle", promoApi.QAApi.DeleteTitle)
+		group.GET("getQATitleList", promoApi.QAApi.GetTitleList)
+		group.GET("getAllEnabledQATitle", promoApi.QAApi.GetAllEnabledTitle)
+
+		// 个性签名管理
+		group.POST("createQASignature", promoApi.QAApi.CreateSignature)
+		group.PUT("updateQASignature", promoApi.QAApi.UpdateSignature)
+		group.DELETE("deleteQASignature", promoApi.QAApi.DeleteSignature)
+		group.GET("getQASignatureList", promoApi.QAApi.GetSignatureList)
+		group.GET("getAllEnabledQASignature", promoApi.QAApi.GetAllEnabledSignature)
+
+		// 标签管理
+		group.POST("createQATag", promoApi.QAApi.CreateTag)
+		group.PUT("updateQATag", promoApi.QAApi.UpdateTag)
+		group.DELETE("deleteQATag", promoApi.QAApi.DeleteTag)
+		group.GET("getQATagList", promoApi.QAApi.GetTagList)
+		group.GET("getAllEnabledQATag", promoApi.QAApi.GetAllEnabledTag)
+
 		group.POST("createAdPlatform", promoApi.AdApi.CreatePlatform)
 		group.PUT("updateAdPlatform", promoApi.AdApi.UpdatePlatform)
 		group.DELETE("deleteAdPlatform", promoApi.AdApi.DeletePlatform)

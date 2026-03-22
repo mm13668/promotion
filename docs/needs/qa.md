@@ -1,5 +1,5 @@
 # 需求
-问题管理页面 /Users/wangjingjun/work/promotion/web/src/view/qa/question/index.vue
+根据问题管理页面 /Users/wangjingjun/work/promotion/web/src/view/qa/question/index.vue 需要编辑的字段，帮我重新设计sql表，并实现前后端的逻辑
 
 新增菜单：
 - 头像昵称管理
@@ -87,3 +87,7 @@ const loadBasicOptions = async () => {
 }
 loadBasicOptions()
 ```
+
+## 设计相应的表，放在 /Users/wangjingjun/work/promotion/docs/plan/qa_management_schema.sql 之前的sql可以直接覆盖
+
+## 最后告诉我需要新增的菜单，和其他注意事项

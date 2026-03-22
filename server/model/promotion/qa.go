@@ -81,3 +81,48 @@ type QAReply struct {
 func (QAReply) TableName() string {
 	return "qa_reply"
 }
+
+type QAAvatarNickname struct {
+	global.GVA_MODEL
+	AvatarURL string `json:"avatarUrl" gorm:"type:varchar(255)"`
+	Nickname  string `json:"nickname" gorm:"type:varchar(50)"`
+	Sort      int    `json:"sort" gorm:"index:idx_sort"`
+	Status    uint8  `json:"status" gorm:"index:idx_status;default:1"`
+}
+
+func (QAAvatarNickname) TableName() string {
+	return "qa_avatar_nickname"
+}
+
+type QATitle struct {
+	global.GVA_MODEL
+	Name   string `json:"name" gorm:"type:varchar(50);uniqueIndex:uk_name"`
+	Sort   int    `json:"sort" gorm:"index:idx_sort"`
+	Status uint8  `json:"status" gorm:"index:idx_status;default:1"`
+}
+
+func (QATitle) TableName() string {
+	return "qa_title"
+}
+
+type QASignature struct {
+	global.GVA_MODEL
+	Content string `json:"content" gorm:"type:varchar(255);uniqueIndex:uk_content"`
+	Sort    int    `json:"sort" gorm:"index:idx_sort"`
+	Status  uint8  `json:"status" gorm:"index:idx_status;default:1"`
+}
+
+func (QASignature) TableName() string {
+	return "qa_signature"
+}
+
+type QATag struct {
+	global.GVA_MODEL
+	Name   string `json:"name" gorm:"type:varchar(50);uniqueIndex:uk_name"`
+	Sort   int    `json:"sort" gorm:"index:idx_sort"`
+	Status uint8  `json:"status" gorm:"index:idx_status;default:1"`
+}
+
+func (QATag) TableName() string {
+	return "qa_tag"
+}

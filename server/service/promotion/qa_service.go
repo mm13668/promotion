@@ -86,3 +86,126 @@ func (s *QAService) GetReplyList(info request.PageInfo) (list []promotion.QARepl
 	return
 }
 
+// 头像昵称管理
+func (s *QAService) CreateAvatarNickname(e promotion.QAAvatarNickname) error {
+	return global.GVA_DB.Create(&e).Error
+}
+func (s *QAService) UpdateAvatarNickname(e *promotion.QAAvatarNickname) error {
+	return global.GVA_DB.Save(e).Error
+}
+func (s *QAService) DeleteAvatarNickname(e promotion.QAAvatarNickname) error {
+	return global.GVA_DB.Delete(&e).Error
+}
+func (s *QAService) FindAvatarNickname(id uint) (promotion.QAAvatarNickname, error) {
+	var data promotion.QAAvatarNickname
+	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
+	return data, err
+}
+func (s *QAService) GetAvatarNicknameList(info request.PageInfo) (list []promotion.QAAvatarNickname, total int64, err error) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := global.GVA_DB.Model(&promotion.QAAvatarNickname{})
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	return
+}
+func (s *QAService) GetAllEnabledAvatarNickname() (list []promotion.QAAvatarNickname, err error) {
+	err = global.GVA_DB.Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	return
+}
+
+// 称号管理
+func (s *QAService) CreateTitle(e promotion.QATitle) error {
+	return global.GVA_DB.Create(&e).Error
+}
+func (s *QAService) UpdateTitle(e *promotion.QATitle) error {
+	return global.GVA_DB.Save(e).Error
+}
+func (s *QAService) DeleteTitle(e promotion.QATitle) error {
+	return global.GVA_DB.Delete(&e).Error
+}
+func (s *QAService) FindTitle(id uint) (promotion.QATitle, error) {
+	var data promotion.QATitle
+	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
+	return data, err
+}
+func (s *QAService) GetTitleList(info request.PageInfo) (list []promotion.QATitle, total int64, err error) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := global.GVA_DB.Model(&promotion.QATitle{})
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	return
+}
+func (s *QAService) GetAllEnabledTitle() (list []promotion.QATitle, err error) {
+	err = global.GVA_DB.Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	return
+}
+
+// 个性签名管理
+func (s *QAService) CreateSignature(e promotion.QASignature) error {
+	return global.GVA_DB.Create(&e).Error
+}
+func (s *QAService) UpdateSignature(e *promotion.QASignature) error {
+	return global.GVA_DB.Save(e).Error
+}
+func (s *QAService) DeleteSignature(e promotion.QASignature) error {
+	return global.GVA_DB.Delete(&e).Error
+}
+func (s *QAService) FindSignature(id uint) (promotion.QASignature, error) {
+	var data promotion.QASignature
+	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
+	return data, err
+}
+func (s *QAService) GetSignatureList(info request.PageInfo) (list []promotion.QASignature, total int64, err error) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := global.GVA_DB.Model(&promotion.QASignature{})
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	return
+}
+func (s *QAService) GetAllEnabledSignature() (list []promotion.QASignature, err error) {
+	err = global.GVA_DB.Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	return
+}
+
+// 标签管理
+func (s *QAService) CreateTag(e promotion.QATag) error {
+	return global.GVA_DB.Create(&e).Error
+}
+func (s *QAService) UpdateTag(e *promotion.QATag) error {
+	return global.GVA_DB.Save(e).Error
+}
+func (s *QAService) DeleteTag(e promotion.QATag) error {
+	return global.GVA_DB.Delete(&e).Error
+}
+func (s *QAService) FindTag(id uint) (promotion.QATag, error) {
+	var data promotion.QATag
+	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
+	return data, err
+}
+func (s *QAService) GetTagList(info request.PageInfo) (list []promotion.QATag, total int64, err error) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	db := global.GVA_DB.Model(&promotion.QATag{})
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	return
+}
+func (s *QAService) GetAllEnabledTag() (list []promotion.QATag, err error) {
+	err = global.GVA_DB.Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	return
+}

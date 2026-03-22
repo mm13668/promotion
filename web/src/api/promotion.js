@@ -259,3 +259,31 @@ export const createActivityData = (data) => service({ url: '/promotion/createAct
 export const updateActivityData = (data) => service({ url: '/promotion/updateActivityData', method: 'put', data })
 export const deleteActivityData = (data) => service({ url: '/promotion/deleteActivityData', method: 'delete', data })
 export const getActivityDataList = (params) => service({ url: '/promotion/getActivityDataList', method: 'get', params })
+
+// QA头像昵称管理
+export const createQAAvatarNickname = (data) => service({ url: '/promotion/createQAAvatarNickname', method: 'post', data })
+export const updateQAAvatarNickname = (data) => service({ url: '/promotion/updateQAAvatarNickname', method: 'put', data })
+export const deleteQAAvatarNickname = (data) => service({ url: '/promotion/deleteQAAvatarNickname', method: 'delete', data })
+export const getQAAvatarNicknameList = (params) => service({ url: '/promotion/getQAAvatarNicknameList', method: 'get', params })
+export const getAllEnabledQAAvatarNickname = (params) => service({ url: '/promotion/getAllEnabledQAAvatarNickname', method: 'get', params })
+
+// QA称号管理
+export const createQATitle = (data) => service({ url: '/promotion/createQATitle', method: 'post', data })
+export const updateQATitle = (data) => service({ url: '/promotion/updateQATitle', method: 'put', data })
+export const deleteQATitle = (data) => service({ url: '/promotion/deleteQATitle', method: 'delete', data })
+export const getQATitleList = (params) => service({ url: '/promotion/getQATitleList', method: 'get', params })
+export const getAllEnabledQATitle = (params) => service({ url: '/promotion/getAllEnabledQATitle', method: 'get', params })
+
+// QA个性签名管理
+export const createQASignature = (data) => service({ url: '/promotion/createQASignature', method: 'post', data })
+export const updateQASignature = (data) => service({ url: '/promotion/updateQASignature', method: 'put', data })
+export const deleteQASignature = (data) => service({ url: '/promotion/deleteQASignature', method: 'delete', data })
+export const getQASignatureList = (params) => service({ url: '/promotion/getQASignatureList', method: 'get', params })
+export const getAllEnabledQASignature = (params) => service({ url: '/promotion/getAllEnabledQASignature', method: 'get', params })
+
+// QA标签管理
+export const createQATag = (data) => service({ url: '/promotion/createQATag', method: 'post', data })
+export const updateQATag = (data) => service({ url: '/promotion/updateQATag', method: 'put', data })
+export const deleteQATag = (data) => service({ url: '/promotion/deleteQATag', method: 'delete', data })
+export const getQATagList = (params) => service({ url: '/promotion/getQATagList', method: 'get', params })
+export const getAllEnabledQATag = (params) => service({ url: '/promotion/getAllEnabledQATag', method: 'get', params })
