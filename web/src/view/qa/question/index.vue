@@ -7,6 +7,9 @@
             <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
           </el-select>
         </el-form-item>
+        <el-form-item label="标题">
+          <el-input v-model="search.title" clearable placeholder="请输入标题关键词" style="width: 250px" />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
           <el-button type="primary" icon="search" @click="getTableData()">查询</el-button>
@@ -351,7 +354,7 @@ const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
-const search = ref({  regionId: null})
+const search = ref({ regionId: null, title: '' })
 const regionOptions = ref([])
 const avatarNicknameOptions = ref([])
 const titleOptions = ref([])
@@ -362,6 +365,7 @@ const tagOptions = ref([])
 const getTableData = async () => {
   let params = { page: page.value, pageSize: pageSize.value }
   if (search.value.regionId) params.regionId = search.value.regionId
+  if (search.value.title) params.title = search.value.title
   const res = await getQAQuestionList(params)
   if (res.code === 0) { 
     tableData.value = res.data.list; 

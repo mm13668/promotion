@@ -57,17 +57,29 @@ func (a *QAApi) DeleteQuestion(c *gin.Context) {
 	}
 	response.OkWithMessage("删除成功", c)
 }
+
+type QAQuestionSearch struct {
+	request.PageInfo
+	RegionID *uint  `form:"regionId"`
+	Title    string `form:"title"`
+}
+
 func (a *QAApi) GetQuestionList(c *gin.Context) {
-	var pageInfo request.PageInfo
+	var pageInfo QAQuestionSearch
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(pageInfo.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetQuestionList(pageInfo)
+	list, total, err := qaService.GetQuestionList(promotion.QAQuestionSearch{
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+		RegionID: pageInfo.RegionID,
+		Title:    pageInfo.Title,
+	})
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return

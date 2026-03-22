@@ -122,3 +122,10 @@ type QATag struct {
 func (QATag) TableName() string {
 	return "qa_tag"
 }
+
+type QAQuestionSearch struct {
+	Page     int    `json:"page" form:"page"`
+	PageSize int    `json:"pageSize" form:"pageSize"`
+	RegionID *uint  `json:"regionId" form:"regionId"`
+	Title    string `json:"title" form:"title"`
+}

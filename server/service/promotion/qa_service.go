@@ -22,10 +22,17 @@ func (s *QAService) FindQuestion(id uint) (promotion.QAQuestion, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetQuestionList(info request.PageInfo) (list []promotion.QAQuestion, total int64, err error) {
+
+func (s *QAService) GetQuestionList(info promotion.QAQuestionSearch) (list []promotion.QAQuestion, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QAQuestion{})
+	if info.RegionID != nil {
+		db = db.Where("region_id = ?", *info.RegionID)
+	}
+	if info.Title != "" {
+		db = db.Where("title LIKE ?", "%"+info.Title+"%")
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
