@@ -17,7 +17,7 @@
                 {{end}}
             </div>
             <div class="flex items-center">
-                <img src="{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar">
+                <img src="{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                 <div class="flex-1">
                     <div class="flex items-center gap-2">
                         <span class="text-base font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -50,7 +50,7 @@
             {{range .Answers}}
             <div class="bg-white p-4 shadow-sm rounded">
                 <div class="flex items-center mb-3">
-                    <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar">
+                    <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                     <div class="flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-medium text-blue-500">昵称：{{.Nickname}}</span>
@@ -65,18 +65,27 @@
                     </div>
                 </div>
                 <div class="ql-editor-content mb-3 text-gray-700 leading-relaxed">{{.Content}}</div>
-                <!-- 回答统计 -->
-                <div class="answer-stats text-xs text-gray-500 flex gap-4 justify-end mb-4">
-                    <span class="stat-item" onclick="addCount(this)">点赞 {{.LikeCount}}</span>
-                    <span class="stat-item">关注 {{.FollowCount}}</span>
-                    <span class="stat-item">收藏 {{.FavoriteCount}}</span>
-                </div>
+                 <!-- 回答统计 -->
+                 <div class="answer-stats text-xs text-gray-500 flex gap-4 justify-end mb-4">
+                     <span class="stat-item" onclick="addCount(this)">点赞 {{.LikeCount}}</span>
+                     <span class="stat-item">关注 {{.FollowCount}}</span>
+                     <span class="stat-item">收藏 {{.FavoriteCount}}</span>
+                     <span class="stat-item" onclick="showReplyInput(this)">回复</span>
+                 </div>
+                 
+                 <!-- 回复输入框，默认隐藏 -->
+                 <div class="reply-input-wrap mb-4 hidden">
+                     <textarea class="w-full p-3 border border-gray-300 rounded mb-3 resize-none" rows="3" placeholder="请输入回复内容..."></textarea>
+                     <div class="flex justify-end">
+                         <button onclick="publishReply(this)">发布回复</button>
+                     </div>
+                 </div>
 
                 <!-- 回复列表 -->
                 {{range .Replies}}
                 <div class="bg-yellow-50 p-3 rounded mb-2">
                     <div class="flex items-center gap-2 mb-2 flex-wrap">
-                        <img src="{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar">
+                        <img src="{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                         <span class="text-green-600 font-medium text-sm">{{.Nickname}}</span>
                         {{if .TitleName}}
                         <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -102,6 +111,7 @@
         <div id="plugin-copy"></div>
         <div id="plugin-bottom"></div>
     </div>
+
     <script>
         // 客服随机选择与本地存储逻辑
         (function() {
@@ -118,8 +128,8 @@
             // 默认客服
             let currentService = {
                 nickname: "",
-                wechat: "",
-                mobile: ""
+                wechat: "kefu123",
+                mobile: "400-123-4567"
             };
 
             // 如果有客服列表，处理随机选择
@@ -157,7 +167,7 @@
 
             // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
-                const copyWechat = wechat || window.currentService?.wechat;
+                const copyWechat = wechat || window.currentService?.wechat || window.wechat || "kefu123";
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         // 调用插件的全局弹窗方法
@@ -225,6 +235,21 @@
             });
         })();
     </script>
+    <!-- 登录模态框（用于登录/注册） -->
+    <div class="login-modal hidden" id="loginModal" aria-label="登录模态框" role="dialog" aria-hidden="true">
+        <div class="modal-panel" style="width: 90%; max-width: 420px; background:#fff; padding:16px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong>登录/注册</strong>
+                <button onclick="closeLoginModal()" aria-label="关闭" style="border:none;background:transparent;font-size:18px;cursor:pointer;">✖</button>
+            </div>
+            <input id="loginPhone" type="text" placeholder="手机号" aria-label="手机号" style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:6px; margin-bottom:8px;">
+            <input id="loginPwd" type="password" placeholder="密码" aria-label="密码" style="width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:6px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button onclick="handleRegister()" style="padding:8px 12px; border-radius:6px; background:#f3f4f6; border:1px solid #e5e7eb;">注册</button>
+                <button onclick="handleLogin()" style="padding:8px 12px; border-radius:6px; background:#3b82f6; color:#fff; border:0;">登录</button>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

@@ -183,4 +183,169 @@ body {
 
 .stat-item {
     padding-right: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.stat-item:active {
+    opacity: 0.7;
+}
+
+/* 回复输入框样式 */
+.reply-input-wrap {
+    position: relative;
+    width: 100%;
+}
+.reply-input-wrap textarea {
+    width: 100% !important;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px 8px 0 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    outline: none;
+    -webkit-appearance: none;
+    resize: none;
+    min-height: 100px;
+    padding-bottom: 50px;
+}
+.reply-input-wrap textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.reply-input-wrap .flex {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.reply-input-wrap button {
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0 0 8px 0;
+    -webkit-appearance: none;
+    background-color: #3b82f6;
+    color: #fff;
+    padding: 10px 24px;
+    min-width: 90px;
+}
+.reply-input-wrap button:active {
+    transform: scale(0.98);
+    background-color: #2563eb;
+}
+
+/* 登录弹窗样式 */
+.login-modal {
+    animation: fadeIn 0.3s ease;
+}
+.login-modal > div {
+    animation: slideUp 0.3s ease;
+}
+.login-modal input {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+    -webkit-appearance: none;
+}
+.login-modal input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.login-modal button {
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    -webkit-appearance: none;
+}
+.login-modal button:active {
+    transform: scale(0.98);
+}
+.login-modal button:first-child {
+    background-color: #f3f4f6;
+}
+.login-modal button:first-child:active {
+    background-color: #e5e7eb;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Toast 提示 */
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 14px;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+.toast.success {
+    background-color: rgba(16, 185, 129, 0.9);
+}
+.toast.error {
+    background-color: rgba(239, 68, 68, 0.9);
+}
+.toast.warning {
+    background-color: rgba(245, 158, 11, 0.9);
+}
+
+/* 登录模态框美化 */
+.login-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.login-modal .modal-panel {
+    width: 90%; max-width: 420px;
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.25);
+}
+.login-modal input {
+    width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;
+}
+.login-modal .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; }
+
+/* Loading 状态 */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

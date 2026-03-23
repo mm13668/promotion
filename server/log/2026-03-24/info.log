@@ -1,0 +1,12 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:01:26.719	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:01:44.027	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:01:44.029	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:01:44.042	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:05:38.166	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:05:45.206	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:05:45.209	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:05:45.218	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:07:22.342	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:07:34.508	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:07:34.509	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-24 00:07:34.525	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success

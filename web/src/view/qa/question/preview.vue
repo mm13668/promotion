@@ -49,11 +49,25 @@
             <div class="text-sm text-gray-500 mt-1">时间：{{ answer.timeText }}</div>
           </div>
           <div class="flex gap-2">
-            <el-button type="text" size="small" class="text-blue-500">回复</el-button>
+            <el-button type="text" size="small" class="text-blue-500" @click="toggleReplyInput(answer.ID)">回复</el-button>
             <el-button type="text" size="small" icon="ArrowDown" />
           </div>
         </div>
         <div class="ql-editor-content mb-4 text-gray-700 leading-relaxed" v-html="answer.content"></div>
+
+        <!-- 回复输入框 -->
+        <div v-if="showReplyInput === answer.ID" class="mb-4">
+          <el-input
+            v-model="replyContent"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入回复内容"
+            class="w-full mb-2"
+          />
+          <div class="flex justify-end">
+            <el-button type="primary" size="small" @click="submitReply">发布回复</el-button>
+          </div>
+        </div>
 
         <!-- 回复列表 -->
         <div v-for="reply in answer.replies" :key="reply.ID" class="bg-yellow-50 p-4 rounded mb-2">
@@ -67,12 +81,29 @@
         </div>
       </div>
     </div>
+
+    <!-- 登录模态框 -->
+    <el-dialog v-model="showLoginDialog" title="请先登录" width="400px" center>
+      <el-form :model="loginForm" label-width="80px">
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="loginForm.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showLoginDialog = false">取消</el-button>
+        <el-button type="primary" @click="handleLogin">登录/注册</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { getQAQuestionDetail } from '@/api/promotion'
 import {getBaseUrl} from "@/utils/format.js";
 
@@ -89,6 +120,16 @@ const question = ref({
 const answers = ref([])
 const showAllContent = ref(false)
 const contentOverflow = ref(false)
+// 回复相关
+const showReplyInput = ref(null) // 存储当前显示回复框的回答ID
+const replyContent = ref('')
+const currentReplyAnswerId = ref(null)
+// 登录相关
+const showLoginDialog = ref(false)
+const loginForm = ref({
+  phone: '',
+  password: ''
+})
 
 const loadData = async () => {
   const questionId = route.params.id
@@ -110,6 +151,43 @@ const checkContentOverflow = () => {
     const maxHeight = lineHeight * 5
     contentOverflow.value = el.scrollHeight > maxHeight
   }
+}
+
+// 切换回复输入框显示
+const toggleReplyInput = (answerId) => {
+  if (showReplyInput.value === answerId) {
+    showReplyInput.value = null
+    replyContent.value = ''
+  } else {
+    showReplyInput.value = answerId
+    currentReplyAnswerId.value = answerId
+    replyContent.value = ''
+  }
+}
+
+// 提交回复
+const submitReply = () => {
+  if (!replyContent.value.trim()) {
+    ElMessage.warning('请输入回复内容')
+    return
+  }
+  // 弹出登录模态框
+  showLoginDialog.value = true
+}
+
+// 登录/注册
+const handleLogin = () => {
+  if (!loginForm.value.phone || !loginForm.value.password) {
+    ElMessage.warning('请填写手机号和密码')
+    return
+  }
+  // 这里后续可以对接实际登录接口
+  ElMessage.success('登录成功')
+  showLoginDialog.value = false
+  // 登录成功后可以继续处理回复提交逻辑
+  // 清空回复框
+  showReplyInput.value = null
+  replyContent.value = ''
 }
 
 onMounted(() => {

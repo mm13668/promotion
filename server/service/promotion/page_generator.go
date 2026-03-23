@@ -38,7 +38,7 @@ type Answer struct {
 	AvatarUrl     string
 	Nickname      string
 	TitleName     string // 回复者称号
-	Level         *int   // 等级（为空时隐藏）
+	Level         int    // 等级（为空时隐藏）
 	TimeText      string
 	Content       template.HTML
 	FollowCount   int // 关注数
@@ -163,6 +163,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 				FollowCount:   reply.FollowCount,
 				FavoriteCount: reply.FavoriteCount,
 				LikeCount:     reply.LikeCount,
+				Level:         reply.Level,
 			})
 		}
 		processedAnswers = append(processedAnswers, Answer{
@@ -174,6 +175,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 			FavoriteCount: ans.FavoriteCount,
 			LikeCount:     ans.LikeCount,
 			Replies:       processedReplies,
+			Level:         ans.Level,
 		})
 	}
 

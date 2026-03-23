@@ -29,7 +29,7 @@
                             {{end}}
                         </div>
                         <div class="flex items-center mb-6">
-                            <img src="{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar">
+                            <img src="{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-lg font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -59,7 +59,7 @@
                         {{range .Answers}}
                         <div class="bg-white p-6 rounded-lg shadow-sm">
                             <div class="flex items-center mb-4">
-                                <img src="{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar">
+                                <img src="{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="text-base font-medium text-blue-500">{{.Nickname}}</span>
@@ -79,13 +79,22 @@
                                 <button class="stat-btn px-3 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="addCount(this)">点赞 {{.LikeCount}}</button>
                                 <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">关注 {{.FollowCount}}</span>
                                 <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">收藏 {{.FavoriteCount}}</span>
+                                <button class="stat-btn px-3 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="showReplyInput(this)">回复</button>
+                            </div>
+                            
+                            <!-- 回复输入框，默认隐藏 -->
+                            <div class="reply-input-wrap ml-14 mb-4 hidden">
+                                <textarea class="w-full p-3 border border-gray-300 rounded mb-3 resize-none" rows="4" placeholder="请输入回复内容..."></textarea>
+                                <div class="flex justify-end">
+                                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="publishReply(this)">发布回复</button>
+                                </div>
                             </div>
 
                             <!-- 回复列表 -->
                             {{range .Replies}}
                             <div class="bg-yellow-50 p-4 rounded mb-2 ml-14">
                                  <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                     <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar">
+                                     <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                                      <span class="text-green-600 font-medium">{{.Nickname}}</span>
                                      {{if .TitleName}}
                                      <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -135,6 +144,7 @@
             {{end}}
         </footer>
     </div>
+
     <script>
         // 客服随机选择与本地存储逻辑
         (function() {
@@ -261,6 +271,21 @@
             });
         })();
     </script>
+    <!-- 登录模态框 -->
+    <div class="login-modal hidden" id="loginModal" aria-label="登录模态框" role="dialog" aria-hidden="true">
+        <div class="modal-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong>登录/注册</strong>
+                <button onclick="closeLoginModal()" aria-label="关闭" style="border:none;background:transparent;font-size:18px;cursor:pointer;">✖</button>
+            </div>
+            <input id="loginPhone" type="text" placeholder="手机号" aria-label="手机号" />
+            <input id="loginPwd" type="password" placeholder="密码" aria-label="密码" />
+            <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:8px; padding-top:8px;">
+                <button onclick="handleRegister()" style="padding:8px 14px; border-radius:6px; background:#f3f4f6; border:1px solid #e5e7eb;">注册</button>
+                <button onclick="handleLogin()" style="padding:8px 14px; border-radius:6px; background:#3b82f6; color:#fff; border:none;">登录</button>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

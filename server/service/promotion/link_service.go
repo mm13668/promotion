@@ -260,16 +260,11 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			}
 
 			// 组装回答
-			var answerLevel *int
-			if qaAnswer.Level != nil {
-				l := int(*qaAnswer.Level)
-				answerLevel = &l
-			}
 			answers = append(answers, Answer{
 				AvatarUrl:     qaAnswer.AvatarURL,
 				Nickname:      qaAnswer.Nickname,
 				TitleName:     qaAnswer.TitleName,
-				Level:         answerLevel,
+				Level:         int(*qaAnswer.Level),
 				TimeText:      qaAnswer.TimeText,
 				Content:       template.HTML(qaAnswer.Content),
 				FollowCount:   int(qaAnswer.FollowCount),

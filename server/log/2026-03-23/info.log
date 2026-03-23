@@ -1806,3 +1806,10 @@ func main() {
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 21:00:57.355	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 21:00:57.357	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
 [github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 21:00:57.368	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 22:56:54.569	[34minfo[0m	/Users/wangjingjun/work/promotion/server/core/server_run.go:48	关闭WEB服务...
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 22:57:07.088	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 22:57:07.089	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 22:57:07.101	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 23:10:55.915	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/gorm.go:86	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 23:10:55.918	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:75	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2026-03-23 23:10:55.978	[34minfo[0m	/Users/wangjingjun/work/promotion/server/initialize/router.go:129	router register success
