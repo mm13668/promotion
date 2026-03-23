@@ -87,8 +87,10 @@
                     </div>
                     <div class="ql-editor-content text-gray-700 ml-8 leading-relaxed text-sm">{{.Content}}</div>
                     <!-- 回复统计 -->
-                    <div class="reply-stats text-xs text-gray-500 ml-8 mt-1 flex justify-end mb-3">
-                        <span class="stat-item" onclick="addCount(this)">👍 {{.LikeCount}}</span>
+                    <div class="reply-stats text-xs text-gray-500 ml-8 mt-1 flex gap-3 justify-end mb-3">
+                        <span class="stat-item" onclick="addCount(this)">点赞 {{.LikeCount}}</span>
+                        <span class="stat-item">关注 {{.FollowCount}}</span>
+                        <span class="stat-item">收藏 {{.FavoriteCount}}</span>
                     </div>
                 </div>
                 {{end}}

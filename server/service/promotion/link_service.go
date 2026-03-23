@@ -2,6 +2,7 @@ package promotion
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"math/rand"
 	"os"
@@ -218,13 +219,13 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	if link.QuestionID != nil {
 		// 1. 查询问题基本信息
 		var qaQuestion promotion.QAQuestion
-		if err := global.GVA_DB.Where("id = ?", *link.QuestionID).First(&qaQuestion).Error; err != nil {
+		if err := global.GVA_DB.Debug().Where("id = ?", *link.QuestionID).First(&qaQuestion).Error; err != nil {
 			return err
 		}
 
 		// 2. 查询回答列表
 		var qaAnswers []promotion.QAAnswer
-		if err := global.GVA_DB.Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
+		if err := global.GVA_DB.Debug().Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
 			return err
 		}
 
@@ -233,7 +234,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		for _, qaAnswer := range qaAnswers {
 			// 查询每个回答的回复
 			var qaReplies []promotion.QAReply
-			if err := global.GVA_DB.Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
+			if err := global.GVA_DB.Debug().Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
 				return err
 			}
 
@@ -368,12 +369,14 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 	// 5. 生成页面
 	generator := &PageGenerator{}
-	const distBasePath = "/Users/wangjingjun/work/promotion/server/dist/"
 
 	// 创建随机编号目录
 	randomDir := filepath.Join(distBasePath, link.RandomCode)
 	os.MkdirAll(filepath.Join(randomDir, "m"), 0755)
 	os.MkdirAll(filepath.Join(randomDir, "pc"), 0755)
+
+	databyte, _ := json.Marshal(question)
+	fmt.Println("databyte", string(databyte))
 
 	// 生成移动端页面
 	mobileData := generator.BuildTemplateData(link, basic, company, question, true)

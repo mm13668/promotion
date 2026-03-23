@@ -17,7 +17,7 @@ import (
 const (
 	templateBasePath = "/Users/wangjingjun/work/promotion/server/uploads/template/"
 	pluginBasePath   = "/Users/wangjingjun/work/promotion/server/uploads/plugins/"
-	distBasePath     = "/Users/wangjingjun/work/promotion/server/dist/"
+	distBasePath     = "/Users/wangjingjun/work/promotion/server/uploads/dist/"
 )
 
 // Reply 回复结构
@@ -157,17 +157,23 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		processedReplies := make([]Reply, 0, len(ans.Replies))
 		for _, reply := range ans.Replies {
 			processedReplies = append(processedReplies, Reply{
-				AvatarUrl: reply.AvatarUrl,
-				Nickname:  reply.Nickname,
-				Content:   template.HTML(reply.Content),
+				AvatarUrl:     reply.AvatarUrl,
+				Nickname:      reply.Nickname,
+				Content:       template.HTML(reply.Content),
+				FollowCount:   reply.FollowCount,
+				FavoriteCount: reply.FavoriteCount,
+				LikeCount:     reply.LikeCount,
 			})
 		}
 		processedAnswers = append(processedAnswers, Answer{
-			AvatarUrl: ans.AvatarUrl,
-			Nickname:  ans.Nickname,
-			TimeText:  ans.TimeText,
-			Content:   template.HTML(ans.Content),
-			Replies:   processedReplies,
+			AvatarUrl:     ans.AvatarUrl,
+			Nickname:      ans.Nickname,
+			TimeText:      ans.TimeText,
+			Content:       template.HTML(ans.Content),
+			FollowCount:   ans.FollowCount,
+			FavoriteCount: ans.FavoriteCount,
+			LikeCount:     ans.LikeCount,
+			Replies:       processedReplies,
 		})
 	}
 
