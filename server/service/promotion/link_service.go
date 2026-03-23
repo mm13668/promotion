@@ -233,7 +233,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		for _, qaAnswer := range qaAnswers {
 			// 查询每个回答的回复
 			var qaReplies []promotion.QAReply
-			if err := global.GVA_DB.Where("answer_id = ? AND status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
+			if err := global.GVA_DB.Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
 				return err
 			}
 

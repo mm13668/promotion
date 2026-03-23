@@ -36,11 +36,11 @@ type QAAnswer struct {
 	AvatarURL     string `json:"avatarUrl" gorm:"type:varchar(255)"`
 	TitleName     string `json:"titleName" gorm:"type:varchar(50)"`
 	Signature     string `json:"signature" gorm:"type:varchar(255)"`
-	Level         *uint  `json:"level"`
+	Level         *uint  `json:"level" gorm:"default:0"`
 	Content       string `json:"content" gorm:"type:mediumtext"`
-	FollowCount   uint   `json:"followCount"`
-	FavoriteCount uint   `json:"favoriteCount"`
-	LikeCount     uint   `json:"likeCount"`
+	FollowCount   uint   `json:"followCount" gorm:"default:0"`
+	FavoriteCount uint   `json:"favoriteCount" gorm:"default:0"`
+	LikeCount     uint   `json:"likeCount" gorm:"default:0"`
 	TimeText      string `json:"timeText" gorm:"type:varchar(50)"`
 	Skill         string `json:"skill" gorm:"type:varchar(255)"`
 	AuditStatus   uint8  `json:"auditStatus" gorm:"default:0"`
@@ -61,15 +61,14 @@ type QAReply struct {
 	AvatarURL     string `json:"avatarUrl" gorm:"type:varchar(255)"`
 	TitleName     string `json:"titleName" gorm:"type:varchar(50)"`
 	Signature     string `json:"signature" gorm:"type:varchar(255)"`
-	Level         *uint  `json:"level"`
+	Level         *uint  `json:"level" gorm:"default:0"`
 	Content       string `json:"content" gorm:"type:text"`
-	FollowCount   uint   `json:"followCount"`
-	FavoriteCount uint   `json:"favoriteCount"`
-	LikeCount     uint   `json:"likeCount"`
+	FollowCount   uint   `json:"followCount" gorm:"default:0"`
+	FavoriteCount uint   `json:"favoriteCount" gorm:"default:0"`
+	LikeCount     uint   `json:"likeCount" gorm:"default:0"`
 	TimeText      string `json:"timeText" gorm:"type:varchar(50)"`
 	Skill         string `json:"skill" gorm:"type:varchar(255)"`
 	AuditStatus   uint8  `json:"auditStatus" gorm:"default:0"`
-	Status        uint8  `json:"status" gorm:"index:idx_reply_status"`
 	CreatedBy     *uint  `json:"createdBy"`
 	UpdatedBy     *uint  `json:"updatedBy"`
 }
