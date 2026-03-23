@@ -22,51 +22,70 @@ const (
 
 // Reply 回复结构
 type Reply struct {
-	AvatarUrl string
-	Nickname  string
-	Content   template.HTML
+	AvatarUrl     string
+	Nickname      string
+	TitleName     string // 回答者称号
+	Level         *int   // 等级（为空时隐藏）
+	TimeText      string // 时间文本
+	Content       template.HTML
+	FollowCount   int // 关注数
+	FavoriteCount int // 收藏数
+	LikeCount     int // 点赞数
 }
 
 // Answer 回答结构
 type Answer struct {
-	AvatarUrl string
-	Nickname  string
-	TimeText  string
-	Content   template.HTML
-	Replies   []Reply
+	AvatarUrl     string
+	Nickname      string
+	TitleName     string // 回复者称号
+	Level         *int   // 等级（为空时隐藏）
+	TimeText      string
+	Content       template.HTML
+	FollowCount   int // 关注数
+	FavoriteCount int // 收藏数
+	LikeCount     int // 点赞数
+	Replies       []Reply
 }
 
 // QaQuestion 问题结构
 type QaQuestion struct {
-	Title     string
-	Label     []string
-	Nickname  string
-	AvatarUrl string
-	TitleName string
-	TimeAt    string
-	Content   template.HTML
-	Answers   []Answer
+	Title         string
+	Label         []string
+	Nickname      string
+	AvatarUrl     string
+	TitleName     string
+	TimeAt        string
+	Content       template.HTML
+	FollowCount   int // 关注数
+	LookCount     int // 浏览数
+	FavoriteCount int // 收藏数
+	LikeCount     int // 点赞数
+	Answers       []Answer
 }
 
 // TemplateData 模板渲染数据
 type TemplateData struct {
-	ServiceListJSON   string
-	LogoURL           string
-	CompanyName       string
-	IcpRecordNo       string
-	HomepageURL       string
-	AboutURL          string
-	QrcodeURL         string
-	Year              int
-	Show12301Phone    bool
-	QuestionTitle     string
-	QuestionTags      []string
-	QuestionAvatar    string
-	QuestionNickname  string
-	QuestionTitleName string
-	QuestionTimeAt    string
-	QuestionContent   template.HTML
-	Answers           []Answer
+	ServiceListJSON       string
+	LogoURL               string
+	CompanyName           string
+	IcpRecordNo           string
+	HomepageURL           string
+	AboutURL              string
+	QrcodeURL             string
+	Year                  int
+	Show12301Phone        bool
+	QuestionTitle         string
+	QuestionTags          []string
+	QuestionAvatar        string
+	QuestionNickname      string
+	QuestionTitleName     string
+	QuestionTimeAt        string
+	QuestionContent       template.HTML
+	QuestionFollowCount   int // 问题关注数
+	QuestionLookCount     int // 问题浏览数
+	QuestionFavoriteCount int // 问题收藏数
+	QuestionLikeCount     int // 问题点赞数
+	Answers               []Answer
 }
 
 // PageGenerator 页面生成器
@@ -153,20 +172,24 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 	}
 
 	data := TemplateData{
-		CompanyName:       company.CompanyName,
-		IcpRecordNo:       company.IcpRecordNo,
-		HomepageURL:       company.HomepageURL,
-		AboutURL:          company.AboutURL,
-		QrcodeURL:         "https://picsum.photos/200/200",
-		Year:              time.Now().Year(),
-		Show12301Phone:    basic.Show12301Phone,
-		QuestionTitle:     question.Title,
-		QuestionTags:      question.Label,
-		QuestionNickname:  question.Nickname,
-		QuestionTitleName: question.TitleName,
-		QuestionTimeAt:    question.TimeAt,
-		QuestionContent:   template.HTML(question.Content),
-		Answers:           processedAnswers,
+		CompanyName:           company.CompanyName,
+		IcpRecordNo:           company.IcpRecordNo,
+		HomepageURL:           company.HomepageURL,
+		AboutURL:              company.AboutURL,
+		QrcodeURL:             "https://picsum.photos/200/200",
+		Year:                  time.Now().Year(),
+		Show12301Phone:        basic.Show12301Phone,
+		QuestionTitle:         question.Title,
+		QuestionTags:          question.Label,
+		QuestionNickname:      question.Nickname,
+		QuestionTitleName:     question.TitleName,
+		QuestionTimeAt:        question.TimeAt,
+		QuestionContent:       template.HTML(question.Content),
+		QuestionFollowCount:   question.FollowCount,
+		QuestionLookCount:     question.LookCount,
+		QuestionFavoriteCount: question.FavoriteCount,
+		QuestionLikeCount:     question.LikeCount,
+		Answers:               processedAnswers,
 	}
 	if isMobile {
 		data.LogoURL = company.LogoMobileURL

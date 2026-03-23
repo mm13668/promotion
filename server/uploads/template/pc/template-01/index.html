@@ -45,6 +45,13 @@
                     <!-- 问题内容 -->
                     <div class="question-content bg-white p-6 rounded-lg shadow-sm mb-6">
                         <div class="ql-editor-content" id="questionContent">{{.QuestionContent}}</div>
+                        <!-- 问题统计 -->
+                        <div class="question-stats mt-6 flex gap-4 justify-end">
+                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">浏览 {{.QuestionLookCount}}</span>
+                            <button class="stat-btn px-4 py-2 bg-gray-50 rounded text-sm text-gray-600 hover:bg-gray-100" onclick="addCount(this)">点赞 {{.QuestionLikeCount}}</button>
+                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">关注 {{.QuestionFollowCount}}</span>
+                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">收藏 {{.QuestionFavoriteCount}}</span>
+                        </div>
                     </div>
 
                     <!-- 回答列表 -->
@@ -54,22 +61,44 @@
                             <div class="flex items-center mb-4">
                                 <img src="{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar">
                                 <div class="flex-1">
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2 flex-wrap">
                                         <span class="text-base font-medium text-blue-500">{{.Nickname}}</span>
+                                        {{if .TitleName}}
+                                        <span class="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
+                                        {{end}}
+                                        {{if .Level}}
+                                        <span class="px-2 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
+                                        {{end}}
                                     </div>
                                     <div class="text-sm text-gray-500 mt-1">{{.TimeText}}</div>
                                 </div>
                             </div>
                             <div class="ql-editor-content mb-4 text-gray-700 leading-relaxed">{{.Content}}</div>
+                            <!-- 回答统计 -->
+                            <div class="answer-stats flex gap-4 justify-end mb-4">
+                                <button class="stat-btn px-3 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="addCount(this)">点赞 {{.LikeCount}}</button>
+                                <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">关注 {{.FollowCount}}</span>
+                                <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">收藏 {{.FavoriteCount}}</span>
+                            </div>
 
                             <!-- 回复列表 -->
                             {{range .Replies}}
                             <div class="bg-yellow-50 p-4 rounded mb-2 ml-14">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar">
-                                    <span class="text-green-600 font-medium">{{.Nickname}}</span>
-                                </div>
-                                <div class="ql-editor-content text-gray-700 leading-relaxed">{{.Content}}</div>
+                                 <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                     <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar">
+                                     <span class="text-green-600 font-medium">{{.Nickname}}</span>
+                                     {{if .TitleName}}
+                                     <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
+                                     {{end}}
+                                     {{if .Level}}
+                                     <span class="px-1 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
+                                     {{end}}
+                                 </div>
+                                 <div class="ql-editor-content text-gray-700 leading-relaxed">{{.Content}}</div>
+                                 <!-- 回复统计 -->
+                                 <div class="reply-stats flex justify-end mt-1 mb-3">
+                                     <button class="stat-btn px-2 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="addCount(this)">👍 {{.LikeCount}}</button>
+                                 </div>
                             </div>
                             {{end}}
                         </div>
@@ -191,6 +220,15 @@
                     } else {
                         alert('微信复制成功，快去添加好友吧！');
                     }
+                }
+            }
+
+            // 统计项+1功能
+            window.addCount = function(el) {
+                const match = el.textContent.match(/\d+/);
+                if (match) {
+                    const current = parseInt(match[0]) || 0;
+                    el.textContent = el.textContent.replace(/\d+/, current + 1);
                 }
             }
 

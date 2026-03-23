@@ -240,44 +240,73 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			// 组装回复
 			replies := make([]Reply, 0, len(qaReplies))
 			for _, qaReply := range qaReplies {
+				var level *int
+				if qaReply.Level != nil {
+					l := int(*qaReply.Level)
+					level = &l
+				}
 				replies = append(replies, Reply{
-					AvatarUrl: qaReply.AvatarURL,
-					Nickname:  qaReply.Nickname,
-					Content:   template.HTML(qaReply.Content),
+					AvatarUrl:     qaReply.AvatarURL,
+					Nickname:      qaReply.Nickname,
+					TitleName:     qaReply.TitleName,
+					Level:         level,
+					TimeText:      qaReply.TimeText,
+					Content:       template.HTML(qaReply.Content),
+					FollowCount:   int(qaReply.FollowCount),
+					FavoriteCount: int(qaReply.FavoriteCount),
+					LikeCount:     int(qaReply.LikeCount),
 				})
 			}
 
 			// 组装回答
+			var answerLevel *int
+			if qaAnswer.Level != nil {
+				l := int(*qaAnswer.Level)
+				answerLevel = &l
+			}
 			answers = append(answers, Answer{
-				AvatarUrl: qaAnswer.AvatarURL,
-				Nickname:  qaAnswer.Nickname,
-				TimeText:  qaAnswer.TimeText,
-				Content:   template.HTML(qaAnswer.Content),
-				Replies:   replies,
+				AvatarUrl:     qaAnswer.AvatarURL,
+				Nickname:      qaAnswer.Nickname,
+				TitleName:     qaAnswer.TitleName,
+				Level:         answerLevel,
+				TimeText:      qaAnswer.TimeText,
+				Content:       template.HTML(qaAnswer.Content),
+				FollowCount:   int(qaAnswer.FollowCount),
+				FavoriteCount: int(qaAnswer.FavoriteCount),
+				LikeCount:     int(qaAnswer.LikeCount),
+				Replies:       replies,
 			})
 		}
 
 		// 组装问题
 		question = QaQuestion{
-			Title:     qaQuestion.Title,
-			Label:     qaQuestion.Label,
-			Nickname:  qaQuestion.Nickname,
-			AvatarUrl: qaQuestion.AvatarURL,
-			TitleName: qaQuestion.TitleName,
-			TimeAt:    qaQuestion.TimeAt,
-			Content:   template.HTML(qaQuestion.Content),
-			Answers:   answers,
+			Title:         qaQuestion.Title,
+			Label:         qaQuestion.Label,
+			Nickname:      qaQuestion.Nickname,
+			AvatarUrl:     qaQuestion.AvatarURL,
+			TitleName:     qaQuestion.TitleName,
+			TimeAt:        qaQuestion.TimeAt,
+			Content:       template.HTML(qaQuestion.Content),
+			FollowCount:   int(qaQuestion.FollowCount),
+			LookCount:     int(qaQuestion.LookCount),
+			FavoriteCount: int(qaQuestion.FavoriteCount),
+			LikeCount:     int(qaQuestion.LikeCount),
+			Answers:       answers,
 		}
 	} else {
 		// 默认问题
 		question = QaQuestion{
-			Title:     "专业咨询服务",
-			Label:     []string{"服务", "咨询", "一对一"},
-			Nickname:  "官方客服",
-			AvatarUrl: "https://picsum.photos/100/100",
-			TimeAt:    time.Now().Format("2006-01-02 15:04"),
-			Content:   template.HTML("我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。"),
-			Answers:   []Answer{},
+			Title:         "专业咨询服务",
+			Label:         []string{"服务", "咨询", "一对一"},
+			Nickname:      "官方客服",
+			AvatarUrl:     "https://picsum.photos/100/100",
+			TimeAt:        time.Now().Format("2006-01-02 15:04"),
+			Content:       template.HTML("我们提供专业的一对一咨询服务，经验丰富，价格透明，欢迎添加微信咨询。"),
+			FollowCount:   0,
+			LookCount:     0,
+			FavoriteCount: 0,
+			LikeCount:     0,
+			Answers:       []Answer{},
 		}
 	}
 
