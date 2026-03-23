@@ -180,3 +180,7 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.stat-item {
+    padding-right: 6px;
+}
