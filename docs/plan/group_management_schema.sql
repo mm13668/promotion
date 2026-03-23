@@ -1,5 +1,5 @@
 -- ===============================
--- 分组管理：所属分类分类表
+-- 分组管理：所属分类表
 -- 用于维护所属分类层级与排序
 -- ===============================
 CREATE TABLE IF NOT EXISTS `region_category` (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `region_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-所属分类表';
 
 -- ===============================
--- 分组管理：成员表
+-- 分组管理：客服成员表
 -- 记录分组成员的基本信息与归属
 -- ===============================
 CREATE TABLE IF NOT EXISTS `group_member` (
@@ -28,8 +28,10 @@ CREATE TABLE IF NOT EXISTS `group_member` (
   `group_id` BIGINT UNSIGNED NOT NULL COMMENT '所属分组ID（关联promotion_group）',
   `real_name` VARCHAR(64) NULL COMMENT '真实姓名',
   `wechat` VARCHAR(64) NULL COMMENT '微信号',
+  `wechat_qrcode` VARCHAR(255) NULL COMMENT '客服微信二维码URL',
   `mobile` VARCHAR(20) NULL COMMENT '手机号',
   `gender` ENUM('男','女','未知') NOT NULL DEFAULT '未知' COMMENT '性别',
+  `status` TINYINT NOT NULL DEFAULT 2 COMMENT '状态：1在线 2离线',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',
   `remark` VARCHAR(255) NULL COMMENT '备注信息',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -45,10 +47,10 @@ CREATE TABLE IF NOT EXISTS `group_member` (
   CONSTRAINT `fk_member_group` FOREIGN KEY (`group_id`) REFERENCES `promotion_group`(`id`)
     ON UPDATE RESTRICT
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-成员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-客服成员表';
 
 -- ===============================
--- 分组管理：分组表
+-- 分组管理：客服分组表
 -- 归属于某个所属分类，可配置排序与备注
 -- ===============================
 CREATE TABLE IF NOT EXISTS `promotion_group` (
@@ -67,4 +69,4 @@ CREATE TABLE IF NOT EXISTS `promotion_group` (
   CONSTRAINT `fk_group_region` FOREIGN KEY (`region_id`) REFERENCES `region_category`(`id`)
     ON UPDATE RESTRICT
     ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-分组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分组管理-客服分组表';

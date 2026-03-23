@@ -28,18 +28,19 @@ func (PromotionGroup) TableName() string {
 
 type GroupMember struct {
 	global.GVA_MODEL
-	Nickname string `json:"nickname" gorm:"type:varchar(64)"`
-	RegionID uint   `json:"regionId" gorm:"index:idx_member_region"`
-	GroupID  uint   `json:"groupId" gorm:"index:idx_member_group"`
-	RealName string `json:"realName" gorm:"type:varchar(64)"`
-	Wechat   string `json:"wechat" gorm:"type:varchar(64)"`
-	Mobile   string `json:"mobile" gorm:"type:varchar(20)"`
-	Gender   string `json:"gender" gorm:"type:enum('男','女','未知');default:'未知'"`
-	Sort     int    `json:"sort" gorm:"index:idx_member_sort"`
-	Remark   string `json:"remark" gorm:"type:varchar(255)"`
+	Nickname     string `json:"nickname" gorm:"type:varchar(64)"`
+	RegionID     uint   `json:"regionId" gorm:"index:idx_member_region"`
+	GroupID      uint   `json:"groupId" gorm:"index:idx_member_group"`
+	RealName     string `json:"realName" gorm:"type:varchar(64)"`
+	Wechat       string `json:"wechat" gorm:"type:varchar(64)"`
+	WechatQrcode string `json:"wechatQrcode" gorm:"type:varchar(255);comment:'客服微信二维码URL'"`
+	Mobile       string `json:"mobile" gorm:"type:varchar(20)"`
+	Gender       string `json:"gender" gorm:"type:enum('男','女','未知');default:'未知'"`
+	Status       int    `json:"status" gorm:"type:tinyint;default:2;comment:'状态：1在线 2离线'"`
+	Sort         int    `json:"sort" gorm:"index:idx_member_sort"`
+	Remark       string `json:"remark" gorm:"type:varchar(255)"`
 }
 
 func (GroupMember) TableName() string {
 	return "group_member"
 }
-

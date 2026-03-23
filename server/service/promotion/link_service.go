@@ -285,7 +285,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
-		if err := global.GVA_DB.Table("group_member").Select("nickname, wechat, mobile").Where("region_id = ? AND group_id = ? AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
+		if err := global.GVA_DB.Table("group_member").Select("nickname, wechat, mobile").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
 			// 序列化所有客服为JSON字符串
 			if jsonBytes, err := json.Marshal(members); err == nil {
 				serviceListJSON = string(jsonBytes)

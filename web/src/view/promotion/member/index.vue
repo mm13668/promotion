@@ -25,7 +25,18 @@
         </el-table-column>
         <el-table-column prop="mobile" label="手机号" width="140" />
         <el-table-column prop="wechat" label="微信" width="160" />
+        <el-table-column prop="wechatQrcode" label="微信二维码" width="120">
+          <template #default="{ row }">
+            <el-image v-if="row.wechatQrcode" :src="`${getBaseUrl()}/${row.wechatQrcode}`" fit="cover" style="width: 60px; height: 60px" :preview-src-list="[`${getBaseUrl()}/${row.wechatQrcode}`]" />
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="gender" label="性别" width="100" />
+        <el-table-column prop="status" label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.status === 1 ? 'success' : 'info'">{{ row.status === 1 ? '在线' : '离线' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="sort" label="排序" width="100" />
         <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip />
         <el-table-column fixed="right" label="操作" width="180">
@@ -79,11 +90,23 @@
         <el-form-item label="微信">
           <el-input v-model="form.wechat" />
         </el-form-item>
+        <el-form-item label="微信二维码">
+          <div class="flex items-center space-x-4">
+            <UploadImage v-model="form.wechatQrcode" @on-success="handleWechatQrcodeSuccess" />
+            <img v-if="form.wechatQrcode" :src="`${getBaseUrl()}/${form.wechatQrcode}`" class="h-16 w-16 object-contain border rounded" />
+          </div>
+        </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="form.gender">
             <el-option label="未知" value="未知" />
             <el-option label="男" value="男" />
             <el-option label="女" value="女" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="form.status">
+            <el-option label="在线" :value="1" />
+            <el-option label="离线" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="排序">
@@ -100,6 +123,8 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import UploadImage from "@/components/upload/image.vue"
+import { getBaseUrl } from '@/utils/format'
 import { getGroupMemberList, createGroupMember, updateGroupMember, deleteGroupMember, getRegionCategoryList, getPromotionGroupList } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
@@ -141,12 +166,12 @@ const handleCurrentChange = (val) => {
 }
 
 const drawer = ref(false)
-const form = ref({ ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', gender: '未知', sort: 0, remark: '' })
+const form = ref({ ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '' })
 const openForm = (row) => {
   if (row) {
     form.value = { ...row }
   } else {
-    form.value = { ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', gender: '未知', sort: 0, remark: '' }
+    form.value = { ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '' }
   }
   drawer.value = true
 }
@@ -176,6 +201,10 @@ const remove = async (row) => {
     ElMessage.success('删除成功')
     getTableData()
   }
+}
+
+const handleWechatQrcodeSuccess = (url, raw) => {
+  form.value.wechatQrcode = url
 }
 </script>
 
