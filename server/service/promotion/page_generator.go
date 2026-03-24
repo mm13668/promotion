@@ -189,6 +189,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		Show12301Phone:        basic.Show12301Phone,
 		QuestionTitle:         question.Title,
 		QuestionTags:          question.Label,
+		QuestionAvatar:        question.AvatarUrl,
 		QuestionNickname:      question.Nickname,
 		QuestionTitleName:     question.TitleName,
 		QuestionTimeAt:        question.TimeAt,
