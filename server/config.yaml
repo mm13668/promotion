@@ -28,12 +28,12 @@ captcha:
     open-captcha: 0
     open-captcha-timeout: 3600
 cloudflare-r2:
-    bucket: xxxx0bucket
-    base-url: https://gin.vue.admin.com
+    bucket: promotion
+    base-url: https://promotion-oss.its-me.club
     path: uploads
-    account-id: xxx_account_id
-    access-key-id: xxx_key_id
-    secret-access-key: xxx_secret_key
+    account-id: 06b8dc50ffd592da257a39410dfabfa0
+    access-key-id: bee81e88c50d421d493f271dd85bdd67
+    secret-access-key: 00493024430217c74b3cf080f9cb08626e1690e47019ed1c29d4dd062bcb3351
 cors:
     mode: strict-whitelist
     whitelist:

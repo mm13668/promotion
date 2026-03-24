@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.QuestionTitle}}</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/api/style.css">
 </head>
 <body>
     <div class="min-h-screen bg-gray-50 pb-20">
@@ -17,7 +17,7 @@
                 {{end}}
             </div>
             <div class="flex items-center">
-                <img src="{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
+                <img src="/api/{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                 <div class="flex-1">
                     <div class="flex items-center gap-2">
                         <span class="text-base font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -50,7 +50,7 @@
             {{range .Answers}}
             <div class="bg-white p-4 shadow-sm rounded">
                 <div class="flex items-center mb-3">
-                    <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
+                    <img src="/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                     <div class="flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-medium text-blue-500">昵称：{{.Nickname}}</span>
@@ -85,7 +85,7 @@
                 {{range .Replies}}
                 <div class="bg-yellow-50 p-3 rounded mb-2">
                     <div class="flex items-center gap-2 mb-2 flex-wrap">
-                        <img src="{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
+                        <img src="/api/{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                         <span class="text-green-600 font-medium text-sm">{{.Nickname}}</span>
                         {{if .TitleName}}
                         <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -250,6 +250,6 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="/api/script.js"></script>
 </body>
 </html>

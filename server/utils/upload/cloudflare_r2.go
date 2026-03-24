@@ -3,7 +3,9 @@ package upload
 import (
 	"errors"
 	"fmt"
+	"mime"
 	"mime/multipart"
+	"path/filepath"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -30,10 +32,18 @@ func (c *CloudflareR2) UploadFile(file *multipart.FileHeader) (fileUrl string, f
 	}
 	defer f.Close() // 创建文件 defer 关闭
 
+	// 自动检测文件MIME类型
+	ext := filepath.Ext(file.Filename)
+	contentType := mime.TypeByExtension(ext)
+	if contentType == "" {
+		contentType = "application/octet-stream" // 兜底默认类型
+	}
+
 	input := &s3manager.UploadInput{
-		Bucket: aws.String(global.GVA_CONFIG.CloudflareR2.Bucket),
-		Key:    aws.String(fileName),
-		Body:   f,
+		Bucket:      aws.String(global.GVA_CONFIG.CloudflareR2.Bucket),
+		Key:         aws.String(fileName),
+		Body:        f,
+		ContentType: aws.String(contentType),
 	}
 
 	_, err = client.Upload(input)
