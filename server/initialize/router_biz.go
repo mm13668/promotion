@@ -18,3 +18,11 @@ func initBizRouter(routers ...*gin.RouterGroup) {
 	holder(publicGroup, privateGroup)
 	router.RouterGroupApp.Promotion.InitRegionRouter(privateGroup)
 }
+
+func initBizPublicRouter(routers ...*gin.RouterGroup) {
+	publicGroup := routers[0]
+
+	holder(publicGroup)
+	router.RouterGroupApp.Promotion.InitLandingPhoneRouter(publicGroup)
+	router.RouterGroupApp.Promotion.InitLandingMessageRouter(publicGroup)
+}

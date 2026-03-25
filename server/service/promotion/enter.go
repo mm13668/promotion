@@ -9,4 +9,6 @@ type ServiceGroup struct {
 	QAService
 	AdService
 	ActivityService
+	LandingMessageService
+	LandingPhoneService
 }

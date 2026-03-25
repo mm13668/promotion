@@ -1,10 +1,19 @@
 # 留言和登录数据的手机
 
 # 实现
-每个落地页都有一个ID 模板潜入{{.LinkID}}，以便于区分是哪一个落地页的留言和登录的手机号码
+每个落地页都有一个ID 模板嵌入推广链接ID：{{.LinkID}}，以便于区分是哪一个落地页的留言和登录的手机号码
 
 建表：
 落地页的留言表
 落地页的登录手机号码的收集表
 
 后台写接口收集这些信息
+
+写入 sql create 创建表语句到sql文档目录/Users/wangjingjun/work/promotion/docs/plan
+
+# 链接
+模板文件位置：
+/Users/wangjingjun/work/promotion/server/uploads/template/mobile/template-01/index.html
+
+
+
