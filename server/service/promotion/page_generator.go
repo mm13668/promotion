@@ -65,6 +65,7 @@ type QaQuestion struct {
 
 // TemplateData 模板渲染数据
 type TemplateData struct {
+	LinkID                uint
 	ServiceListJSON       string
 	LogoURL               string
 	CompanyName           string
@@ -180,6 +181,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 	}
 
 	data := TemplateData{
+		LinkID:                link.ID,
 		CompanyName:           company.CompanyName,
 		IcpRecordNo:           company.IcpRecordNo,
 		HomepageURL:           company.HomepageURL,
