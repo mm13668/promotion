@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `promotion_template_widget` (
   `deleted_at` DATETIME NULL DEFAULT NULL COMMENT '删除时间',
   `name` VARCHAR(128) NOT NULL COMMENT '名称',
   `type` TINYINT UNSIGNED NOT NULL COMMENT '类型 1=手机端模板 2=电脑端模板 3=手机复制插件 4=手机底部插件 5=电脑端二维码插件',
+  `preview_image` VARCHAR(256) NULL DEFAULT '' COMMENT '预览图片地址',
   PRIMARY KEY (`id`),
   INDEX `idx_widget_type` (`type` ASC),
   INDEX `idx_deleted_at` (`deleted_at` ASC)
@@ -37,7 +38,7 @@ INSERT INTO `promotion_template_widget` (`name`, `type`) VALUES
 ('wechat-copy-10', 3),
 ('wechat-copy-11', 3),
 ('wechat-copy-12', 3),
-('wechat-copy-13', 3);
+('wechat-copy-13', 3),
 ('bottom-bar-1', 4),
 ('bottom-bar-2', 4),
 ('bottom-bar-3', 4),

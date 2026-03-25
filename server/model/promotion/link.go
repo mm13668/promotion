@@ -112,8 +112,9 @@ func (PromotionLinkComment) TableName() string {
 
 type PromotionTemplateWidget struct {
 	global.GVA_MODEL
-	Name string `json:"name" gorm:"type:varchar(128);comment:名称"`
-	Type uint8  `json:"type" gorm:"index:idx_widget_type;comment:类型 1=手机端模板 2=电脑端模板 3=手机复制插件 4=手机底部插件 5=电脑端二维码插件"`
+	Name         string `json:"name" gorm:"type:varchar(128);comment:名称"`
+	Type         uint8  `json:"type" gorm:"index:idx_widget_type;comment:类型 1=手机端模板 2=电脑端模板 3=手机复制插件 4=手机底部插件 5=电脑端二维码插件"`
+	PreviewImage string `json:"previewImage" gorm:"type:varchar(256);comment:预览图片地址"`
 }
 
 func (PromotionTemplateWidget) TableName() string {

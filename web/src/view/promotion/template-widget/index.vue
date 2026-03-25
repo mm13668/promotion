@@ -29,6 +29,11 @@
             {{ typeMap[row.type] }}
           </template>
         </el-table-column>
+        <el-table-column label="预览图片" width="120">
+          <template #default="{ row }">
+            <img v-if="row.previewImage" :src="`${getBaseUrl()}/${row.previewImage}`" class="h-12 w-12 object-contain border rounded" />
+          </template>
+        </el-table-column>
         <el-table-column prop="createdAt" label="创建时间" width="180" />
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="{ row }">
@@ -62,6 +67,12 @@
               <el-option label="电脑端二维码插件" :value="5" />
             </el-select>
           </el-form-item>
+          <el-form-item label="预览图片">
+            <div class="flex items-center space-x-4">
+              <UploadImage v-model="form.previewImage"  @on-success="handlePreviewImageSuccess"/>
+              <img v-if="form.previewImage" :src="`${getBaseUrl()}/${form.previewImage}`" class="h-16 w-16 object-contain border rounded" />
+            </div>
+          </el-form-item>
         </el-form>
       <template #footer>
         <el-button @click="drawer = false">取消</el-button>
@@ -74,6 +85,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import UploadImage from "@/components/upload/image.vue"
+import { getBaseUrl } from '@/utils/format'
 import {
   getTemplateWidgetList, createTemplateWidget, updateTemplateWidget, deleteTemplateWidget
 } from '@/api/promotion'
@@ -96,7 +109,8 @@ const formRef = ref()
 const form = ref({
   ID: 0,
   name: '',
-  type: null
+  type: null,
+  previewImage: ''
 })
 
 const getTableData = async () => {
@@ -138,7 +152,8 @@ const openForm = (row) => {
   form.value = row ? { ...row } : {
     ID: 0,
     name: '',
-    type: null
+    type: null,
+    previewImage: ''
   }
   drawer.value = true
 }
@@ -165,6 +180,10 @@ const remove = async (row) => {
     ElMessage.success('删除成功')
     getTableData()
   }
+}
+
+const handlePreviewImageSuccess = (url, raw) => {
+  form.value.previewImage = url
 }
 
 onMounted(() => {
