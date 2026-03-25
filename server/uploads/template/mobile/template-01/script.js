@@ -19,8 +19,9 @@ async function handleRegister() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
-        // 模拟登录状态
+        // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        localStorage.setItem('user_phone', phone);
         showToast('提交成功', 'success');
         closeLoginModal();
         if (pendingReply.content) {
@@ -71,8 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 检查内容是否溢出
     setTimeout(checkContentOverflow, 0);
     console.log('Template loaded successfully');
-    // 页面加载时清除旧的token，不持久化登录状态
+    // 页面加载时清除旧的登录数据，不持久化登录状态
     localStorage.removeItem('user_token');
+    localStorage.removeItem('user_phone');
 });
 
 // 显示/隐藏回复输入框
@@ -159,8 +161,9 @@ async function handleLogin() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
-        // 模拟登录状态
+        // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        localStorage.setItem('user_phone', phone);
         showToast('提交成功', 'success');
         closeLoginModal();
         
@@ -183,6 +186,7 @@ async function submitReply() {
     const submitBtn = pendingReply.el;
     const originalText = submitBtn.innerHTML;
     const token = localStorage.getItem('user_token');
+    const phone = document.getElementById('loginPhone').value.trim();
     
     if (!token || !pendingReply.content) return;
     
@@ -198,7 +202,8 @@ async function submitReply() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     linkId: window.LINK_ID, 
-                    content: pendingReply.content
+                    content: pendingReply.content,
+                    phone: localStorage.getItem('user_phone') || ''
                 })
             });
         } catch(e) {

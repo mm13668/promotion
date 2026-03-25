@@ -1,8 +1,9 @@
 // PC端模板基础脚本
 document.addEventListener('DOMContentLoaded', function() {
     console.log('PC Template loaded successfully');
-    // 页面加载时清除旧的token，不持久化登录状态
+    // 页面加载时清除旧的登录数据，不持久化登录状态
     localStorage.removeItem('user_token');
+    localStorage.removeItem('user_phone');
 });
 
 // 全局变量：存储当前待发布的回复数据
@@ -96,8 +97,9 @@ async function handleRegister() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
-        // 模拟登录状态
+        // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        localStorage.setItem('user_phone', phone);
         showToast('提交成功', 'success');
         closeLoginModal();
         if (pendingReply.content) {
@@ -136,8 +138,9 @@ async function handleLogin() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
         });
-        // 模拟登录状态
+        // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
+        localStorage.setItem('user_phone', phone);
         showToast('提交成功', 'success');
         closeLoginModal();
         
@@ -234,7 +237,8 @@ async function submitReply() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     linkId: window.LINK_ID, 
-                    content: pendingReply.content
+                    content: pendingReply.content,
+                    phone: localStorage.getItem('user_phone') || ''
                 })
             });
         } catch(e) {
