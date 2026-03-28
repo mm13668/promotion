@@ -94,6 +94,7 @@ local:
     template-base-path: uploads/template/
     plugin-base-path: uploads/plugins/
     dist-base-path: uploads/dist/
+    dist-h5-path: /h5ldy
 mcp:
     name: GVA_MCP
     version: v1.0.0

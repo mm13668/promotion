@@ -8,6 +8,8 @@ import (
 
 type DomainService struct{}
 
+var DomainServiceObj DomainService = DomainService{}
+
 func (s *DomainService) CreatePromotionDomain(e promotion.PromotionDomain) error {
 	return global.GVA_DB.Create(&e).Error
 }
@@ -37,4 +39,3 @@ func (s *DomainService) GetPromotionDomainList(info request.PageInfo) (list []pr
 	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
-

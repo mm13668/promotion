@@ -366,7 +366,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	generator := &PageGenerator{}
 
 	// 创建随机编号目录
-	randomDir := filepath.Join(distBasePath, link.RandomCode)
+	randomDir := filepath.Join(global.GVA_CONFIG.Local.DistBasePath, link.RandomCode)
 	os.MkdirAll(filepath.Join(randomDir, "m"), 0755)
 	os.MkdirAll(filepath.Join(randomDir, "pc"), 0755)
 
@@ -396,10 +396,16 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	if err != nil {
 		return err
 	}
-
 	// 5. 更新链接地址
 	link.MobileUrl = "/p/" + link.RandomCode + "/m/index.html"
 	link.PcUrl = "/p/" + link.RandomCode + "/pc/index.html"
+	//http://localhost:8080/api/h5ldy/V4N9HIZs/m/
+	domain, _ := DomainServiceObj.FindPromotionDomain(*link.DomainID)
+	if domain.ID > 0 {
+		accessPath := domain.Domain + "/api" + global.GVA_CONFIG.Local.DistH5Path + "/" + link.RandomCode
+		link.MobileUrl = accessPath + "/m/index.html"
+		link.PcUrl = accessPath + "/pc/index.html"
+	}
 
 	return global.GVA_DB.Save(&link).Error
 }
