@@ -10,7 +10,7 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <img src="{{.LogoURL}}" alt="logo" class="logo">
+                <img src="/api/{{.LogoURL}}" alt="logo" class="logo">
                 <nav class="nav">
                     <a href="{{.HomepageURL}}" target="_blank">官网首页</a>
                     <a href="{{.AboutURL}}" target="_blank">关于我们</a>
@@ -29,7 +29,7 @@
                             {{end}}
                         </div>
                         <div class="flex items-center mb-6">
-                            <img src="{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
+                            <img src="/api/{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-lg font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -59,7 +59,7 @@
                         {{range .Answers}}
                         <div class="bg-white p-6 rounded-lg shadow-sm">
                             <div class="flex items-center mb-4">
-                                <img src="{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
+                                <img src="/api/{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="text-base font-medium text-blue-500">{{.Nickname}}</span>
@@ -94,7 +94,7 @@
                             {{range .Replies}}
                             <div class="bg-yellow-50 p-4 rounded mb-2 ml-14">
                                  <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                     <img src="{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
+                                     <img src="/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                                      <span class="text-green-600 font-medium">{{.Nickname}}</span>
                                      {{if .TitleName}}
                                      <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -154,9 +154,11 @@
             // 客服列表，增加容错处理
             let serviceList = [];
             try {
-                // 后端输出的是JSON字符串，需要解析为数组
-                const serviceListStr = {{.ServiceListJSON}} || "[]";
+                 // 后端输出的是JSON字符串，需要解析为数组
+                const serviceListStr = `{{.ServiceListJSON}}` || "[]";
                 serviceList = JSON.parse(serviceListStr);
+                // 暴露给插件使用
+                window.serviceListJSON = serviceListStr;
             } catch (e) {
                 console.error('客服列表解析失败', e);
                 serviceList = [];

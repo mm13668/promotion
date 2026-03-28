@@ -157,65 +157,6 @@ async function handleLogin() {
         submitBtn.disabled = false;
     }
 }
-    if (pwd.length < 6) {
-        showToast('密码长度不能少于6位', 'error');
-        return;
-    }
-    
-    // 显示loading状态
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="loading"></span>登录中...';
-    submitBtn.disabled = true;
-    
-    try {
-        // 调用登录接口（请替换为实际接口地址）
-        const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                phone: phone,
-                password: pwd
-            })
-        });
-        
-        const data = await res.json();
-        
-        if (data.code === 0) {
-            // 登录成功，存储token
-            localStorage.setItem('user_token', data.data.token);
-            showToast('登录成功', 'success');
-            
-            // 提交手机号到收集接口
-            try {
-                await fetch('/api/promotion/landingPhone/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
-                });
-            } catch(e) {
-                console.error('提交手机号失败', e);
-            }
-            
-            closeLoginModal();
-            
-            // 如果有待发布的回复，自动提交
-            if (pendingReply.content) {
-                await submitReply();
-            }
-        } else {
-            showToast(data.msg || '登录失败，请重试', 'error');
-        }
-    } catch (e) {
-        console.error('登录请求失败', e);
-        showToast('网络错误，请稍后重试', 'error');
-    } finally {
-        // 恢复按钮状态
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    }
-}
 
 // 提交回复
 async function submitReply() {

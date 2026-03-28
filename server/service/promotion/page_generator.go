@@ -66,6 +66,7 @@ type TemplateData struct {
 	CompanyName           string
 	IcpRecordNo           string
 	HomepageURL           string
+	LogoPcURL             string
 	AboutURL              string
 	QrcodeURL             string
 	Year                  int

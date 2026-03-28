@@ -727,7 +727,7 @@ body {
             let serviceList = [];
             try {
                 
-                const serviceListStr = "[{\"nickname\":\"浅浅\",\"wechat\":\"15099653940\",\"mobile\":\"15099653940\"},{\"nickname\":\"阿木\",\"wechat\":\"17801728054\",\"mobile\":\"17801728054\"}]" || "[]";
+                const serviceListStr = "[{\"nickname\":\"浅浅\",\"wechat\":\"15099653940\",\"mobile\":\"15099653940\",\"wechat_qrcode\":\"uploads/file/440c630d847a197aa7aa3381a101729c_20260328225809.jpg\"},{\"nickname\":\"阿木\",\"wechat\":\"17801728054\",\"mobile\":\"17801728054\",\"wechat_qrcode\":\"uploads/file/977c9a7ba404c6b700b2838c32d3d403_20260328225802.jpg\"}]" || "[]";
                 serviceList = JSON.parse(serviceListStr);
             } catch (e) {
                 console.error('客服列表解析失败', e);

@@ -16,9 +16,10 @@ import (
 
 // GroupMember 客服成员结构体
 type GroupMember struct {
-	Nickname string `json:"nickname"`
-	Wechat   string `json:"wechat"`
-	Mobile   string `json:"mobile"`
+	Nickname     string `json:"nickname"`
+	Wechat       string `json:"wechat"`
+	Mobile       string `json:"mobile"`
+	WechatQrcode string `json:"wechat_qrcode"`
 }
 
 type LinkService struct{}
@@ -310,7 +311,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
-		if err := global.GVA_DB.Table("group_member").Select("nickname, wechat, mobile").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
+		if err := global.GVA_DB.Table("group_member").Select("nickname, wechat, wechat_qrcode,mobile").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
 			// 序列化所有客服为JSON字符串
 			if jsonBytes, err := json.Marshal(members); err == nil {
 				serviceListJSON = string(jsonBytes)
@@ -390,7 +391,8 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 替换客服信息
 	pcData.ServiceListJSON = serviceListJSON
 	pcPlugins := map[string]string{
-		"qrcode": qrcodePluginName,
+		"qrcode":          qrcodePluginName,
+		"serviceListJSON": serviceListJSON,
 	}
 	_, err = generator.GeneratePageWithData(pcData, pcTemplateName, pcPlugins, false, filepath.Join(randomDir, "pc", "index.html"))
 	if err != nil {
@@ -399,7 +401,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 5. 更新链接地址
 	link.MobileUrl = "/p/" + link.RandomCode + "/m/index.html"
 	link.PcUrl = "/p/" + link.RandomCode + "/pc/index.html"
-	//http://localhost:8080/api/h5ldy/V4N9HIZs/m/
+	//http://localhost:8080/api/h5ldy/V4N9HIZs/m/index.html
 	domain, _ := DomainServiceObj.FindPromotionDomain(*link.DomainID)
 	if domain.ID > 0 {
 		accessPath := domain.Domain + "/api" + global.GVA_CONFIG.Local.DistH5Path + "/" + link.RandomCode
