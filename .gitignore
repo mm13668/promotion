@@ -1,0 +1,28 @@
+# Log directory
+server/log/
+
+# Go build outputs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE files
+.vscode/
+.idea/
+.trae/
+*.swp
+*.swo
+*~
+
+# Frontend dependencies & build
+web/node_modules/
+web/dist/
+
+# Local config files
+server/config.yaml.local
+*.env
+.DS_Store
