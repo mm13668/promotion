@@ -131,8 +131,8 @@
             // 默认客服
             let currentService = {
                 nickname: "",
-                wechat: "kefu123",
-                mobile: "400-123-4567"
+                wechat: "",
+                mobile: ""
             };
 
             // 如果有客服列表，处理随机选择
@@ -170,7 +170,7 @@
 
             // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
-                const copyWechat = wechat || window.currentService?.wechat || window.wechat || "kefu123";
+                const copyWechat = wechat || window.currentService?.wechat || window.wechat;
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         // 调用插件的全局弹窗方法

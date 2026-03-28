@@ -579,7 +579,7 @@ body {
     // 复制微信逻辑
     window.copyWechat = function() {
         // 多重容错取微信账号
-        const wechat = window.currentService?.wechat || window.wechat || "" || "kefu123";
+        const wechat = window.currentService?.wechat || window.wechat;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 showCopySuccessPopup();
@@ -700,13 +700,13 @@ body {
 (function() {
     window.callPhone = function() {
         // 多重容错取电话号码
-        const phone = window.currentService?.mobile || window.phone || "" || "400-123-4567";
+        const phone = window.currentService?.mobile || window.phone;
         window.location.href = "tel:" + phone;
     }
 
     window.copyWechat = function() {
         // 多重容错取微信账号
-        const wechat = window.currentService?.wechat || window.wechat || "" || "kefu123";
+        const wechat = window.currentService?.wechat || window.wechat;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 alert('微信复制成功！');
@@ -736,8 +736,8 @@ body {
             
             let currentService = {
                 nickname: "",
-                wechat: "kefu123",
-                mobile: "400-123-4567"
+                wechat: "",
+                mobile: ""
             };
 
             
@@ -775,7 +775,7 @@ body {
 
             
             window.copyWechatGlobal = function(wechat) {
-                const copyWechat = wechat || window.currentService?.wechat || window.wechat || "kefu123";
+                const copyWechat = wechat || window.currentService?.wechat || window.wechat;
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         

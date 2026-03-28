@@ -1,7 +1,7 @@
 <div class="plugin-pc-qrcode-1">
     <div class="qrcode-card">
         <div class="qrcode-title">扫码咨询</div>
-        <img src="/api/{{wechatQrcode}}" alt="微信二维码" class="qrcode-img">
+        <img src="" alt="微信二维码" class="qrcode-img">
         <div class="qrcode-desc">微信：<span class="wechat">{{wechat}}</span></div>
         <button class="copy-btn" onclick="copyWechat()">复制微信</button>
     </div>
@@ -52,23 +52,9 @@
 </style>
 <script>
 (function() {
-    // 从客服列表中随机选取一个客服
-    function getRandomService() {
-        try {
-            const serviceList = JSON.parse(window.serviceListJSON || "[]");
-            if (serviceList.length > 0) {
-                const randomIndex = Math.floor(Math.random() * serviceList.length);
-                return serviceList[randomIndex];
-            }
-        } catch (e) {
-            console.error("解析客服列表失败", e);
-        }
-        return null;
-    }
-
     window.copyWechat = function() {
-        const service = getRandomService();
-        const wechat = service?.wechat || window.wechat || "{{wechat}}" || "kefu123";
+        // 优先使用模板已缓存的当前客服，和页面其他位置保持一致
+        const wechat = window.currentService?.wechat;
         navigator.clipboard.writeText(wechat).then(function() {
             alert('微信复制成功！');
         });
@@ -76,9 +62,9 @@
 
     // 页面加载完成后替换微信和二维码显示
     document.addEventListener('DOMContentLoaded', function() {
-        const service = getRandomService();
-        const wechat = service?.wechat || window.wechat || "{{wechat}}" || "kefu123";
-        const wechatQrcode = service?.wechat_qrcode || window.wechatQrcode || "{{qrcodeUrl}}" || "file/c20ad4d76fe97759aa27a0c99bff6710_20260325224404.png";
+        // 优先使用模板已缓存的当前客服，和页面其他位置保持一致，避免重复随机
+        const wechat = window.currentService?.wechat;
+        const wechatQrcode = window.currentService?.wechat_qrcode;
         const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
         const wechatQrcodeEl = document.querySelector('.plugin-pc-qrcode-1 .qrcode-img');
         if (wechatEl) {

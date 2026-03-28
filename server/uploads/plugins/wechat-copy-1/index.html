@@ -103,7 +103,7 @@
     // 复制微信逻辑
     window.copyWechat = function() {
         // 多重容错取微信账号
-        const wechat = window.currentService?.wechat || window.wechat || "{{wechat}}" || "kefu123";
+        const wechat = window.currentService?.wechat || window.wechat;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 showCopySuccessPopup();
