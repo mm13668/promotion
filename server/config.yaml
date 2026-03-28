@@ -91,6 +91,9 @@ jwt:
 local:
     path: uploads/file
     store-path: uploads/file
+    template-base-path: uploads/template/
+    plugin-base-path: uploads/plugins/
+    dist-base-path: uploads/dist/
 mcp:
     name: GVA_MCP
     version: v1.0.0

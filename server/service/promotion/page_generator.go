@@ -11,13 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
-)
-
-const (
-	templateBasePath = "/Users/wangjingjun/work/promotion/server/uploads/template/"
-	pluginBasePath   = "/Users/wangjingjun/work/promotion/server/uploads/plugins/"
-	distBasePath     = "/Users/wangjingjun/work/promotion/server/uploads/dist/"
 )
 
 // Reply 回复结构
@@ -94,7 +89,7 @@ type PageGenerator struct{}
 
 // LoadTemplate 加载模板
 func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (string, error) {
-	tpl, err := template.ParseFiles(filepath.Join(templateBasePath, templatePath, "index.html"))
+	tpl, err := template.ParseFiles(filepath.Join(global.GVA_CONFIG.Local.TemplateBasePath, templatePath, "index.html"))
 	if err != nil {
 		return "", err
 	}
@@ -106,7 +101,7 @@ func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (st
 	}
 
 	// 合并CSS
-	cssPath := filepath.Join(templateBasePath, templatePath, "style.css")
+	cssPath := filepath.Join(global.GVA_CONFIG.Local.TemplateBasePath, templatePath, "style.css")
 	if cssBytes, err := os.ReadFile(cssPath); err == nil {
 		cssStr := fmt.Sprintf("<style>%s</style>", string(cssBytes))
 		html := buf.String()
@@ -116,7 +111,7 @@ func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (st
 	}
 
 	// 合并JS
-	jsPath := filepath.Join(templateBasePath, templatePath, "script.js")
+	jsPath := filepath.Join(global.GVA_CONFIG.Local.TemplateBasePath, templatePath, "script.js")
 	if jsBytes, err := os.ReadFile(jsPath); err == nil {
 		jsStr := fmt.Sprintf("<script>%s</script>", string(jsBytes))
 		html := buf.String()
@@ -130,7 +125,7 @@ func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (st
 
 // LoadPlugin 加载插件
 func (g *PageGenerator) LoadPlugin(pluginName string, data map[string]string) (string, error) {
-	pluginPath := filepath.Join(pluginBasePath, pluginName, "index.html")
+	pluginPath := filepath.Join(global.GVA_CONFIG.Local.PluginBasePath, pluginName, "index.html")
 	contentBytes, err := os.ReadFile(pluginPath)
 	if err != nil {
 		return "", err
