@@ -1,8 +1,11 @@
 package initialize
 
 import (
+	"io"
 	"net/http"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/docs"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -66,8 +69,56 @@ func Routers() *gin.Engine {
 	// Router.StaticFile("/", "./dist/index.html") // 前端网页入口页面
 
 	Router.StaticFS(global.GVA_CONFIG.Local.StorePath, justFilesFilesystem{http.Dir(global.GVA_CONFIG.Local.StorePath)}) // Router.Use(middleware.LoadTls())  // 如果需要使用https 请打开此中间件 然后前往 core/server.go 将启动模式 更变为 Router.RunTLS("端口","你的cre/pem文件","你的key文件")
-	// 静态文件服务：uploads/dist目录
-	Router.StaticFS(global.GVA_CONFIG.Local.DistH5Path, http.Dir(global.GVA_CONFIG.Local.DistBasePath))
+	// 静态文件服务：uploads/dist目录，禁用index.html自动重定向
+	Router.GET(global.GVA_CONFIG.Local.DistH5Path+"/*filepath", func(c *gin.Context) {
+		fp := c.Param("filepath")
+		// 如果路径为空或者以/结尾，拼接index.html
+		if fp == "" || strings.HasSuffix(fp, "/") {
+			fp = path.Join(fp, "index.html")
+		}
+		fullPath := path.Join(global.GVA_CONFIG.Local.DistBasePath, fp)
+		// 检查文件是否存在
+		fileInfo, err := os.Stat(fullPath)
+		if err != nil || fileInfo.IsDir() {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		// 完全手动返回文件内容，彻底禁用自动重定向
+		file, err := os.Open(fullPath)
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		defer file.Close()
+		// 设置正确的Content-Type和缓存策略
+		contentType := "text/html"
+		cacheControl := "public, max-age=3600" // html文件缓存1小时
+		switch path.Ext(fullPath) {
+		case ".css":
+			contentType = "text/css"
+			cacheControl = "public, max-age=604800" // 静态资源缓存7天
+		case ".js":
+			contentType = "application/javascript"
+			cacheControl = "public, max-age=604800"
+		case ".png":
+			contentType = "image/png"
+			cacheControl = "public, max-age=604800"
+		case ".jpg", ".jpeg":
+			contentType = "image/jpeg"
+			cacheControl = "public, max-age=604800"
+		case ".gif":
+			contentType = "image/gif"
+			cacheControl = "public, max-age=604800"
+		case ".svg":
+			contentType = "image/svg+xml"
+			cacheControl = "public, max-age=604800"
+		}
+		c.Header("Content-Type", contentType)
+		c.Header("Cache-Control", cacheControl)
+		// 直接拷贝文件内容到响应
+		c.Status(http.StatusOK)
+		_, _ = io.Copy(c.Writer, file)
+	})
 	// 跨域，如需跨域可以打开下面的注释
 	// Router.Use(middleware.Cors()) // 直接放行全部跨域请求
 	// Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
