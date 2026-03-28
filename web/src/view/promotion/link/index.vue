@@ -67,9 +67,9 @@
             <el-button type="primary" link @click="openForm(row)">编辑</el-button>
             <el-button type="primary" link @click="openBasic(row)">基本设置</el-button>
             <el-button type="primary" link @click="openCompany(row)">资质公司</el-button>
-            <el-button type="primary" link @click="openCode(row)">代码设置</el-button>
-            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>
-            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>
+<!--            <el-button type="primary" link @click="openCode(row)">代码设置</el-button>-->
+<!--            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>-->
+<!--            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>-->
             <el-button type="success" link @click="showLink(row)">推广链接</el-button>
             <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
             <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
