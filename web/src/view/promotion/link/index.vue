@@ -73,6 +73,8 @@
             <el-button type="success" link @click="showLink(row)">推广链接</el-button>
             <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
             <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
+            <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
+            <el-button type="primary" link @click="openPhone(row)">登录信息</el-button>
             <el-button type="primary" link @click="remove(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -363,10 +365,80 @@
       <template #footer>
         <el-button @click="ocpcDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="saveOcpc">保存</el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
+       </template>
+     </el-dialog>
+
+     <!-- 留言信息弹窗 -->
+     <el-dialog v-model="messageDialogVisible" title="留言信息" width="900px">
+       <el-form :inline="true" :model="messageSearch" class="mb-4">
+         <el-form-item label="IP">
+           <el-input v-model="messageSearch.ip" placeholder="请输入IP" />
+         </el-form-item>
+         <el-form-item label="手机号">
+           <el-input v-model="messageSearch.phone" placeholder="请输入手机号" />
+         </el-form-item>
+         <el-form-item label="时间范围">
+           <el-date-picker v-model="messageSearch.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="getMessageList">查询</el-button>
+           <el-button @click="resetMessageSearch">重置</el-button>
+         </el-form-item>
+       </el-form>
+       <el-table :data="messageList" style="width:100%">
+<!--         <el-table-column prop="name" label="姓名" width="100" />-->
+         <el-table-column prop="phone" label="手机号" width="130" />
+         <el-table-column prop="content" label="留言内容" show-overflow-tooltip />
+         <el-table-column prop="ip" label="IP" />
+         <el-table-column prop="CreatedAt" label="提交时间" />
+       </el-table>
+       <el-pagination
+         class="mt-4"
+         background
+         layout="total, sizes, prev, pager, next, jumper"
+         :current-page="messagePage"
+         :page-size="messagePageSize"
+         :total="messageTotal"
+         @size-change="handleMessageSizeChange"
+         @current-change="handleMessageCurrentChange"
+       />
+     </el-dialog>
+
+     <!-- 登录信息弹窗 -->
+     <el-dialog v-model="phoneDialogVisible" title="登录信息" width="800px">
+       <el-form :inline="true" :model="phoneSearch" class="mb-4">
+         <el-form-item label="IP">
+           <el-input v-model="phoneSearch.ip" placeholder="请输入IP" />
+         </el-form-item>
+         <el-form-item label="手机号">
+           <el-input v-model="phoneSearch.phone" placeholder="请输入手机号" />
+         </el-form-item>
+         <el-form-item label="时间范围">
+           <el-date-picker v-model="phoneSearch.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="getPhoneList">查询</el-button>
+           <el-button @click="resetPhoneSearch">重置</el-button>
+         </el-form-item>
+       </el-form>
+       <el-table :data="phoneList" style="width:100%">
+         <el-table-column prop="phone" label="手机号" width="150" />
+         <el-table-column prop="ip" label="IP"  />
+         <el-table-column prop="CreatedAt" label="提交时间" />
+       </el-table>
+       <el-pagination
+         class="mt-4"
+         background
+         layout="total, sizes, prev, pager, next, jumper"
+         :current-page="phonePage"
+         :page-size="phonePageSize"
+         :total="phoneTotal"
+         @size-change="handlePhoneSizeChange"
+         @current-change="handlePhoneCurrentChange"
+       />
+     </el-dialog>
+   </div>
+ </template>
 
 <script setup>
 import { ref } from 'vue'
@@ -382,7 +454,8 @@ import {
   getLinkComment, upsertLinkComment,
   getRegionCategoryList, getPromotionGroupList, getPromotionDomainList,
   getAdPlatformList, getQAQuestionList, getTemplateWidgetList,
-  publishPromotionLink, updatePromotionLinkOcpc
+  publishPromotionLink, updatePromotionLinkOcpc,
+  getLandingMessageList, getLandingPhoneList
 } from '@/api/promotion'
 import { getBaseUrl } from '@/utils/format'
 import { useAppStore } from '@/pinia/modules/app'
@@ -572,6 +645,23 @@ const ocpcDialogVisible = ref(false)
 const currentLink = ref({ mobileUrl: '', pcUrl: '' })
 const ocpcForm = ref({ ID: 0, platformId: null, ocpcKey: '', ocpcSecret: '', ocpcConversionType: null, ocpcCallbackType: null })
 
+// 留言信息相关
+const messageDialogVisible = ref(false)
+const currentLinkId = ref(0)
+const messageSearch = ref({ ip: '', phone: '', dateRange: [] })
+const messageList = ref([])
+const messagePage = ref(1)
+const messagePageSize = ref(10)
+const messageTotal = ref(0)
+
+// 登录信息相关
+const phoneDialogVisible = ref(false)
+const phoneSearch = ref({ ip: '', phone: '', dateRange: [] })
+const phoneList = ref([])
+const phonePage = ref(1)
+const phonePageSize = ref(10)
+const phoneTotal = ref(0)
+
 // 显示推广链接
 const showLink = (row) => {
   currentLink.value = { mobileUrl: row.mobileUrl || '', pcUrl: row.pcUrl || '' }
@@ -628,6 +718,90 @@ const openComment = async (row) => {
 const submitComment = async () => {
   const res = await upsertLinkComment(comment.value)
   if (res.code === 0) { ElMessage.success('保存成功'); drawerComment.value = false }
+}
+
+// 打开留言信息弹窗
+const openMessage = (row) => {
+  currentLinkId.value = row.ID
+  messageSearch.value = { ip: '', phone: '', dateRange: [] }
+  messagePage.value = 1
+  messagePageSize.value = 10
+  getMessageList()
+  messageDialogVisible.value = true
+}
+
+// 获取留言列表
+const getMessageList = async () => {
+  const params = {
+    linkId: currentLinkId.value,
+    page: messagePage.value,
+    pageSize: messagePageSize.value,
+    ip: messageSearch.value.ip,
+    phone: messageSearch.value.phone
+  }
+  if (messageSearch.value.dateRange && messageSearch.value.dateRange.length === 2) {
+    params.startTime = messageSearch.value.dateRange[0]
+    params.endTime = messageSearch.value.dateRange[1]
+  }
+  const res = await getLandingMessageList(params)
+  if (res.code === 0) {
+    messageList.value = res.data.list
+    messageTotal.value = res.data.total
+    messagePage.value = res.data.page
+    messagePageSize.value = res.data.pageSize
+  }
+}
+
+// 留言分页事件
+const handleMessageSizeChange = (val) => { messagePageSize.value = val; getMessageList() }
+const handleMessageCurrentChange = (val) => { messagePage.value = val; getMessageList() }
+
+// 重置留言搜索
+const resetMessageSearch = () => {
+  messageSearch.value = { ip: '', phone: '', dateRange: [] }
+  getMessageList()
+}
+
+// 打开登录信息弹窗
+const openPhone = (row) => {
+  currentLinkId.value = row.ID
+  phoneSearch.value = { ip: '', phone: '', dateRange: [] }
+  phonePage.value = 1
+  phonePageSize.value = 10
+  getPhoneList()
+  phoneDialogVisible.value = true
+}
+
+// 获取登录列表
+const getPhoneList = async () => {
+  const params = {
+    linkId: currentLinkId.value,
+    page: phonePage.value,
+    pageSize: phonePageSize.value,
+    ip: phoneSearch.value.ip,
+    phone: phoneSearch.value.phone
+  }
+  if (phoneSearch.value.dateRange && phoneSearch.value.dateRange.length === 2) {
+    params.startTime = phoneSearch.value.dateRange[0]
+    params.endTime = phoneSearch.value.dateRange[1]
+  }
+  const res = await getLandingPhoneList(params)
+  if (res.code === 0) {
+    phoneList.value = res.data.list
+    phoneTotal.value = res.data.total
+    phonePage.value = res.data.page
+    phonePageSize.value = res.data.pageSize
+  }
+}
+
+// 登录分页事件
+const handlePhoneSizeChange = (val) => { phonePageSize.value = val; getPhoneList() }
+const handlePhoneCurrentChange = (val) => { phonePage.value = val; getPhoneList() }
+
+// 重置登录搜索
+const resetPhoneSearch = () => {
+  phoneSearch.value = { ip: '', phone: '', dateRange: [] }
+  getPhoneList()
 }
 </script>
 

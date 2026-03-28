@@ -298,3 +298,13 @@ export const publishPromotionLink = (data) => {
 export const updatePromotionLinkOcpc = (data) => {
   return service({ url: '/promotion/updatePromotionLinkOcpc', method: 'put', data })
 }
+
+// 落地页留言列表
+export const getLandingMessageList = (params) => {
+  return service({ url: '/promotion/landingMessage/list', method: 'get', params })
+}
+
+// 落地页手机号列表
+export const getLandingPhoneList = (params) => {
+  return service({ url: '/promotion/landingPhone/list', method: 'get', params })
+}

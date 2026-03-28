@@ -2,6 +2,7 @@ package promotion
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 )
 
 type LandingMessage struct {
@@ -17,4 +18,13 @@ type LandingMessage struct {
 
 func (LandingMessage) TableName() string {
 	return "landing_messages"
+}
+
+type LandingMessageSearch struct {
+	LinkID    string `json:"linkId" form:"linkId"`
+	Ip        string `json:"ip" form:"ip"`
+	Phone     string `json:"phone" form:"phone"`
+	StartTime string `json:"startTime" form:"startTime"`
+	EndTime   string `json:"endTime" form:"endTime"`
+	request.PageInfo
 }

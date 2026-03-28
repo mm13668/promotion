@@ -127,5 +127,9 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.PUT("updatePromotionDomain", promoApi.DomainApi.UpdatePromotionDomain)
 		group.GET("findPromotionDomain", promoApi.DomainApi.FindPromotionDomain)
 		group.GET("getPromotionDomainList", promoApi.DomainApi.GetPromotionDomainList)
+
+		// 落地页留言与登录信息
+		group.GET("landingMessage/list", promoApi.GetLandingMessageList)
+		group.GET("landingPhone/list", promoApi.GetLandingPhoneList)
 	}
 }

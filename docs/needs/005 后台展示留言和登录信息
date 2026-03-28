@@ -1,0 +1,14 @@
+# 需求
+后台在推广链接那里展示留言和用户登录手机号码的信息
+
+# 实现
+在页面 /Users/wangjingjun/work/promotion/web/src/view/promotion/link/index.vue 对应推广链接后台增加两个按钮，分别是 留言信息 和 登录信息
+点击按钮，中间弹出框展示列表信息，支持根据ip或者手机号筛选数据
+
+## 留言信息
+表在/Users/wangjingjun/work/promotion/docs/plan/promotion_landing_message_schema.sql
+
+## 登录信息
+表在 /Users/wangjingjun/work/promotion/docs/plan/promotion_landing_phone_schema.sql
+
+# 实现前后端逻辑
