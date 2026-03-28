@@ -1,0 +1,23 @@
+# 记录用户访问落地页的信息
+
+## 浏览记录
+
+id 用户ip 用户浏览页面时间 用户从哪一个链接进来的 是否复制 复制的客服号码 复制的客服昵称 用户的其他信息等
+
+## 实现
+每一个用户，只有一条记录，唯一标识是ID；
+用户进来时，上报浏览信息，记录数据返回ID保存在用户本地
+开始计算浏览时间，定时上报浏览时间
+当用户点击复制微信信息时，需要上报复制客户手机号码和客服昵称
+如果还能拿得到其他信息，也需要保存记录
+
+
+## 设计表
+设计创建表语句，保存在/Users/wangjingjun/work/promotion/docs/plan目录下
+
+## 其他
+模板目录 /Users/wangjingjun/work/promotion/server/uploads/template
+插件目录 /Users/wangjingjun/work/promotion/server/uploads/plugins
+手机端底部插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/bottom-bar-1
+PC端右侧插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/pc-qrcode-1
+微信复制插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/wechat-copy-1

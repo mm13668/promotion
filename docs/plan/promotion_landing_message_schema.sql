@@ -4,6 +4,7 @@ CREATE TABLE `landing_messages` (
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
   `link_id` varchar(255) NOT NULL COMMENT '推广链接ID',
+  `link_url` varchar(255) NOT NULL COMMENT '访问链接',
   `name` varchar(255) DEFAULT NULL COMMENT '留言人姓名',
   `phone` varchar(32) DEFAULT NULL COMMENT '留言人手机号',
   `content` text NOT NULL COMMENT '留言内容',
