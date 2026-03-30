@@ -8,6 +8,7 @@ import (
 
 type LandingVisit struct {
 	global.GVA_MODEL
+	LinkId                uint      `json:"linkId" gorm:"column:link_id;comment:推广链接ID"`
 	Ip                    string    `json:"ip" gorm:"column:ip;comment:访问IP"`
 	Referer               string    `json:"referer" gorm:"column:referer;comment:来源链接"`
 	UserAgent             string    `json:"userAgent" gorm:"column:user_agent;comment:浏览器UA"`

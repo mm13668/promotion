@@ -921,7 +921,7 @@ body {
                         body: JSON.stringify({
                             referer: document.referrer,
                             userAgent: navigator.userAgent,
-                            linkId: window.LINK_ID
+                            linkId: Number(window.LINK_ID)
                         })
                     }).then(res => res.json()).then(res => {
                         if (res.code === 0 && res.data) {

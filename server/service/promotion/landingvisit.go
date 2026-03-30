@@ -14,6 +14,15 @@ var LandingVisitServiceApp = new(LandingVisitService)
 
 // CreateLandingVisit 初始化创建访问记录
 func (l *LandingVisitService) CreateLandingVisit(ctx context.Context, visit *promotion.LandingVisit) (err error) {
+	// 先查询是否存在相同IP和LinkId的记录
+	var existingVisit promotion.LandingVisit
+	err = global.GVA_DB.Where("ip = ? AND link_id = ?", visit.Ip, visit.LinkId).First(&existingVisit).Error
+	if err == nil {
+		// 存在记录，直接返回已有ID
+		visit.ID = existingVisit.ID
+		return nil
+	}
+	// 不存在记录，创建新记录
 	err = global.GVA_DB.Create(visit).Error
 	return err
 }

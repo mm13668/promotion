@@ -4,6 +4,7 @@ CREATE TABLE `landing_visits` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
+  `link_id` bigint unsigned NOT NULL COMMENT '推广链接ID',
   `ip` varchar(45) NOT NULL COMMENT '访问IP',
   `referer` text COMMENT '来源链接',
   `user_agent` text COMMENT '浏览器UA',
@@ -17,7 +18,9 @@ CREATE TABLE `landing_visits` (
   `copied_service_nickname` varchar(64) COMMENT '复制的客服昵称',
   `last_report_at` datetime DEFAULT NULL COMMENT '最后上报时间',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_ip_link_id` (`ip`, `link_id`, `deleted_at`),
   KEY `idx_ip` (`ip`),
+  KEY `idx_link_id` (`link_id`),
   KEY `idx_is_copied` (`is_copied`),
   KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='落地页用户访问记录表';
