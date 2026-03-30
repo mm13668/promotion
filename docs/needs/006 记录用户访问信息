@@ -16,8 +16,38 @@ id 用户ip 用户浏览页面时间 用户从哪一个链接进来的 是否复
 设计创建表语句，保存在/Users/wangjingjun/work/promotion/docs/plan目录下
 
 ## 其他
-模板目录 /Users/wangjingjun/work/promotion/server/uploads/template
-插件目录 /Users/wangjingjun/work/promotion/server/uploads/plugins
-手机端底部插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/bottom-bar-1
-PC端右侧插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/pc-qrcode-1
-微信复制插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/wechat-copy-1
+    模板目录 /Users/wangjingjun/work/promotion/server/uploads/template
+    插件目录 /Users/wangjingjun/work/promotion/server/uploads/plugins
+    手机端底部插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/bottom-bar-1
+    PC端右侧插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/pc-qrcode-1
+    微信复制插件 /Users/wangjingjun/work/promotion/server/uploads/plugins/wechat-copy-1
+
+## 实现前后端逻辑
+
+## 参考
+后端可以参考留言信息收集
+```
+type LandingMessageRouter struct{}
+
+func (s *LandingMessageRouter) InitLandingMessageRouter(PublicRouter *gin.RouterGroup) {
+	// 公开接口，不需要认证
+	landingMessagePublicRouter := PublicRouter.Group("promotion/landingMessage")
+	{
+		landingMessagePublicRouter.POST("create", promoApi.CreateLandingMessage)
+	}
+}
+```
+
+## 路由文件
+/Users/wangjingjun/work/promotion/server/router/promotion/landingvisit.go
+
+## 生成静态html的接口
+// PublishPromotionLink 发布推广链接，生成移动端和PC端页面
+func (s *LinkService) PublishPromotionLink(linkId uint) error {
+
+}
+## 插件和模版是事先实现的，放在
+1. 生成的模版文件放在目录 /Users/wangjingjun/work/promotion/server/uploads/template 下，mobile是移动端，pc是PC端
+2. 生成的模版文件放在目录 /Users/wangjingjun/work/promotion/server/uploads/plugins 下，以wechat-copy开头是手机复制插件，bottom-bar开头是手机底部插件,pc-qrcode开头是电脑端二维码插件
+
+## 根据这些模版插件，生成静态推广index.html页面，这个需求需要对此index.html网页的访问，进行收集用户访问的一些数据

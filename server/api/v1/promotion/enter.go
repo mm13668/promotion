@@ -11,6 +11,7 @@ type ApiGroup struct {
 	QAApi
 	AdApi
 	ActivityApi
+	LandingVisitApi
 }
 
 var (

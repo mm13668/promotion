@@ -176,7 +176,7 @@ func Routers() *gin.Engine {
 
 	// 注册业务路由
 	initBizRouter(PrivateGroup, PublicGroup)
-	initBizPublicRouter(PublicGroup)
+	initBizPublicRouter(PrivateGroup, PublicGroup)
 
 	global.GVA_ROUTERS = Router.Routes()
 

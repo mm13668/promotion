@@ -179,6 +179,20 @@
                         } else {
                             alert('微信复制成功，快去添加好友吧！');
                         }
+                        // 上报复制事件
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            });
+                        }
                     }).catch(function() {
                         fallbackCopy(copyWechat);
                     });
@@ -198,6 +212,20 @@
                         showCopySuccessPopup();
                     } else {
                         alert('微信复制成功，快去添加好友吧！');
+                    }
+                    // 上报复制事件
+                    if (window.LANDING_VISIT_ID) {
+                        fetch('/promotion/landingVisit/reportCopy', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: window.LANDING_VISIT_ID,
+                                servicePhone: window.currentService?.mobile || '',
+                                serviceNickname: window.currentService?.nickname || ''
+                            })
+                        });
                     }
                 }
             }
@@ -235,6 +263,60 @@
                 document.querySelectorAll('.phone').forEach(el => {
                     el.textContent = currentService.mobile;
                 });
+                
+                // 上报访问信息
+                // 先检查本地是否已有记录ID
+                const savedVisitId = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+                if (savedVisitId) {
+                    window.LANDING_VISIT_ID = savedVisitId;
+                    // 定时上报时长，每5秒上报一次
+                    setInterval(() => {
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportDuration', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: window.LANDING_VISIT_ID,
+                                    addDuration: 5
+                                })
+                            });
+                        }
+                    }, 5000);
+                } else {
+                    fetch('/api/promotion/landingVisit/init', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            referer: document.referrer,
+                            userAgent: navigator.userAgent,
+                            linkId: window.LINK_ID
+                        })
+                    }).then(res => res.json()).then(res => {
+                        if (res.code === 0 && res.data) {
+                            window.LANDING_VISIT_ID = res.data;
+                            localStorage.setItem('landing_visit_id_' + window.location.pathname, res.data);
+                            // 定时上报时长，每5秒上报一次
+                            setInterval(() => {
+                                if (window.LANDING_VISIT_ID) {
+                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            id: Number(window.LANDING_VISIT_ID),
+                                            addDuration: 5
+                                        })
+                                    });
+                                }
+                            }, 5000);
+                        }
+                    });
+                }
             });
         })();
     </script>

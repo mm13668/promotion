@@ -583,6 +583,20 @@ body {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 showCopySuccessPopup();
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            });
+                }
             }).catch(function() {
                 fallbackCopy(wechat);
             });
@@ -599,6 +613,20 @@ body {
         document.execCommand('copy');
         document.body.removeChild(input);
         showCopySuccessPopup();
+        // 上报复制事件
+        if (window.LANDING_VISIT_ID) {
+            fetch('/promotion/landingVisit/reportCopy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: window.LANDING_VISIT_ID,
+                    servicePhone: window.currentService?.mobile || '',
+                    serviceNickname: window.currentService?.nickname || ''
+                })
+            });
+        }
     }
 
     // 显示复制成功弹窗
@@ -784,6 +812,20 @@ body {
                         } else {
                             alert('微信复制成功，快去添加好友吧！');
                         }
+                        
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            });
+                        }
                     }).catch(function() {
                         fallbackCopy(copyWechat);
                     });
@@ -803,6 +845,20 @@ body {
                         showCopySuccessPopup();
                     } else {
                         alert('微信复制成功，快去添加好友吧！');
+                    }
+                    
+                    if (window.LANDING_VISIT_ID) {
+                        fetch('/promotion/landingVisit/reportCopy', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: window.LANDING_VISIT_ID,
+                                servicePhone: window.currentService?.mobile || '',
+                                serviceNickname: window.currentService?.nickname || ''
+                            })
+                        });
                     }
                 }
             }
@@ -840,6 +896,60 @@ body {
                 document.querySelectorAll('.phone').forEach(el => {
                     el.textContent = currentService.mobile;
                 });
+                
+                
+                
+                const savedVisitId = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+                if (savedVisitId) {
+                    window.LANDING_VISIT_ID = savedVisitId;
+                    
+                    setInterval(() => {
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportDuration', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: window.LANDING_VISIT_ID,
+                                    addDuration: 5
+                                })
+                            });
+                        }
+                    }, 5000);
+                } else {
+                    fetch('/api/promotion/landingVisit/init', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            referer: document.referrer,
+                            userAgent: navigator.userAgent,
+                            linkId: window.LINK_ID
+                        })
+                    }).then(res => res.json()).then(res => {
+                        if (res.code === 0 && res.data) {
+                            window.LANDING_VISIT_ID = res.data;
+                            localStorage.setItem('landing_visit_id_' + window.location.pathname, res.data);
+                            
+                            setInterval(() => {
+                                if (window.LANDING_VISIT_ID) {
+                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            id: Number(window.LANDING_VISIT_ID),
+                                            addDuration: 5
+                                        })
+                                    });
+                                }
+                            }, 5000);
+                        }
+                    });
+                }
             });
         })();
     </script>

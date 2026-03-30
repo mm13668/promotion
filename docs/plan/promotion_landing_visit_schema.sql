@@ -1,0 +1,23 @@
+-- 落地页用户访问记录表
+CREATE TABLE `landing_visits` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
+  `ip` varchar(45) NOT NULL COMMENT '访问IP',
+  `referer` text COMMENT '来源链接',
+  `user_agent` text COMMENT '浏览器UA',
+  `device_type` varchar(32) COMMENT '设备类型',
+  `os` varchar(32) COMMENT '操作系统',
+  `browser` varchar(64) COMMENT '浏览器信息',
+  `region` varchar(128) COMMENT 'IP解析地区',
+  `duration` int NOT NULL DEFAULT '0' COMMENT '总浏览时长(秒)',
+  `is_copied` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否复制客服信息',
+  `copied_service_phone` varchar(32) COMMENT '复制的客服号码',
+  `copied_service_nickname` varchar(64) COMMENT '复制的客服昵称',
+  `last_report_at` datetime DEFAULT NULL COMMENT '最后上报时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_ip` (`ip`),
+  KEY `idx_is_copied` (`is_copied`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='落地页用户访问记录表';

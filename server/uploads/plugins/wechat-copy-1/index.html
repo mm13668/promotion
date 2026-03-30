@@ -107,6 +107,20 @@
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 showCopySuccessPopup();
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            });
+                }
             }).catch(function() {
                 fallbackCopy(wechat);
             });
@@ -123,6 +137,20 @@
         document.execCommand('copy');
         document.body.removeChild(input);
         showCopySuccessPopup();
+        // 上报复制事件
+        if (window.LANDING_VISIT_ID) {
+            fetch('/promotion/landingVisit/reportCopy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: window.LANDING_VISIT_ID,
+                    servicePhone: window.currentService?.mobile || '',
+                    serviceNickname: window.currentService?.nickname || ''
+                })
+            });
+        }
     }
 
     // 显示复制成功弹窗
