@@ -391,8 +391,8 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 替换客服信息
 	pcData.ServiceListJSON = serviceListJSON
 	pcPlugins := map[string]string{
-		"qrcode":          qrcodePluginName,
-		"serviceListJSON": serviceListJSON,
+		"qrcode": qrcodePluginName,
+		"copy":   copyPluginName, // PC端使用移动端的复制插件
 	}
 	_, err = generator.GeneratePageWithData(pcData, pcTemplateName, pcPlugins, false, filepath.Join(randomDir, "pc", "index.html"))
 	if err != nil {

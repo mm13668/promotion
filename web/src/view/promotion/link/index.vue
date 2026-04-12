@@ -58,9 +58,9 @@
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="visitCount" label="访问" width="80" />
         <el-table-column prop="copyCount" label="复制" width="80" />
-        <el-table-column prop="inquiryCount" label="咨询" width="80" />
-        <el-table-column prop="conversionCount" label="转化" width="80" />
-        <el-table-column prop="followCount" label="到粉" width="80" />
+<!--        <el-table-column prop="inquiryCount" label="咨询" width="80" />-->
+<!--        <el-table-column prop="conversionCount" label="转化" width="80" />-->
+<!--        <el-table-column prop="followCount" label="到粉" width="80" />-->
         <el-table-column prop="sort" label="排序" width="100" />
         <el-table-column fixed="right" label="操作" width="560">
           <template #default="{ row }">

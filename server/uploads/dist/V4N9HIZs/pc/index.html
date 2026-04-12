@@ -507,7 +507,7 @@ body {
             <div class="header-content">
                 <img src="/api/uploads/file/d708d3b6d61633b9bd848ec6acdb8838_20260321235742.png" alt="logo" class="logo">
                 <nav class="nav">
-                    <a href="1" target="_blank">官网首页</a>
+                    <a href="https://www.baidu.com" target="_blank">官网首页</a>
                     <a href="1" target="_blank">关于我们</a>
                 </nav>
             </div>
@@ -642,9 +642,383 @@ body {
                         </div>
                     </div>
                 </div>
-                <div class="sidebar">
-                    
-                    <div class="plugin-pc-qrcode-1">
+                 <div class="sidebar">
+                     
+                     <!-- 全局成功弹窗模板 -->
+<div id="copySuccessPopup" style="display: none;">
+    <div class="popup-overlay" onclick="hideCopySuccessPopup()"></div>
+    <div class="popup-container">
+        <div class="popup-close" onclick="hideCopySuccessPopup()">×</div>
+        <div class="popup-content">
+            <div class="success-icon-wrapper">
+                <div class="success-icon">
+                    <svg viewBox="0 0 52 52" width="52" height="52">
+                        <circle cx="26" cy="26" r="24" fill="#07c160"/>
+                        <path d="M14 27l8 8 16-16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="popup-title">微信号已复制</div>
+            <div class="popup-subtitle">快去微信添加好友吧</div>
+            <div class="wechat-info">
+                <div class="wechat-label">微信号</div>
+                <div class="wechat-value" id="wechatValue">--</div>
+            </div>
+            <div class="popup-actions">
+                <button class="action-btn call-btn" onclick="callCustomerService()">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    拨打电话
+                </button>
+                <button class="action-btn wechat-btn" onclick="goToWechat()">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    去微信
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 弹窗通用样式 */
+#copySuccessPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.popup-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 380px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+.popup-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.popup-close:hover {
+    background: #e5e5e5;
+    color: #333;
+    transform: rotate(90deg);
+}
+
+.popup-content {
+    padding: 8px 0;
+}
+
+.success-icon-wrapper {
+    margin-bottom: 20px;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.popup-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.popup-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.wechat-info {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    border: 1px solid #bbf7d0;
+}
+
+.wechat-label {
+    font-size: 12px;
+    color: #166534;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.wechat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #15803d;
+    letter-spacing: 0.5px;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.call-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.call-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.wechat-btn {
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.3);
+}
+
+.wechat-btn:hover {
+    background: linear-gradient(135deg, #06ad56 0%, #059e4d 100%);
+    box-shadow: 0 6px 16px rgba(7, 193, 96, 0.4);
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .popup-container {
+        width: 85%;
+        padding: 28px 20px;
+    }
+    
+    .popup-title {
+        font-size: 20px;
+    }
+    
+    .action-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // 复制微信逻辑
+    window.copyWechat = function() {
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                showCopySuccessPopup();
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            });
+                }
+            }).catch(function() {
+                fallbackCopy(wechat);
+            });
+        } else {
+            fallbackCopy(wechat);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showCopySuccessPopup();
+        // 上报复制事件
+        if (window.LANDING_VISIT_ID) {
+            fetch('/api/promotion/landingVisit/reportCopy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: window.LANDING_VISIT_ID,
+                    servicePhone: window.currentService?.mobile || '',
+                    serviceNickname: window.currentService?.nickname || ''
+                })
+            });
+        }
+    }
+
+    // 显示复制成功弹窗
+    window.showCopySuccessPopup = function() {
+        const popup = document.getElementById('copySuccessPopup');
+        if (popup) {
+            popup.style.display = 'block';
+            // 显示微信号
+            const wechatValue = document.getElementById('wechatValue');
+            if (wechatValue) {
+                wechatValue.textContent = window.currentService?.wechat || window.wechat || '--';
+            }
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        } else {
+            // 降级处理
+            alert('微信复制成功，快去添加好友吧！');
+        }
+    }
+
+    // 隐藏弹窗
+    window.hideCopySuccessPopup = function() {
+        const popup = document.getElementById('copySuccessPopup');
+        if (popup) {
+            popup.style.display = 'none';
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+        }
+    }
+
+    // 拨打电话
+    window.callCustomerService = function() {
+        const phone = window.currentService?.mobile || window.phone || "400-123-4567";
+        // 判断是否是移动端
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            window.location.href = "tel:" + phone;
+        } else {
+            alert("请使用手机拨打客服电话：" + phone);
+        }
+        hideCopySuccessPopup();
+    }
+
+    // 去微信
+    window.goToWechat = function() {
+        const wechat = window.currentService?.wechat || window.wechat;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // 移动端：尝试跳转到微信app
+            // 方式1：使用微信URL Scheme
+            window.location.href = "weixin://dl/chat?username=" + wechat;
+            
+            // 如果跳转失败，延迟后跳转到微信下载页面
+            setTimeout(function() {
+                window.location.href = "https://weixin.qq.com/";
+            }, 3000);
+        } else {
+            // PC端：跳转到微信网页版
+            window.open("https://weixin.qq.com/", "_blank");
+        }
+        hideCopySuccessPopup();
+    }
+
+    // 页面加载完成后把弹窗添加到body，解决插件注入位置问题
+    document.addEventListener('DOMContentLoaded', function() {
+        const popup = document.getElementById('copySuccessPopup');
+        if (popup && popup.parentNode !== document.body) {
+            document.body.appendChild(popup);
+        }
+    });
+})();
+</script>
+                     
+                     <div class="plugin-pc-qrcode-1">
     <div class="qrcode-card">
         <div class="qrcode-title">扫码咨询</div>
         <img src="" alt="微信二维码" class="qrcode-img">
@@ -698,21 +1072,99 @@ body {
 </style>
 <script>
 (function() {
-    window.copyWechat = function() {
+    // PC端二维码插件的复制方法，调用手机端复制插件的弹窗
+    window.copyWechatFromQrcode = function() {
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致
         const wechat = window.currentService?.wechat;
-        navigator.clipboard.writeText(wechat).then(function() {
-            alert('微信复制成功！');
-        });
+        // 调用手机端复制插件的复制逻辑
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                // 调用手机端复制插件的弹窗方法
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                    fetch('/api/promotion/landingVisit/reportCopy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: Number(window.LANDING_VISIT_ID),
+                            servicePhone: window.currentService?.mobile || '',
+                            serviceNickname: window.currentService?.nickname || ''
+                        })
+                    });
+                }
+            }).catch(function() {
+                // 降级处理
+                const input = document.createElement('input');
+                input.value = wechat;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                    fetch('/api/promotion/landingVisit/reportCopy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: Number(window.LANDING_VISIT_ID),
+                            servicePhone: window.currentService?.mobile || '',
+                            serviceNickname: window.currentService?.nickname || ''
+                        })
+                    });
+                }
+            });
+        } else {
+            // 降级处理
+            const input = document.createElement('input');
+            input.value = wechat;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            if (window.showCopySuccessPopup) {
+                window.showCopySuccessPopup();
+            } else {
+                alert('微信复制成功！');
+            }
+            // 上报复制事件
+            if (window.LANDING_VISIT_ID) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: Number(window.LANDING_VISIT_ID),
+                        servicePhone: window.currentService?.mobile || '',
+                        serviceNickname: window.currentService?.nickname || ''
+                    })
+                });
+            }
+        }
     }
 
-    // 页面加载完成后替换微信和二维码显示
+    // 页面加载完成后替换微信和二维码显示，并修改按钮的onclick
     document.addEventListener('DOMContentLoaded', function() {
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致，避免重复随机
         const wechat = window.currentService?.wechat;
         const wechatQrcode = window.currentService?.wechat_qrcode;
         const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
         const wechatQrcodeEl = document.querySelector('.plugin-pc-qrcode-1 .qrcode-img');
+        const copyBtn = document.querySelector('.plugin-pc-qrcode-1 .copy-btn');
         if (wechatEl) {
             wechatEl.textContent = wechat;
         }
@@ -723,10 +1175,16 @@ body {
                 this.src = "https://picsum.photos/200/200";
             }
         }
+        // 修改复制按钮的onclick事件，调用PC端二维码插件的复制方法
+        if (copyBtn) {
+            copyBtn.onclick = function() {
+                window.copyWechatFromQrcode();
+            };
+        }
     });
 })();
 </script>
-                </div>
+                 </div>
             </div>
         </main>
         <footer class="footer">

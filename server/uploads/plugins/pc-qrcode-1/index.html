@@ -52,21 +52,99 @@
 </style>
 <script>
 (function() {
-    window.copyWechat = function() {
+    // PC端二维码插件的复制方法，调用手机端复制插件的弹窗
+    window.copyWechatFromQrcode = function() {
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致
         const wechat = window.currentService?.wechat;
-        navigator.clipboard.writeText(wechat).then(function() {
-            alert('微信复制成功！');
-        });
+        // 调用手机端复制插件的复制逻辑
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                // 调用手机端复制插件的弹窗方法
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                    fetch('/api/promotion/landingVisit/reportCopy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: Number(window.LANDING_VISIT_ID),
+                            servicePhone: window.currentService?.mobile || '',
+                            serviceNickname: window.currentService?.nickname || ''
+                        })
+                    });
+                }
+            }).catch(function() {
+                // 降级处理
+                const input = document.createElement('input');
+                input.value = wechat;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                // 上报复制事件
+                if (window.LANDING_VISIT_ID) {
+                    fetch('/api/promotion/landingVisit/reportCopy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: Number(window.LANDING_VISIT_ID),
+                            servicePhone: window.currentService?.mobile || '',
+                            serviceNickname: window.currentService?.nickname || ''
+                        })
+                    });
+                }
+            });
+        } else {
+            // 降级处理
+            const input = document.createElement('input');
+            input.value = wechat;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            if (window.showCopySuccessPopup) {
+                window.showCopySuccessPopup();
+            } else {
+                alert('微信复制成功！');
+            }
+            // 上报复制事件
+            if (window.LANDING_VISIT_ID) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: Number(window.LANDING_VISIT_ID),
+                        servicePhone: window.currentService?.mobile || '',
+                        serviceNickname: window.currentService?.nickname || ''
+                    })
+                });
+            }
+        }
     }
 
-    // 页面加载完成后替换微信和二维码显示
+    // 页面加载完成后替换微信和二维码显示，并修改按钮的onclick
     document.addEventListener('DOMContentLoaded', function() {
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致，避免重复随机
         const wechat = window.currentService?.wechat;
         const wechatQrcode = window.currentService?.wechat_qrcode;
         const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
         const wechatQrcodeEl = document.querySelector('.plugin-pc-qrcode-1 .qrcode-img');
+        const copyBtn = document.querySelector('.plugin-pc-qrcode-1 .copy-btn');
         if (wechatEl) {
             wechatEl.textContent = wechat;
         }
@@ -76,6 +154,12 @@
                 // 图片加载失败时使用默认占位图
                 this.src = "https://picsum.photos/200/200";
             }
+        }
+        // 修改复制按钮的onclick事件，调用PC端二维码插件的复制方法
+        if (copyBtn) {
+            copyBtn.onclick = function() {
+                window.copyWechatFromQrcode();
+            };
         }
     });
 })();

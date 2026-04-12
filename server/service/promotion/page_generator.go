@@ -252,6 +252,13 @@ func (g *PageGenerator) GeneratePageWithData(data TemplateData, templateName str
 			}
 		}
 	} else {
+		// 注入PC端复制插件
+		if copyPluginName, ok := plugins["copy"]; ok && copyPluginName != "" {
+			if pluginHtml, err := g.LoadPlugin(copyPluginName, pluginData); err == nil {
+				html = g.InjectPlugin(html, `<div id="plugin-copy"></div>`, pluginHtml)
+			}
+		}
+
 		// 注入PC端二维码插件
 		if qrcodePluginName, ok := plugins["qrcode"]; ok && qrcodePluginName != "" {
 			if pluginHtml, err := g.LoadPlugin(qrcodePluginName, pluginData); err == nil {
