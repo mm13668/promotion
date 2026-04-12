@@ -48,23 +48,43 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 	return err
 }
 
-// GetLandingVisitList 分页查询访问记录
+// GetLandingVisitList 分页查询访问记录列表
 func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSearch) (list []promotion.LandingVisit, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.LandingVisit{})
 
-	if info.Ip != "" {
-		db = db.Where("ip LIKE ?", "%"+info.Ip+"%")
+	// 推广链接筛选
+	if info.LinkId != nil {
+		db = db.Where("link_id = ?", *info.LinkId)
 	}
+
+	// IP 精准搜索
+	if info.Ip != "" {
+		db = db.Where("ip = ?", info.Ip)
+	}
+
+	// referer 关键字搜索
+	if info.Referer != "" {
+		db = db.Where("referer LIKE ?", "%"+info.Referer+"%")
+	}
+
+	// request_referer 关键字搜索
+	if info.RequestReferer != "" {
+		db = db.Where("request_referer LIKE ?", "%"+info.RequestReferer+"%")
+	}
+
+	// 是否复制客服信息筛选
 	if info.IsCopied != nil {
 		db = db.Where("is_copied = ?", *info.IsCopied)
 	}
+
+	// 创建时间范围筛选
 	if info.StartTime != "" {
-		db = db.Where("created_at >= ?", info.StartTime)
+		db = db.Where("created_at >= ?", info.StartTime+" 00:00:00")
 	}
 	if info.EndTime != "" {
-		db = db.Where("created_at <= ?", info.EndTime)
+		db = db.Where("created_at <= ?", info.EndTime+" 23:59:59")
 	}
 
 	err = db.Count(&total).Error

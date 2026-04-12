@@ -4,12 +4,13 @@ import "github.com/flipped-aurora/gin-vue-admin/server/global"
 
 type PromotionLink struct {
 	global.GVA_MODEL
-	PlatformID uint  `json:"platformId" gorm:"index:idx_link_platform"`
-	AccountID  *uint `json:"accountId"`
-	RegionID   *uint `json:"regionId" gorm:"index:idx_link_region"`
-	GroupID    *uint `json:"groupId" gorm:"index:idx_link_group"`
-	DomainID   *uint `json:"domainId" gorm:"index:idx_link_domain"`
-	QuestionID *uint `json:"questionId"`
+	PlatformID uint        `json:"platformId" gorm:"index:idx_link_platform"`
+	AccountID  *uint       `json:"accountId"`
+	RegionID   *uint       `json:"regionId" gorm:"index:idx_link_region"`
+	GroupID    *uint       `json:"groupId" gorm:"index:idx_link_group"`
+	DomainID   *uint       `json:"domainId" gorm:"index:idx_link_domain"`
+	QuestionID *uint       `json:"questionId"`
+	Question   *QAQuestion `json:"question" gorm:"foreignKey:QuestionID;references:ID"`
 	//TagsJSON     string                `json:"tagsJson" gorm:"type:json"`
 	VisitCount         uint                  `json:"visitCount" gorm:"comment:访问次数"`
 	CopyCount          uint                  `json:"copyCount" gorm:"comment:复制次数"`

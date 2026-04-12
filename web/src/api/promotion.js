@@ -308,3 +308,8 @@ export const getLandingMessageList = (params) => {
 export const getLandingPhoneList = (params) => {
   return service({ url: '/promotion/landingPhone/list', method: 'get', params })
 }
+
+// 落地页访问记录列表
+export const getLandingVisitList = (params) => {
+  return service({ url: '/promotion/landingVisit/list', method: 'get', params })
+}

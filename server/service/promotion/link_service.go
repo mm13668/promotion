@@ -69,7 +69,7 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	err = db.Preload("Question").Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
 	return
 }
 

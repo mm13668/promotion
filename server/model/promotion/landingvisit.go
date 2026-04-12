@@ -30,9 +30,12 @@ func (LandingVisit) TableName() string {
 }
 
 type LandingVisitSearch struct {
-	Ip        string `json:"ip" form:"ip"`
-	IsCopied  *bool  `json:"isCopied" form:"isCopied"`
-	StartTime string `json:"startTime" form:"startTime"`
-	EndTime   string `json:"endTime" form:"endTime"`
+	LinkId         *uint  `json:"linkId" form:"linkId"`
+	Ip             string `json:"ip" form:"ip"`
+	Referer        string `json:"referer" form:"referer"`
+	RequestReferer string `json:"requestReferer" form:"requestReferer"`
+	IsCopied       *bool  `json:"isCopied" form:"isCopied"`
+	StartTime      string `json:"startTime" form:"startTime"`
+	EndTime        string `json:"endTime" form:"endTime"`
 	request.PageInfo
 }

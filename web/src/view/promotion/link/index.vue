@@ -72,7 +72,7 @@
 <!--            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>-->
             <el-button type="success" link @click="showLink(row)">推广链接</el-button>
             <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
-            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
+<!--            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>-->
             <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
 <!--            <el-button type="primary" link @click="openPhone(row)">登录信息</el-button>-->
             <el-button type="primary" link @click="remove(row)">删除</el-button>
