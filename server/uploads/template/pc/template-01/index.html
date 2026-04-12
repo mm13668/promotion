@@ -259,7 +259,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                id: window.LANDING_VISIT_ID,
+                                id: Number(window.LANDING_VISIT_ID),
                                 servicePhone: window.currentService?.mobile || '',
                                 serviceNickname: window.currentService?.nickname || ''
                             })
@@ -316,7 +316,7 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    id: window.LANDING_VISIT_ID,
+                                    id: Number(window.LANDING_VISIT_ID),
                                     addDuration: 30
                                 })
                             });
