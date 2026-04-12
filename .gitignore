@@ -22,6 +22,9 @@ server/log/
 web/node_modules/
 web/dist/
 
+# Generated static files
+server/uploads/dist/
+
 # Local config files
 server/config.yaml.local
 *.env

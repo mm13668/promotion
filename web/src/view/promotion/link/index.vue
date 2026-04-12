@@ -192,6 +192,19 @@
           <el-switch v-model="basic.autoDetectDevice" active-text="是" inactive-text="否" />
           <span class="ml-4 text-gray-500">开启自动跳转</span>
         </el-form-item>
+        <el-divider />
+        <el-form-item label="SEO标题">
+          <el-input v-model="basic.seoTitle" placeholder="请输入SEO标题" maxlength="255" show-word-limit />
+          <span class="ml-4 text-gray-500">页面标题，建议60字符以内</span>
+        </el-form-item>
+        <el-form-item label="SEO关键词">
+          <el-input v-model="basic.seoKeywords" type="textarea" placeholder="请输入SEO关键词，多个关键词用逗号分隔" maxlength="500" show-word-limit :rows="3" />
+          <span class="ml-4 text-gray-500">多个关键词用逗号分隔，建议5-10个关键词</span>
+        </el-form-item>
+        <el-form-item label="SEO描述">
+          <el-input v-model="basic.seoDescription" type="textarea" placeholder="请输入SEO描述" maxlength="500" show-word-limit :rows="3" />
+          <span class="ml-4 text-gray-500">页面描述，建议120-160字符</span>
+        </el-form-item>
       </el-form>
     </el-drawer>
     <el-drawer v-model="drawerCompany" :show-close="false">
@@ -564,7 +577,10 @@ const basic = ref({
   show12301Phone: false,
   mobileShowQrcode: false,
   pcShowRightQrcode: false,
-  autoDetectDevice: false
+  autoDetectDevice: false,
+  seoTitle: '',
+  seoKeywords: '',
+  seoDescription: ''
 })
 const openBasic = async (row) => {
   basic.value = {
@@ -577,7 +593,10 @@ const openBasic = async (row) => {
     show12301Phone: false,
     mobileShowQrcode: false,
     pcShowRightQrcode: false,
-    autoDetectDevice: false
+    autoDetectDevice: false,
+    seoTitle: '',
+    seoKeywords: '',
+    seoDescription: ''
   }
   try {
     const res = await getLinkBasic({ linkId: row.ID })

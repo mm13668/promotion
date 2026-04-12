@@ -201,6 +201,9 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		QuestionFavoriteCount: question.FavoriteCount,
 		QuestionLikeCount:     question.LikeCount,
 		Answers:               processedAnswers,
+		SeoKeywords:           basic.SeoKeywords,
+		SeoDescription:        basic.SeoDescription,
+		SeoTitle:              basic.SeoTitle,
 	}
 	if isMobile {
 		data.LogoURL = company.LogoMobileURL

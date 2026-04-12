@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -207,7 +206,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 	// 3. 查询关联配置
 	var basic promotion.PromotionLinkBasic
-	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&basic).Error; err != nil {
+	if err := global.GVA_DB.Debug().Where("link_id = ?", linkId).First(&basic).Error; err != nil {
 		return err
 	}
 
@@ -221,13 +220,13 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	if link.QuestionID != nil {
 		// 1. 查询问题基本信息
 		var qaQuestion promotion.QAQuestion
-		if err := global.GVA_DB.Debug().Where("id = ?", *link.QuestionID).First(&qaQuestion).Error; err != nil {
+		if err := global.GVA_DB.Where("id = ?", *link.QuestionID).First(&qaQuestion).Error; err != nil {
 			return err
 		}
 
 		// 2. 查询回答列表
 		var qaAnswers []promotion.QAAnswer
-		if err := global.GVA_DB.Debug().Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
+		if err := global.GVA_DB.Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
 			return err
 		}
 
@@ -236,7 +235,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		for _, qaAnswer := range qaAnswers {
 			// 查询每个回答的回复
 			var qaReplies []promotion.QAReply
-			if err := global.GVA_DB.Debug().Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
+			if err := global.GVA_DB.Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
 				return err
 			}
 
@@ -320,27 +319,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		}
 	}
 
-	// 4.5 查询关联的SEO关键词
-	var seoKeywords, seoDescription, seoTitle string
-	var linkSemKeywords []promotion.PromotionLinkSemKeyword
-	if err := global.GVA_DB.Table("promotion_link_sem_keyword").Where("link_id = ?", linkId).Order("sort ASC").Find(&linkSemKeywords).Error; err == nil && len(linkSemKeywords) > 0 {
-		// 查询关键词详情
-		var keywordIDs []uint
-		for _, linkKeyword := range linkSemKeywords {
-			keywordIDs = append(keywordIDs, linkKeyword.KeywordID)
-		}
-
-		var keywords []promotion.SemKeyword
-		if err := global.GVA_DB.Where("id IN ? AND status = true", keywordIDs).Find(&keywords).Error; err == nil && len(keywords) > 0 {
-			// 组装关键词字符串（逗号分隔）
-			keywordNames := make([]string, 0, len(keywords))
-			for _, keyword := range keywords {
-				keywordNames = append(keywordNames, keyword.Name)
-			}
-			seoKeywords = strings.Join(keywordNames, ",")
-		}
-	}
-
 	// 5. 查询模板和插件信息
 	var mobileTemplateName, pcTemplateName string
 	var copyPluginName, bottomPluginName, qrcodePluginName string
@@ -400,10 +378,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
 	// 替换客服信息
 	mobileData.ServiceListJSON = serviceListJSON
-	// 注入SEO关键词
-	mobileData.SeoKeywords = seoKeywords
-	mobileData.SeoDescription = seoDescription
-	mobileData.SeoTitle = seoTitle
 	mobilePlugins := map[string]string{
 		"copy":   copyPluginName,
 		"bottom": bottomPluginName,
@@ -416,10 +390,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	pcData := generator.BuildTemplateData(link, basic, company, question, false)
 	// 替换客服信息
 	pcData.ServiceListJSON = serviceListJSON
-	// 注入SEO关键词
-	pcData.SeoKeywords = seoKeywords
-	pcData.SeoDescription = seoDescription
-	pcData.SeoTitle = seoTitle
 	pcPlugins := map[string]string{
 		"qrcode": qrcodePluginName,
 		"copy":   copyPluginName, // PC端使用移动端的复制插件
