@@ -10,8 +10,10 @@ type LandingVisit struct {
 	global.GVA_MODEL
 	LinkId                uint      `json:"linkId" gorm:"column:link_id;comment:推广链接ID"`
 	Ip                    string    `json:"ip" gorm:"column:ip;comment:访问IP"`
-	Referer               string    `json:"referer" gorm:"column:referer;comment:来源链接"`
-	UserAgent             string    `json:"userAgent" gorm:"column:user_agent;comment:浏览器UA"`
+	Referer               string    `json:"referer" gorm:"column:referer;comment:来源链接(JSON body)"`
+	UserAgent             string    `json:"userAgent" gorm:"column:user_agent;comment:浏览器UA(JSON body)"`
+	RequestReferer        string    `json:"requestReferer" gorm:"column:request_referer;comment:来源链接(HTTP请求头)"`
+	RequestUserAgent      string    `json:"requestUserAgent" gorm:"column:request_user_agent;comment:浏览器UA(HTTP请求头)"`
 	DeviceType            string    `json:"deviceType" gorm:"column:device_type;comment:设备类型"`
 	Os                    string    `json:"os" gorm:"column:os;comment:操作系统"`
 	Browser               string    `json:"browser" gorm:"column:browser;comment:浏览器信息"`

@@ -24,8 +24,10 @@ func (l *LandingVisitApi) CreateLandingVisit(c *gin.Context) {
 		return
 	}
 	visit.Ip = c.ClientIP()
-	visit.UserAgent = c.Request.UserAgent()
-	visit.Referer = c.Request.Referer()
+	// 保存 HTTP 请求头中的数据
+	visit.RequestUserAgent = c.Request.UserAgent()
+	visit.RequestReferer = c.Request.Referer()
+	// JSON body 中的 UserAgent 和 Referer 已经通过 ShouldBindJSON 绑定
 	visit.LastReportAt = time.Now()
 
 	err = landingVisitService.CreateLandingVisit(c.Request.Context(), &visit)
