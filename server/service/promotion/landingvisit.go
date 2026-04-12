@@ -24,6 +24,12 @@ func (l *LandingVisitService) CreateLandingVisit(ctx context.Context, visit *pro
 	}
 	// 不存在记录，创建新记录
 	err = global.GVA_DB.Create(visit).Error
+	if err != nil {
+		return err
+	}
+	// 更新推广链接的访问次数
+	err = global.GVA_DB.Model(&promotion.PromotionLink{}).Where("id = ?", visit.LinkId).
+		Update("visit_count", gorm.Expr("visit_count + 1")).Error
 	return err
 }
 
@@ -39,12 +45,32 @@ func (l *LandingVisitService) UpdateDuration(ctx context.Context, id uint, addDu
 
 // UpdateCopyInfo 更新复制客服信息
 func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone, nickname string) (err error) {
+	// 查询访问记录
+	var visit promotion.LandingVisit
+	err = global.GVA_DB.Where("id = ?", id).First(&visit).Error
+	if err != nil {
+		return err
+	}
+
+	// 检查是否已经复制过
+	if visit.IsCopied {
+		return nil
+	}
+
+	// 更新访问记录的复制信息
 	err = global.GVA_DB.Model(&promotion.LandingVisit{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"is_copied":               true,
 			"copied_service_phone":    phone,
 			"copied_service_nickname": nickname,
 		}).Error
+	if err != nil {
+		return err
+	}
+
+	// 更新推广链接的复制次数
+	err = global.GVA_DB.Model(&promotion.PromotionLink{}).Where("id = ?", visit.LinkId).
+		Update("copy_count", gorm.Expr("copy_count + 1")).Error
 	return err
 }
 
