@@ -1,69 +1,231 @@
-<div class="plugin-pc-qrcode-1">
+<div class="plugin-pc-qrcode-2">
     <div class="qrcode-card">
-        <div class="qrcode-title">扫码咨询</div>
-        <img src="" alt="微信二维码" class="qrcode-img">
-        <div class="qrcode-desc">微信：<span class="wechat">{{wechat}}</span></div>
-        <button class="copy-btn" onclick="copyWechat()">复制微信</button>
+        <div class="card-header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+            </div>
+            <span class="header-title">扫码咨询</span>
+        </div>
+        <div class="card-body">
+            <div class="qrcode-wrapper">
+                <img src="" alt="微信二维码" class="qrcode-img">
+                <div class="qrcode-overlay">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <path d="M8 12h8M12 8v8"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="wechat-info">
+                <div class="info-label">客服微信</div>
+                <div class="info-value wechat">{{wechat}}</div>
+            </div>
+            <button class="copy-btn" onclick="copyWechat()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span>复制微信</span>
+            </button>
+        </div>
     </div>
 </div>
 <style>
-.plugin-pc-qrcode-1 {
+.plugin-pc-qrcode-2 {
     position: sticky;
     top: 40px;
 }
-.plugin-pc-qrcode-1 .qrcode-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+
+.plugin-pc-qrcode-2 .qrcode-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.plugin-pc-qrcode-2 .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plugin-pc-qrcode-2 .header-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.plugin-pc-qrcode-2 .header-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.plugin-pc-qrcode-2 .header-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.plugin-pc-qrcode-2 .card-body {
     text-align: center;
 }
-.plugin-pc-qrcode-1 .qrcode-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-}
-.plugin-pc-qrcode-1 .qrcode-img {
+
+.plugin-pc-qrcode-2 .qrcode-wrapper {
+    position: relative;
     width: 200px;
     height: 200px;
-    margin-bottom: 15px;
-    border-radius: 4px;
+    margin: 0 auto 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
-.plugin-pc-qrcode-1 .qrcode-desc {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
-}
-.plugin-pc-qrcode-1 .wechat {
-    color: #07c160;
-    font-weight: bold;
-}
-.plugin-pc-qrcode-1 .copy-btn {
+
+.plugin-pc-qrcode-2 .qrcode-img {
     width: 100%;
-    padding: 10px;
-    background-color: #07c160;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.plugin-pc-qrcode-2 .qrcode-wrapper:hover .qrcode-img {
+    transform: scale(1.05);
+}
+
+.plugin-pc-qrcode-2 .qrcode-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.plugin-pc-qrcode-2 .qrcode-wrapper:hover .qrcode-overlay {
+    opacity: 1;
+}
+
+.plugin-pc-qrcode-2 .qrcode-overlay svg {
+    color: #fff;
+    stroke-width: 2;
+}
+
+.plugin-pc-qrcode-2 .wechat-info {
+    margin-bottom: 20px;
+}
+
+.plugin-pc-qrcode-2 .info-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.plugin-pc-qrcode-2 .info-value {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.plugin-pc-qrcode-2 .wechat {
+    color: #4facfe;
+}
+
+.plugin-pc-qrcode-2 .copy-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.plugin-pc-qrcode-2 .copy-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.plugin-pc-qrcode-2 .copy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.plugin-pc-qrcode-2 .copy-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .plugin-pc-qrcode-2 .qrcode-card {
+        padding: 20px;
+    }
+
+    .plugin-pc-qrcode-2 .qrcode-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .plugin-pc-qrcode-2 .info-value {
+        font-size: 16px;
+    }
 }
 </style>
 <script>
 (function() {
-    // PC端二维码插件的复制方法，调用手机端复制插件的弹窗
+    // PC端二维码插件的复制方法
     window.copyWechatFromQrcode = function() {
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致
         const wechat = window.currentService?.wechat;
-        
+
         // 先检查本地是否已有复制记录
         const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
-        
-        // 调用手机端复制插件的复制逻辑
+
+        // 调用复制插件的复制逻辑
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
-                // 调用手机端复制插件的弹窗方法
+                // 调用复制插件的弹窗方法
                 if (window.showCopySuccessPopup) {
                     window.showCopySuccessPopup();
                 } else {
@@ -164,9 +326,9 @@
         // 优先使用模板已缓存的当前客服，和页面其他位置保持一致，避免重复随机
         const wechat = window.currentService?.wechat;
         const wechatQrcode = window.currentService?.wechat_qrcode;
-        const wechatEl = document.querySelector('.plugin-pc-qrcode-1 .wechat');
-        const wechatQrcodeEl = document.querySelector('.plugin-pc-qrcode-1 .qrcode-img');
-        const copyBtn = document.querySelector('.plugin-pc-qrcode-1 .copy-btn');
+        const wechatEl = document.querySelector('.plugin-pc-qrcode-2 .wechat');
+        const wechatQrcodeEl = document.querySelector('.plugin-pc-qrcode-2 .qrcode-img');
+        const copyBtn = document.querySelector('.plugin-pc-qrcode-2 .copy-btn');
         if (wechatEl) {
             wechatEl.textContent = wechat;
         }

@@ -206,7 +206,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 	// 3. 查询关联配置
 	var basic promotion.PromotionLinkBasic
-	if err := global.GVA_DB.Debug().Where("link_id = ?", linkId).First(&basic).Error; err != nil {
+	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&basic).Error; err != nil {
 		return err
 	}
 
@@ -311,7 +311,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
-		if err := global.GVA_DB.Table("group_member").Select("nickname, wechat, wechat_qrcode,mobile").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
+		if err := global.GVA_DB.Debug().Table("group_member").Select("nickname, wechat, wechat_qrcode,mobile").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
 			// 序列化所有客服为JSON字符串
 			if jsonBytes, err := json.Marshal(members); err == nil {
 				serviceListJSON = string(jsonBytes)

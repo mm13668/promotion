@@ -1,0 +1,273 @@
+<div class="plugin-bottom-bar-2">
+    <div class="floating-card">
+        <div class="card-header">
+            <div class="pulse-dot"></div>
+            <span class="header-text">在线客服</span>
+        </div>
+        <div class="card-body">
+            <div class="action-btn btn-phone" onclick="callPhone()">
+                <div class="btn-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                </div>
+                <span class="btn-text">电话咨询</span>
+            </div>
+            <div class="action-btn btn-wechat" onclick="copyWechatBottom()">
+                <div class="btn-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <span class="btn-text">复制微信</span>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.plugin-bottom-bar-2 {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9998;
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.plugin-bottom-bar-2 .floating-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4), 0 4px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.plugin-bottom-bar-2 .card-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plugin-bottom-bar-2 .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #00ff88;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+.plugin-bottom-bar-2 .header-text {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.plugin-bottom-bar-2 .card-body {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+}
+
+.plugin-bottom-bar-2 .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.plugin-bottom-bar-2 .action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.plugin-bottom-bar-2 .action-btn:active::before {
+    opacity: 1;
+}
+
+.plugin-bottom-bar-2 .action-btn:active {
+    transform: scale(0.95);
+}
+
+.plugin-bottom-bar-2 .btn-phone {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+}
+
+.plugin-bottom-bar-2 .btn-phone:active {
+    box-shadow: 0 2px 6px rgba(240, 147, 251, 0.3);
+}
+
+.plugin-bottom-bar-2 .btn-wechat {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+}
+
+.plugin-bottom-bar-2 .btn-wechat:active {
+    box-shadow: 0 2px 6px rgba(79, 172, 254, 0.3);
+}
+
+.plugin-bottom-bar-2 .btn-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+}
+
+.plugin-bottom-bar-2 .btn-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+}
+
+.plugin-bottom-bar-2 .btn-text {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #fff;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .plugin-bottom-bar-2 {
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .plugin-bottom-bar-2 .floating-card {
+        border-radius: 16px;
+    }
+
+    .plugin-bottom-bar-2 .card-header {
+        padding: 10px 12px;
+    }
+
+    .plugin-bottom-bar-2 .pulse-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .plugin-bottom-bar-2 .header-text {
+        font-size: 13px;
+    }
+
+    .plugin-bottom-bar-2 .card-body {
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .plugin-bottom-bar-2 .action-btn {
+        padding: 10px 6px;
+        border-radius: 10px;
+    }
+
+    .plugin-bottom-bar-2 .btn-icon {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 4px;
+    }
+
+    .plugin-bottom-bar-2 .btn-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .plugin-bottom-bar-2 .btn-text {
+        font-size: 11px;
+    }
+}
+</style>
+<script>
+(function() {
+    window.callPhone = function() {
+        // 多重容错取电话号码
+        const phone = window.currentService?.mobile || window.phone;
+        window.location.href = "tel:" + phone;
+    }
+
+    window.copyWechatBottom = function() {
+        // 多重容错取微信账号
+        const wechat = window.currentService?.wechat || window.wechat;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                // 调用复制插件的弹窗方法
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+            }).catch(function() {
+                // 降级处理
+                const input = document.createElement('input');
+                input.value = wechat;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+            });
+        } else {
+            // 降级处理
+            const input = document.createElement('input');
+            input.value = wechat;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            if (window.showCopySuccessPopup) {
+                window.showCopySuccessPopup();
+            } else {
+                alert('微信复制成功！');
+            }
+        }
+    }
+})();
+</script>

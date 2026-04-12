@@ -367,11 +367,6 @@
             // 移动端：尝试跳转到微信app
             // 方式1：使用微信URL Scheme
             window.location.href = "weixin://dl/chat?username=" + wechat;
-            
-            // 如果跳转失败，延迟后跳转到微信下载页面
-            setTimeout(function() {
-                window.location.href = "https://weixin.qq.com/";
-            }, 3000);
         } else {
             // PC端：跳转到微信网页版
             window.open("https://weixin.qq.com/", "_blank");

@@ -26,95 +26,112 @@
             <div class="content-wrap">
                 <div class="main-content">
                     <!-- 问题头部 -->
-                    <div class="question-header mb-6">
-                        <h1 class="text-3xl font-bold text-gray-800 mb-4">{{.QuestionTitle}}</h1>
-                        <div class="flex flex-wrap gap-2 mb-4">
+                    <div class="question-header">
+                        <h1 class="question-title">{{.QuestionTitle}}</h1>
+                        <div class="tags-container">
                             {{range .QuestionTags}}
-                            <span class="px-3 py-1 bg-green-50 text-green-600 rounded-md text-sm">{{.}}</span>
+                            <span class="tag">{{.}}</span>
                             {{end}}
                         </div>
-                        <div class="flex items-center mb-6">
-                            <img src="/api/{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-lg font-medium text-orange-500">{{.QuestionNickname}}</span>
+                        <div class="author-info">
+                            <img src="/api/{{.QuestionAvatar}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                            <div class="author-details">
+                                <div class="author-name">
+                                    <span class="nickname">{{.QuestionNickname}}</span>
                                     {{if .QuestionTitleName}}
-                                    <span class="px-2 py-0.5 bg-red-500 text-white text-xs rounded">{{.QuestionTitleName}}</span>
+                                    <span class="title-badge">{{.QuestionTitleName}}</span>
                                     {{end}}
                                 </div>
-                                <div class="text-sm text-gray-500 mt-1">{{.QuestionTimeAt}}</div>
+                                <div class="time">{{.QuestionTimeAt}}</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 问题内容 -->
-                    <div class="question-content bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <div class="question-content">
                         <div class="ql-editor-content" id="questionContent">{{.QuestionContent}}</div>
-                        <!-- 问题统计 -->
-                        <div class="question-stats mt-6 flex gap-4 justify-end">
-                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">浏览 {{.QuestionLookCount}}</span>
-                            <button class="stat-btn px-4 py-2 bg-gray-50 rounded text-sm text-gray-600 hover:bg-gray-100" onclick="addCount(this)">点赞 {{.QuestionLikeCount}}</button>
-                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">关注 {{.QuestionFollowCount}}</span>
-                            <span class="px-4 py-2 bg-gray-50 rounded text-sm text-gray-600">收藏 {{.QuestionFavoriteCount}}</span>
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <span class="stat-label">浏览</span>
+                                <span class="stat-value">{{.QuestionLookCount}}</span>
+                            </div>
+                            <button class="stat-item" onclick="addCount(this)">
+                                <span class="stat-label">点赞</span>
+                                <span class="stat-value">{{.QuestionLikeCount}}</span>
+                            </button>
+                            <div class="stat-item">
+                                <span class="stat-label">关注</span>
+                                <span class="stat-value">{{.QuestionFollowCount}}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">收藏</span>
+                                <span class="stat-value">{{.QuestionFavoriteCount}}</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- 回答列表 -->
-                    <div class="answer-list space-y-4 mb-6">
+                    <div class="answer-list">
                         {{range .Answers}}
-                        <div class="bg-white p-6 rounded-lg shadow-sm">
-                            <div class="flex items-center mb-4">
-                                <img src="/api/{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <span class="text-base font-medium text-blue-500">{{.Nickname}}</span>
+                        <div class="answer-card">
+                            <div class="answer-header">
+                                <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                                <div class="answer-author">
+                                    <div class="author-name">
+                                        <span class="nickname">{{.Nickname}}</span>
                                         {{if .TitleName}}
-                                        <span class="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
+                                        <span class="title-badge">{{.TitleName}}</span>
                                         {{end}}
                                         {{if .Level}}
-                                        <span class="px-2 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
+                                        <span class="level-badge">LV.{{.Level}}</span>
                                         {{end}}
                                     </div>
-                                    <div class="text-sm text-gray-500 mt-1">{{.TimeText}}</div>
+                                    <div class="time">{{.TimeText}}</div>
                                 </div>
                             </div>
-                            <div class="ql-editor-content mb-4 text-gray-700 leading-relaxed">{{.Content}}</div>
-                            <!-- 回答统计 -->
-                            <div class="answer-stats flex gap-4 justify-end mb-4">
-                                <button class="stat-btn px-3 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="addCount(this)">点赞 {{.LikeCount}}</button>
-                                <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">关注 {{.FollowCount}}</span>
-                                <span class="px-3 py-1 bg-gray-50 rounded text-xs text-gray-600">收藏 {{.FavoriteCount}}</span>
-                                <button class="stat-btn px-3 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="showReplyInput(this)">回复</button>
+                            <div class="answer-body">
+                                <div class="ql-editor-content">{{.Content}}</div>
                             </div>
-                            
+                            <div class="answer-stats">
+                                <button class="stat-btn" onclick="addCount(this)">👍 {{.LikeCount}}</button>
+                                <span class="stat-btn">关注 {{.FollowCount}}</span>
+                                <span class="stat-btn">收藏 {{.FavoriteCount}}</span>
+                                <button class="stat-btn" onclick="showReplyInput(this)">回复</button>
+                            </div>
+
                             <!-- 回复输入框，默认隐藏 -->
-                            <div class="reply-input-wrap ml-14 mb-4 hidden">
-                                <textarea class="w-full p-3 border border-gray-300 rounded mb-3 resize-none" rows="4" placeholder="请输入回复内容..."></textarea>
-                                <div class="flex justify-end">
-                                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="publishReply(this)">发布回复</button>
+                            <div class="reply-input-wrap hidden">
+                                <textarea class="reply-textarea" rows="4" placeholder="请输入回复内容..."></textarea>
+                                <div class="reply-actions">
+                                    <button class="btn-submit" onclick="publishReply(this)">发布回复</button>
                                 </div>
                             </div>
 
                             <!-- 回复列表 -->
                             {{range .Replies}}
-                            <div class="bg-yellow-50 p-4 rounded mb-2 ml-14">
-                                 <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                     <img src="/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
-                                     <span class="text-green-600 font-medium">{{.Nickname}}</span>
-                                     {{if .TitleName}}
-                                     <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
-                                     {{end}}
-                                     {{if .Level}}
-                                     <span class="px-1 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
-                                     {{end}}
-                                 </div>
-                                 <div class="ql-editor-content text-gray-700 leading-relaxed">{{.Content}}</div>
-                                 <!-- 回复统计 -->
-                                 <div class="reply-stats flex justify-end mt-1 mb-3">
-                                     <button class="stat-btn px-2 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100" onclick="addCount(this)">👍 {{.LikeCount}}</button>
-                                     <button class="stat-btn px-2 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100">关注 {{.FollowCount}}</button>
-                                     <button class="stat-btn px-2 py-1 bg-gray-50 rounded text-xs text-gray-600 hover:bg-gray-100">收藏 {{.FavoriteCount}}</button>
-                                 </div>
+                            <div class="reply-card">
+                                <div class="reply-header">
+                                    <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                                    <div class="reply-author">
+                                        <div class="author-name">
+                                            <span class="nickname">{{.Nickname}}</span>
+                                            {{if .TitleName}}
+                                            <span class="title-badge">{{.TitleName}}</span>
+                                            {{end}}
+                                            {{if .Level}}
+                                            <span class="level-badge">LV.{{.Level}}</span>
+                                            {{end}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reply-body">
+                                    <div class="ql-editor-content">{{.Content}}</div>
+                                </div>
+                                <div class="reply-stats">
+                                    <button class="stat-btn" onclick="addCount(this)">👍 {{.LikeCount}}</button>
+                                    <button class="stat-btn">关注 {{.FollowCount}}</button>
+                                    <button class="stat-btn">收藏 {{.FavoriteCount}}</button>
+                                </div>
                             </div>
                             {{end}}
                         </div>
@@ -136,12 +153,12 @@
                         </div>
                     </div>
                 </div>
-                 <div class="sidebar">
-                     <!-- 微信复制插件插槽 -->
-                     <div id="plugin-copy"></div>
-                     <!-- 二维码插件插槽 -->
-                     <div id="plugin-qrcode"></div>
-                 </div>
+                <div class="sidebar">
+                    <!-- 微信复制插件插槽 -->
+                    <div id="plugin-copy"></div>
+                    <!-- 二维码插件插槽 -->
+                    <div id="plugin-qrcode"></div>
+                </div>
             </div>
         </main>
         <footer class="footer">
@@ -155,14 +172,14 @@
     <script>
         // 全局LinkID
         window.LINK_ID = "{{.LinkID}}";
-        
+
         // 客服随机选择与本地存储逻辑
         (function() {
             // 客服列表，增加容错处理
             let serviceList = [];
             try {
                  // 后端输出的是JSON字符串，需要解析为数组
-                const serviceListStr = `{{.ServiceListJSON}}` || "[]";
+                const serviceListStr = {{.ServiceListJSON}} || "[]";
                 serviceList = JSON.parse(serviceListStr);
                 // 暴露给插件使用
                 window.serviceListJSON = serviceListStr;
@@ -216,10 +233,10 @@
             // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
                 const copyWechat = wechat || window.currentService?.wechat || window.wechat;
-                
+
                 // 先检查本地是否已有复制记录
                 const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
-                
+
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         // 调用插件的全局弹窗方法
@@ -324,7 +341,7 @@
                 document.querySelectorAll('.phone').forEach(el => {
                     el.textContent = currentService.mobile;
                 });
-                
+
                 // 上报访问信息
                 // 先检查本地是否已有记录ID
                 const savedVisitId = localStorage.getItem('landing_visit_id_' + window.location.pathname);
@@ -392,7 +409,7 @@
             <input id="loginPwd" type="password" placeholder="密码" aria-label="密码" />
             <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:8px; padding-top:8px;">
                 <button onclick="handleRegister()" style="padding:8px 14px; border-radius:6px; background:#f3f4f6; border:1px solid #e5e7eb;">注册</button>
-                <button onclick="handleLogin()" style="padding:8px 14px; border-radius:6px; background:#3b82f6; color:#fff; border:none;">登录</button>
+                <button onclick="handleLogin()" style="padding:8px 14px; border-radius:6px; background:#667eea; color:#fff; border:none;">登录</button>
             </div>
         </div>
     </div>
