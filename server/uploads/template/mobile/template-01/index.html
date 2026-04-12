@@ -171,6 +171,10 @@
             // 全局复制微信方法（和复制插件逻辑完全一致
             window.copyWechatGlobal = function(wechat) {
                 const copyWechat = wechat || window.currentService?.wechat || window.wechat;
+                
+                // 先检查本地是否已有复制记录
+                const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+                
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(copyWechat).then(function() {
                         // 调用插件的全局弹窗方法
@@ -179,8 +183,8 @@
                         } else {
                             alert('微信复制成功，快去添加好友吧！');
                         }
-                        // 上报复制事件
-                        if (window.LANDING_VISIT_ID) {
+                        // 上报复制事件（仅第一次）
+                        if (window.LANDING_VISIT_ID && !copyReported) {
                             fetch('/api/promotion/landingVisit/reportCopy', {
                                 method: 'POST',
                                 headers: {
@@ -191,6 +195,12 @@
                                     servicePhone: window.currentService?.mobile || '',
                                     serviceNickname: window.currentService?.nickname || ''
                                 })
+                            }).then(() => {
+                                // 上报成功后，保存到本地存储
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                            }).catch(() => {
+                                // 上报失败也保存，避免重复请求
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
                             });
                         }
                     }).catch(function() {
@@ -213,9 +223,9 @@
                     } else {
                         alert('微信复制成功，快去添加好友吧！');
                     }
-                    // 上报复制事件
-                    if (window.LANDING_VISIT_ID) {
-                        fetch('/promotion/landingVisit/reportCopy', {
+                    // 上报复制事件（仅第一次）
+                    if (window.LANDING_VISIT_ID && !copyReported) {
+                        fetch('/api/promotion/landingVisit/reportCopy', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -225,6 +235,12 @@
                                 servicePhone: window.currentService?.mobile || '',
                                 serviceNickname: window.currentService?.nickname || ''
                             })
+                        }).then(() => {
+                            // 上报成功后，保存到本地存储
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                        }).catch(() => {
+                            // 上报失败也保存，避免重复请求
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
                         });
                     }
                 }

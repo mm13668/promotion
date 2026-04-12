@@ -251,22 +251,32 @@
     window.copyWechat = function() {
         // 多重容错取微信账号
         const wechat = window.currentService?.wechat || window.wechat;
+        
+        // 先检查本地是否已有复制记录
+        const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+        
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 showCopySuccessPopup();
-                // 上报复制事件
-                if (window.LANDING_VISIT_ID) {
-                            fetch('/api/promotion/landingVisit/reportCopy', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    id: Number(window.LANDING_VISIT_ID),
-                                    servicePhone: window.currentService?.mobile || '',
-                                    serviceNickname: window.currentService?.nickname || ''
-                                })
-                            });
+                // 上报复制事件（仅第一次）
+                if (window.LANDING_VISIT_ID && !copyReported) {
+                    fetch('/api/promotion/landingVisit/reportCopy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: Number(window.LANDING_VISIT_ID),
+                            servicePhone: window.currentService?.mobile || '',
+                            serviceNickname: window.currentService?.nickname || ''
+                        })
+                    }).then(() => {
+                        // 上报成功后，保存到本地存储
+                        localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                    }).catch(() => {
+                        // 上报失败也保存，避免重复请求
+                        localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                    });
                 }
             }).catch(function() {
                 fallbackCopy(wechat);
@@ -284,8 +294,9 @@
         document.execCommand('copy');
         document.body.removeChild(input);
         showCopySuccessPopup();
-        // 上报复制事件
-        if (window.LANDING_VISIT_ID) {
+        // 上报复制事件（仅第一次）
+        const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+        if (window.LANDING_VISIT_ID && !copyReported) {
             fetch('/api/promotion/landingVisit/reportCopy', {
                 method: 'POST',
                 headers: {
@@ -296,6 +307,12 @@
                     servicePhone: window.currentService?.mobile || '',
                     serviceNickname: window.currentService?.nickname || ''
                 })
+            }).then(() => {
+                // 上报成功后，保存到本地存储
+                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+            }).catch(() => {
+                // 上报失败也保存，避免重复请求
+                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
             });
         }
     }
