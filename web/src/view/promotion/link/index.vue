@@ -55,6 +55,14 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="客服成员数" width="100">
+          <template #default="{ row }">
+            <el-button type="primary" link @click="openServiceDialog(row)">
+              {{ row.serviceOnlineCount || 0 }}/{{ row.serviceCount || 0 }}
+            </el-button>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column prop="visitCount" label="访问" width="80" />
         <el-table-column prop="copyCount" label="复制" width="80" />
@@ -418,41 +426,67 @@
        />
      </el-dialog>
 
-     <!-- 登录信息弹窗 -->
-     <el-dialog v-model="phoneDialogVisible" title="登录信息" width="800px">
-       <el-form :inline="true" :model="phoneSearch" class="mb-4">
-         <el-form-item label="IP">
-           <el-input v-model="phoneSearch.ip" placeholder="请输入IP" />
-         </el-form-item>
-         <el-form-item label="手机号">
-           <el-input v-model="phoneSearch.phone" placeholder="请输入手机号" />
-         </el-form-item>
-         <el-form-item label="时间范围">
-           <el-date-picker v-model="phoneSearch.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
-         </el-form-item>
-         <el-form-item>
-           <el-button type="primary" @click="getPhoneList">查询</el-button>
-           <el-button @click="resetPhoneSearch">重置</el-button>
-         </el-form-item>
-       </el-form>
-       <el-table :data="phoneList" style="width:100%">
-         <el-table-column prop="phone" label="手机号" width="150" />
-         <el-table-column prop="ip" label="IP"  />
-         <el-table-column prop="CreatedAt" label="提交时间" />
-       </el-table>
-       <el-pagination
-         class="mt-4"
-         background
-         layout="total, sizes, prev, pager, next, jumper"
-         :current-page="phonePage"
-         :page-size="phonePageSize"
-         :total="phoneTotal"
-         @size-change="handlePhoneSizeChange"
-         @current-change="handlePhoneCurrentChange"
-       />
-     </el-dialog>
-   </div>
- </template>
+      <!-- 登录信息弹窗 -->
+      <el-dialog v-model="phoneDialogVisible" title="登录信息" width="800px">
+        <el-form :inline="true" :model="phoneSearch" class="mb-4">
+          <el-form-item label="IP">
+            <el-input v-model="phoneSearch.ip" placeholder="请输入IP" />
+          </el-form-item>
+          <el-form-item label="手机号">
+            <el-input v-model="phoneSearch.phone" placeholder="请输入手机号" />
+          </el-form-item>
+          <el-form-item label="时间范围">
+            <el-date-picker v-model="phoneSearch.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getPhoneList">查询</el-button>
+            <el-button @click="resetPhoneSearch">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <el-table :data="phoneList" style="width:100%">
+          <el-table-column prop="phone" label="手机号" width="150" />
+          <el-table-column prop="ip" label="IP"  />
+          <el-table-column prop="CreatedAt" label="提交时间" />
+        </el-table>
+        <el-pagination
+          class="mt-4"
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          :current-page="phonePage"
+          :page-size="phonePageSize"
+          :total="phoneTotal"
+          @size-change="handlePhoneSizeChange"
+          @current-change="handlePhoneCurrentChange"
+        />
+      </el-dialog>
+
+      <!-- 客服管理弹窗 -->
+      <el-dialog v-model="serviceDialogVisible" title="客服管理" width="800px">
+        <el-table :data="serviceList" style="width:100%">
+          <el-table-column prop="realName" label="姓名" width="120" />
+          <el-table-column prop="nickname" label="昵称" width="120" />
+          <el-table-column prop="wechat" label="微信号" width="150" />
+          <el-table-column prop="mobile" label="手机号" width="130" />
+          <el-table-column label="状态" width="150">
+            <template #default="{ row }">
+              <el-switch
+                v-model="row.status"
+                :active-value="1"
+                :inactive-value="2"
+                active-text="在线"
+                inactive-text="离线"
+                @change="handleStatusChange(row)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+        </el-table>
+        <div class="mt-4 text-gray-500 text-sm">
+          提示：切换开关可设置客服在线/离线状态
+        </div>
+      </el-dialog>
+    </div>
+  </template>
 
 <script setup>
 import { ref } from 'vue'
@@ -469,7 +503,8 @@ import {
   getRegionCategoryList, getPromotionGroupList, getPromotionDomainList,
   getAdPlatformList, getQAQuestionList, getTemplateWidgetList,
   publishPromotionLink, updatePromotionLinkOcpc,
-  getLandingMessageList, getLandingPhoneList
+  getLandingMessageList, getLandingPhoneList,
+  getLinkGroupMembers, updateGroupMemberStatus
 } from '@/api/promotion'
 import { getBaseUrl } from '@/utils/format'
 import { useAppStore } from '@/pinia/modules/app'
@@ -682,6 +717,10 @@ const phonePage = ref(1)
 const phonePageSize = ref(10)
 const phoneTotal = ref(0)
 
+// 客服管理相关
+const serviceDialogVisible = ref(false)
+const serviceList = ref([])
+
 // 显示推广链接
 const showLink = (row) => {
   currentLink.value = { mobileUrl: row.mobileUrl || '', pcUrl: row.pcUrl || '' }
@@ -822,6 +861,43 @@ const handlePhoneCurrentChange = (val) => { phonePage.value = val; getPhoneList(
 const resetPhoneSearch = () => {
   phoneSearch.value = { ip: '', phone: '', dateRange: [] }
   getPhoneList()
+}
+
+// 打开客服管理弹窗
+const openServiceDialog = async (row) => {
+  currentLinkId.value = row.ID
+  serviceList.value = []
+  try {
+    const res = await getLinkGroupMembers({ linkId: row.ID })
+    if (res.code === 0) {
+      serviceList.value = res.data.list || []
+    }
+  } catch (e) {
+    console.error('获取客服列表失败', e)
+  }
+  serviceDialogVisible.value = true
+}
+
+// 处理客服状态切换
+const handleStatusChange = async (row) => {
+  try {
+    const res = await updateGroupMemberStatus({
+      id: row.ID,
+      status: row.status
+    })
+    if (res.code === 0) {
+      ElMessage.success('状态更新成功')
+    } else {
+      // 更新失败，恢复原状态
+      row.status = row.status === 1 ? 2 : 1
+      ElMessage.error('状态更新失败')
+    }
+  } catch (e) {
+    // 更新失败，恢复原状态
+    row.status = row.status === 1 ? 2 : 1
+    console.error('更新状态失败', e)
+    ElMessage.error('状态更新失败')
+  }
 }
 </script>
 

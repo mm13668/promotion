@@ -412,3 +412,51 @@ func (a *LinkApi) GetTemplateWidgetList(c *gin.Context) {
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
 }
+
+// GetLinkGroupMembers 获取推广链接的客服列表
+func (a *LinkApi) GetLinkGroupMembers(c *gin.Context) {
+	var q struct {
+		LinkID uint `form:"linkId"`
+	}
+	if err := c.ShouldBindQuery(&q); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if q.LinkID == 0 {
+		response.FailWithMessage("推广链接ID不能为空", c)
+		return
+	}
+	list, err := linkService.GetLinkGroupMembers(q.LinkID)
+	if err != nil {
+		global.GVA_LOG.Error("get group members failed", zap.Error(err))
+		response.FailWithMessage("获取客服列表失败", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"list": list}, "获取成功", c)
+}
+
+// UpdateGroupMemberStatus 更新客服状态
+func (a *LinkApi) UpdateGroupMemberStatus(c *gin.Context) {
+	var req struct {
+		ID     uint `json:"id"`
+		Status int  `json:"status"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if req.ID == 0 {
+		response.FailWithMessage("客服ID不能为空", c)
+		return
+	}
+	if req.Status != 1 && req.Status != 2 {
+		response.FailWithMessage("状态值不正确", c)
+		return
+	}
+	if err := linkService.UpdateGroupMemberStatus(req.ID, req.Status); err != nil {
+		global.GVA_LOG.Error("update member status failed", zap.Error(err))
+		response.FailWithMessage("更新状态失败", c)
+		return
+	}
+	response.OkWithMessage("更新成功", c)
+}

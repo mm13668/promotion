@@ -35,6 +35,10 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.GET("findTemplateWidget", promoApi.LinkApi.FindTemplateWidget)
 		group.GET("getTemplateWidgetList", promoApi.LinkApi.GetTemplateWidgetList)
 
+		// 客服管理
+		group.GET("getLinkGroupMembers", promoApi.LinkApi.GetLinkGroupMembers)
+		group.PUT("updateGroupMemberStatus", promoApi.LinkApi.UpdateGroupMemberStatus)
+
 		group.POST("createQAQuestion", promoApi.QAApi.CreateQuestion)
 		group.PUT("updateQAQuestion", promoApi.QAApi.UpdateQuestion)
 		group.DELETE("deleteQAQuestion", promoApi.QAApi.DeleteQuestion)

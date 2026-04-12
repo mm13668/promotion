@@ -70,6 +70,26 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 		return
 	}
 	err = db.Preload("Question").Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	if err != nil {
+		return
+	}
+
+	for i := range list {
+		var totalCount int64
+		var onlineCount int64
+		query := global.GVA_DB.Model(&promotion.GroupMember{}).Where("deleted_at IS NULL")
+		if list[i].RegionID != nil {
+			query = query.Where("region_id = ?", *list[i].RegionID)
+		}
+		if list[i].GroupID != nil {
+			query = query.Where("group_id = ?", *list[i].GroupID)
+		}
+		query.Count(&totalCount)
+		list[i].ServiceCount = int(totalCount)
+
+		query.Where("status = ?", 1).Count(&onlineCount)
+		list[i].ServiceOnlineCount = int(onlineCount)
+	}
 	return
 }
 
@@ -420,4 +440,31 @@ func generateRandomCode(length int) string {
 		b[i] = charset[rand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+// GetLinkGroupMembers 获取推广链接的客服列表
+func (s *LinkService) GetLinkGroupMembers(linkId uint) ([]promotion.GroupMember, error) {
+	var link promotion.PromotionLink
+	err := global.GVA_DB.Where("id = ?", linkId).First(&link).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var members []promotion.GroupMember
+	query := global.GVA_DB.Model(&promotion.GroupMember{}).Where("deleted_at IS NULL")
+
+	if link.RegionID != nil {
+		query = query.Where("region_id = ?", *link.RegionID)
+	}
+	if link.GroupID != nil {
+		query = query.Where("group_id = ?", *link.GroupID)
+	}
+
+	err = query.Order("sort asc, id asc").Find(&members).Error
+	return members, err
+}
+
+// UpdateGroupMemberStatus 更新客服状态
+func (s *LinkService) UpdateGroupMemberStatus(id uint, status int) error {
+	return global.GVA_DB.Model(&promotion.GroupMember{}).Where("id = ?", id).Update("status", status).Error
 }
