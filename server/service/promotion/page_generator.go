@@ -83,6 +83,10 @@ type TemplateData struct {
 	QuestionFavoriteCount int // 问题收藏数
 	QuestionLikeCount     int // 问题点赞数
 	Answers               []Answer
+	// SEO关键词
+	SeoKeywords    string // SEO关键词（逗号分隔）
+	SeoDescription string // SEO描述
+	SeoTitle       string // SEO标题
 }
 
 // PageGenerator 页面生成器

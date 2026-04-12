@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.QuestionTitle}}</title>
+    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
+    {{if .SeoKeywords}}
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    {{end}}
+    {{if .SeoDescription}}
+    <meta name="description" content="{{.SeoDescription}}">
+    {{end}}
     <link rel="stylesheet" href="/api/style.css">
 </head>
 <body>

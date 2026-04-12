@@ -121,3 +121,29 @@ type PromotionTemplateWidget struct {
 func (PromotionTemplateWidget) TableName() string {
 	return "promotion_template_widget"
 }
+
+// SemKeyword SEM关键词
+type SemKeyword struct {
+	global.GVA_MODEL
+	Name        string `json:"name" gorm:"type:varchar(128);comment:关键词名称"`
+	Type        uint8  `json:"type" gorm:"index:idx_keyword_type;comment:类型 1=主关键词 2=长尾关键词 3=品牌关键词"`
+	Sort        int    `json:"sort" gorm:"comment:排序"`
+	Status      bool   `json:"status" gorm:"comment:状态"`
+	Description string `json:"description" gorm:"type:varchar(255);comment:描述"`
+}
+
+func (SemKeyword) TableName() string {
+	return "sem_keyword"
+}
+
+// PromotionLinkSemKeyword 推广链接关键词关联
+type PromotionLinkSemKeyword struct {
+	global.GVA_MODEL
+	LinkID    uint `json:"linkId" gorm:"index:idx_link_sem_link;comment:推广链接ID"`
+	KeywordID uint `json:"keywordId" gorm:"index:idx_link_sem_keyword;comment:关键词ID"`
+	Sort      int  `json:"sort" gorm:"comment:排序"`
+}
+
+func (PromotionLinkSemKeyword) TableName() string {
+	return "promotion_link_sem_keyword"
+}
