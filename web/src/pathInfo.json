@@ -53,6 +53,7 @@
   "/src/view/person/person.vue": "Person",
   "/src/view/promotion/domain/index.vue": "Index",
   "/src/view/promotion/group/index.vue": "Index",
+  "/src/view/promotion/landingVisit/index.vue": "Index",
   "/src/view/promotion/link/index.vue": "Index",
   "/src/view/promotion/member/index.vue": "Index",
   "/src/view/promotion/region/index.vue": "Index",
