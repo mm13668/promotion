@@ -1,5 +1,7 @@
 # Log directory
 server/log/
+server/app-linux
+server/server
 
 # Go build outputs
 *.exe
