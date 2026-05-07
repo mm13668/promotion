@@ -25,7 +25,7 @@ func (i *InitDB) MysqlEmptyDsn() string {
 		i.Host = "127.0.0.1"
 	}
 	if i.Port == "" {
-		i.Port = "3306"
+		i.Port = "13306"
 	}
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/", i.UserName, i.Password, i.Host, i.Port)
 }
