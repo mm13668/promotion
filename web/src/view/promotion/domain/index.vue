@@ -61,9 +61,9 @@
         <el-form-item label="域名">
           <el-input v-model="form.domain" />
         </el-form-item>
-        <el-form-item label="CNAME">
-          <el-input v-model="form.cnameTarget" />
-        </el-form-item>
+<!--        <el-form-item label="CNAME">-->
+<!--          <el-input v-model="form.cnameTarget" />-->
+<!--        </el-form-item>-->
         <el-form-item label="状态">
           <el-select v-model="form.status">
             <el-option v-for="o in statusOptions" :key="o.value" :label="o.label" :value="o.value" />
