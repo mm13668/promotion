@@ -16,7 +16,7 @@
       </div>
 
       <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12 items-start">
-        <div class="grid grid-cols-1 gap-4 xl:col-span-8 self-start content-start">
+<!--        <div class="grid grid-cols-1 gap-4 xl:col-span-8 self-start content-start">
           <gva-card title="内容数据">
             <gva-chart :type="4" />
           </gva-card>
@@ -32,9 +32,9 @@
               <gva-table />
             </gva-card>
           </div>
-        </div>
+        </div>-->
 
-        <div class="grid grid-cols-1 gap-4 xl:col-span-4 self-start content-start">
+<!--        <div class="grid grid-cols-1 gap-4 xl:col-span-4 self-start content-start">
           <gva-card title="快捷功能" show-action>
             <gva-quick-link />
           </gva-card>
@@ -50,7 +50,7 @@
           >
             <gva-banner />
           </gva-card>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>

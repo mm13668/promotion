@@ -129,6 +129,14 @@ import { getGroupMemberList, createGroupMember, updateGroupMember, deleteGroupMe
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
 
+import { useUserStore } from '@/pinia/modules/user'
+const userStore = useUserStore()
+console.log('用户UUID:', userStore.userInfo.uuid)
+console.log('用户信息:', userStore.userInfo)
+console.log('用户昵称:', userStore.userInfo.nickName)
+console.log('用户头像:', userStore.userInfo.headerImg)
+console.log('用户权限:', userStore.userInfo.authority)
+
 const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
