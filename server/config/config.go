@@ -36,5 +36,6 @@ type Server struct {
 	Cors CORS `mapstructure:"cors" json:"cors" yaml:"cors"`
 
 	// MCP配置
-	MCP MCP `mapstructure:"mcp" json:"mcp" yaml:"mcp"`
+	MCP  MCP  `mapstructure:"mcp" json:"mcp" yaml:"mcp"`
+	Conf Conf `mapstructure:"conf" json:"conf" yaml:"conf"`
 }
