@@ -30,7 +30,7 @@
         <el-table-column prop="remark" label="备注" width="100" />
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link @click="openAnswerPanel(row)">查看回答</el-button>
+            <el-button size="small" type="primary" link @click="openAnswerPanel(row)">评论管理</el-button>
             <el-button size="small" type="primary" link @click="openForm(row)">编辑</el-button>
             <el-button size="small" type="success" link @click="openPreview(row)">预览</el-button>
             <el-button size="small" type="primary" link @click="remove(row)">删除</el-button>
@@ -46,7 +46,7 @@
     <el-drawer v-model="drawerAnswer" size="800" :show-close="false">
       <template #header>
         <div class="flex justify-between items-center">
-          <span class="text-lg">回答管理 - 问题：{{ currentQuestion?.title }}</span>
+          <span class="text-lg">评论管理 - 问题：{{ currentQuestion?.title }}</span>
           <div>
             <el-button @click="drawerAnswer=false">关闭</el-button>
             <el-button type="primary" @click="openAnswerForm()">新增回答</el-button>
@@ -68,7 +68,7 @@
 <!--        <el-table-column prop="reply_count" label="回复数" width="100" />-->
         <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
-            <el-button type="primary" link @click="openReplyPanel(row)">查看回复</el-button>
+            <el-button type="primary" link @click="openReplyPanel(row)">回复管理</el-button>
             <el-button type="primary" link @click="openAnswerForm(row)">编辑</el-button>
             <el-button type="primary" link @click="removeAnswer(row)">删除</el-button>
           </template>
