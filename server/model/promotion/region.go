@@ -1,13 +1,17 @@
 package promotion
 
-import "github.com/flipped-aurora/gin-vue-admin/server/global"
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/google/uuid"
+)
 
 type RegionCategory struct {
 	global.GVA_MODEL
-	Name     string `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_region_name"`
-	ParentID *uint  `json:"parentId" gorm:"index:idx_region_parent"`
-	Sort     int    `json:"sort" gorm:"index:idx_region_sort"`
-	Remark   string `json:"remark" gorm:"type:varchar(255)"`
+	UUID     uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_region_uuid;comment:用户UUID"`
+	Name     string    `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_region_name"`
+	ParentID *uint     `json:"parentId" gorm:"index:idx_region_parent"`
+	Sort     int       `json:"sort" gorm:"index:idx_region_sort"`
+	Remark   string    `json:"remark" gorm:"type:varchar(255)"`
 }
 
 func (RegionCategory) TableName() string {
@@ -16,10 +20,11 @@ func (RegionCategory) TableName() string {
 
 type PromotionGroup struct {
 	global.GVA_MODEL
-	Name     string `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_group_name"`
-	RegionID uint   `json:"regionId" gorm:"index:idx_group_region"`
-	Sort     int    `json:"sort" gorm:"index:idx_group_sort"`
-	Remark   string `json:"remark" gorm:"type:varchar(255)"`
+	UUID     uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_group_uuid;comment:用户UUID"`
+	Name     string    `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_group_name"`
+	RegionID uint      `json:"regionId" gorm:"index:idx_group_region"`
+	Sort     int       `json:"sort" gorm:"index:idx_group_sort"`
+	Remark   string    `json:"remark" gorm:"type:varchar(255)"`
 }
 
 func (PromotionGroup) TableName() string {
@@ -28,17 +33,18 @@ func (PromotionGroup) TableName() string {
 
 type GroupMember struct {
 	global.GVA_MODEL
-	Nickname     string `json:"nickname" gorm:"type:varchar(64)"`
-	RegionID     uint   `json:"regionId" gorm:"index:idx_member_region"`
-	GroupID      uint   `json:"groupId" gorm:"index:idx_member_group"`
-	RealName     string `json:"realName" gorm:"type:varchar(64)"`
-	Wechat       string `json:"wechat" gorm:"type:varchar(64)"`
-	WechatQrcode string `json:"wechatQrcode" gorm:"type:varchar(255);comment:'客服微信二维码URL'"`
-	Mobile       string `json:"mobile" gorm:"type:varchar(20)"`
-	Gender       string `json:"gender" gorm:"type:enum('男','女','未知');default:'未知'"`
-	Status       int    `json:"status" gorm:"type:tinyint;default:2;comment:'状态：1在线 2离线'"`
-	Sort         int    `json:"sort" gorm:"index:idx_member_sort"`
-	Remark       string `json:"remark" gorm:"type:varchar(255)"`
+	UUID         uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_member_uuid;comment:用户UUID"`
+	Nickname     string    `json:"nickname" gorm:"type:varchar(64)"`
+	RegionID     uint      `json:"regionId" gorm:"index:idx_member_region"`
+	GroupID      uint      `json:"groupId" gorm:"index:idx_member_group"`
+	RealName     string    `json:"realName" gorm:"type:varchar(64)"`
+	Wechat       string    `json:"wechat" gorm:"type:varchar(64)"`
+	WechatQrcode string    `json:"wechatQrcode" gorm:"type:varchar(255);comment:'客服微信二维码URL'"`
+	Mobile       string    `json:"mobile" gorm:"type:varchar(20)"`
+	Gender       string    `json:"gender" gorm:"type:enum('男','女','未知');default:'未知'"`
+	Status       int       `json:"status" gorm:"type:tinyint;default:2;comment:'状态：1在线 2离线'"`
+	Sort         int       `json:"sort" gorm:"index:idx_member_sort"`
+	Remark       string    `json:"remark" gorm:"type:varchar(255)"`
 }
 
 func (GroupMember) TableName() string {

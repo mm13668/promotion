@@ -20,6 +20,7 @@ func (a *RegionApi) CreateRegionCategory(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := regionService.CreateRegionCategory(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -32,6 +33,11 @@ func (a *RegionApi) DeleteRegionCategory(c *gin.Context) {
 	var e promotion.RegionCategory
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	oneData, _ := regionService.GetRegionCategory(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -50,6 +56,11 @@ func (a *RegionApi) UpdateRegionCategory(c *gin.Context) {
 	var e promotion.RegionCategory
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	oneData, _ := regionService.GetRegionCategory(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -74,7 +85,7 @@ func (a *RegionApi) FindRegionCategory(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	data, err := regionService.FindRegionCategory(e.ID)
+	data, err := regionService.FindRegionCategory(e.ID, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("find failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -93,7 +104,7 @@ func (a *RegionApi) GetRegionCategoryList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := regionService.GetRegionCategoryList(pageInfo)
+	list, total, err := regionService.GetRegionCategoryList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -113,6 +124,7 @@ func (a *GroupApi) CreatePromotionGroup(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := groupService.CreatePromotionGroup(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -125,6 +137,11 @@ func (a *GroupApi) DeletePromotionGroup(c *gin.Context) {
 	var e promotion.PromotionGroup
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	oneData, _ := groupService.GetPromotionGroup(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -143,6 +160,11 @@ func (a *GroupApi) UpdatePromotionGroup(c *gin.Context) {
 	var e promotion.PromotionGroup
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	oneData, _ := groupService.GetPromotionGroup(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -167,7 +189,7 @@ func (a *GroupApi) FindPromotionGroup(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	data, err := groupService.FindPromotionGroup(e.ID)
+	data, err := groupService.FindPromotionGroup(e.ID, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("find failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -186,7 +208,7 @@ func (a *GroupApi) GetPromotionGroupList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := groupService.GetPromotionGroupList(pageInfo)
+	list, total, err := groupService.GetPromotionGroupList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -206,6 +228,7 @@ func (a *MemberApi) CreateGroupMember(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := memberService.CreateGroupMember(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -218,6 +241,11 @@ func (a *MemberApi) DeleteGroupMember(c *gin.Context) {
 	var e promotion.GroupMember
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	oneData, _ := memberService.FindGroupMember(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -238,6 +266,11 @@ func (a *MemberApi) UpdateGroupMember(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	oneData, _ := memberService.FindGroupMember(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
+		return
+	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -249,7 +282,6 @@ func (a *MemberApi) UpdateGroupMember(c *gin.Context) {
 	}
 	response.OkWithMessage("更新成功", c)
 }
-
 func (a *MemberApi) FindGroupMember(c *gin.Context) {
 	var e promotion.GroupMember
 	if err := c.ShouldBindQuery(&e); err != nil {
@@ -260,7 +292,7 @@ func (a *MemberApi) FindGroupMember(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	data, err := memberService.FindGroupMember(e.ID)
+	data, err := memberService.FindGroupMember(e.ID, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("find failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -279,7 +311,7 @@ func (a *MemberApi) GetGroupMemberList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := memberService.GetGroupMemberList(pageInfo)
+	list, total, err := memberService.GetGroupMemberList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -292,4 +324,3 @@ func (a *MemberApi) GetGroupMemberList(c *gin.Context) {
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
 }
-

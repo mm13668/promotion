@@ -1,9 +1,10 @@
 package promotion
 
 import (
+	"time"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-	"time"
 )
 
 type LandingVisit struct {

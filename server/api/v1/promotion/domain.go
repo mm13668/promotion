@@ -18,6 +18,7 @@ func (a *DomainApi) CreatePromotionDomain(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := domainService.CreatePromotionDomain(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -30,6 +31,12 @@ func (a *DomainApi) DeletePromotionDomain(c *gin.Context) {
 	var e promotion.PromotionDomain
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := domainService.GetPromotionDomain(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -48,6 +55,12 @@ func (a *DomainApi) UpdatePromotionDomain(c *gin.Context) {
 	var e promotion.PromotionDomain
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := domainService.GetPromotionDomain(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -91,7 +104,8 @@ func (a *DomainApi) GetPromotionDomainList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := domainService.GetPromotionDomainList(pageInfo)
+	userUUID := utils.GetUserUuid(c)
+	list, total, err := domainService.GetPromotionDomainList(pageInfo, userUUID)
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -104,4 +118,3 @@ func (a *DomainApi) GetPromotionDomainList(c *gin.Context) {
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
 }
-

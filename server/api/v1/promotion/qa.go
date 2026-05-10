@@ -20,6 +20,7 @@ func (a *QAApi) CreateQuestion(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateQuestion(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -31,6 +32,12 @@ func (a *QAApi) UpdateQuestion(c *gin.Context) {
 	var e promotion.QAQuestion
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetQuestion(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -47,6 +54,12 @@ func (a *QAApi) DeleteQuestion(c *gin.Context) {
 	var e promotion.QAQuestion
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetQuestion(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -81,7 +94,7 @@ func (a *QAApi) GetQuestionList(c *gin.Context) {
 		PageSize: pageInfo.PageSize,
 		RegionID: pageInfo.RegionID,
 		Title:    pageInfo.Title,
-	})
+	}, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -111,6 +124,7 @@ func (a *QAApi) CreateAnswer(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateAnswer(e); err != nil {
 		response.FailWithMessage("创建失败", c)
 		return
@@ -121,6 +135,12 @@ func (a *QAApi) UpdateAnswer(c *gin.Context) {
 	var e promotion.QAAnswer
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetAnswer(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -137,6 +157,12 @@ func (a *QAApi) DeleteAnswer(c *gin.Context) {
 	var e promotion.QAAnswer
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetAnswer(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -159,7 +185,7 @@ func (a *QAApi) GetAnswerList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetAnswerList(pageInfo)
+	list, total, err := qaService.GetAnswerList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -173,6 +199,7 @@ func (a *QAApi) CreateReply(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateReply(e); err != nil {
 		response.FailWithMessage("创建失败", c)
 		return
@@ -183,6 +210,12 @@ func (a *QAApi) UpdateReply(c *gin.Context) {
 	var e promotion.QAReply
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetReply(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -199,6 +232,12 @@ func (a *QAApi) DeleteReply(c *gin.Context) {
 	var e promotion.QAReply
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetReply(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -221,7 +260,7 @@ func (a *QAApi) GetReplyList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetReplyList(pageInfo)
+	list, total, err := qaService.GetReplyList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -236,6 +275,7 @@ func (a *QAApi) CreateAvatarNickname(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateAvatarNickname(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -247,6 +287,12 @@ func (a *QAApi) UpdateAvatarNickname(c *gin.Context) {
 	var e promotion.QAAvatarNickname
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetAvatarNickname(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -263,6 +309,12 @@ func (a *QAApi) DeleteAvatarNickname(c *gin.Context) {
 	var e promotion.QAAvatarNickname
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetAvatarNickname(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -285,7 +337,7 @@ func (a *QAApi) GetAvatarNicknameList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetAvatarNicknameList(pageInfo)
+	list, total, err := qaService.GetAvatarNicknameList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -293,7 +345,7 @@ func (a *QAApi) GetAvatarNicknameList(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledAvatarNickname(c *gin.Context) {
-	list, err := qaService.GetAllEnabledAvatarNickname()
+	list, err := qaService.GetAllEnabledAvatarNickname(utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -308,6 +360,7 @@ func (a *QAApi) CreateTitle(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateTitle(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -319,6 +372,12 @@ func (a *QAApi) UpdateTitle(c *gin.Context) {
 	var e promotion.QATitle
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetTitle(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -335,6 +394,12 @@ func (a *QAApi) DeleteTitle(c *gin.Context) {
 	var e promotion.QATitle
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetTitle(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -357,7 +422,7 @@ func (a *QAApi) GetTitleList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetTitleList(pageInfo)
+	list, total, err := qaService.GetTitleList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -365,7 +430,7 @@ func (a *QAApi) GetTitleList(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledTitle(c *gin.Context) {
-	list, err := qaService.GetAllEnabledTitle()
+	list, err := qaService.GetAllEnabledTitle(utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -380,6 +445,7 @@ func (a *QAApi) CreateSignature(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateSignature(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -391,6 +457,12 @@ func (a *QAApi) UpdateSignature(c *gin.Context) {
 	var e promotion.QASignature
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetSignature(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -407,6 +479,12 @@ func (a *QAApi) DeleteSignature(c *gin.Context) {
 	var e promotion.QASignature
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetSignature(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -429,7 +507,7 @@ func (a *QAApi) GetSignatureList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetSignatureList(pageInfo)
+	list, total, err := qaService.GetSignatureList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -437,7 +515,7 @@ func (a *QAApi) GetSignatureList(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledSignature(c *gin.Context) {
-	list, err := qaService.GetAllEnabledSignature()
+	list, err := qaService.GetAllEnabledSignature(utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -452,6 +530,7 @@ func (a *QAApi) CreateTag(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := qaService.CreateTag(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -463,6 +542,12 @@ func (a *QAApi) UpdateTag(c *gin.Context) {
 	var e promotion.QATag
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetTag(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -479,6 +564,12 @@ func (a *QAApi) DeleteTag(c *gin.Context) {
 	var e promotion.QATag
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := qaService.GetTag(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -501,7 +592,7 @@ func (a *QAApi) GetTagList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetTagList(pageInfo)
+	list, total, err := qaService.GetTagList(pageInfo, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
@@ -509,7 +600,7 @@ func (a *QAApi) GetTagList(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledTag(c *gin.Context) {
-	list, err := qaService.GetAllEnabledTag()
+	list, err := qaService.GetAllEnabledTag(utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return

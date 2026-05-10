@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/google/uuid"
 )
 
 type AdService struct{}
@@ -19,10 +20,24 @@ func (s *AdService) UpdatePlatform(e *promotion.AdPlatform) error {
 func (s *AdService) DeletePlatform(e promotion.AdPlatform) error {
 	return global.GVA_DB.Delete(&e).Error
 }
-func (s *AdService) GetPlatformList(info request.PageInfo) (list []promotion.AdPlatform, total int64, err error) {
+
+func (s *AdService) GetPlatform(id uint, userUUID uuid.UUID) (promotion.AdPlatform, error) {
+	var data promotion.AdPlatform
+	db := global.GVA_DB.Where("id = ?", id)
+	if userUUID != uuid.Nil {
+		db = db.Where("uuid = ?", userUUID)
+	}
+	err := db.First(&data).Error
+	return data, err
+}
+
+func (s *AdService) GetPlatformList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.AdPlatform, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.AdPlatform{})
+	if userUUID != uuid.Nil {
+		db = db.Where("uuid = ?", userUUID)
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return

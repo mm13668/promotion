@@ -3,6 +3,7 @@ package promotion
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"html/template"
 	"math/rand"
 	"os"
@@ -36,6 +37,16 @@ func (s *LinkService) UpdatePromotionLink(e *promotion.PromotionLink) error {
 	return global.GVA_DB.Save(e).Error
 }
 
+func (s *LinkService) GetPromotionLink(id uint, userUUID uuid.UUID) (promotion.PromotionLink, error) {
+	var data promotion.PromotionLink
+	db := global.GVA_DB.Where("id = ?", id)
+	if userUUID != uuid.Nil {
+		db = db.Where("uuid = ?", userUUID)
+	}
+	err := db.First(&data).Error
+	return data, err
+}
+
 func (s *LinkService) FindPromotionLink(id uint) (promotion.PromotionLink, error) {
 	var data promotion.PromotionLink
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
@@ -47,12 +58,16 @@ type LinkFilter struct {
 	RegionID   *uint
 	GroupID    *uint
 	DomainID   *uint
+	UUID       uuid.UUID
 }
 
 func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) (list []promotion.PromotionLink, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.PromotionLink{})
+	if f.UUID != uuid.Nil {
+		db = db.Where("uuid = ?", f.UUID)
+	}
 	if f.PlatformID != nil {
 		db = db.Where("platform_id = ?", *f.PlatformID)
 	}

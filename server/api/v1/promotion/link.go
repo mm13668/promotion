@@ -19,6 +19,7 @@ func (a *LinkApi) CreatePromotionLink(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := linkService.CreatePromotionLink(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -31,6 +32,12 @@ func (a *LinkApi) DeletePromotionLink(c *gin.Context) {
 	var e promotion.PromotionLink
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := linkService.GetPromotionLink(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -49,6 +56,12 @@ func (a *LinkApi) UpdatePromotionLink(c *gin.Context) {
 	var e promotion.PromotionLink
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := linkService.GetPromotionLink(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
@@ -104,6 +117,7 @@ func (a *LinkApi) GetPromotionLinkList(c *gin.Context) {
 		RegionID:   q.RegionID,
 		GroupID:    q.GroupID,
 		DomainID:   q.DomainID,
+		UUID:       utils.GetUserUuid(c),
 	})
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
@@ -123,6 +137,9 @@ func (a *LinkApi) UpsertBasic(c *gin.Context) {
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
+	}
+	if e.ID == 0 {
+		e.UUID = utils.GetUserUuid(c)
 	}
 	if err := linkService.UpsertBasic(&e); err != nil {
 		global.GVA_LOG.Error("save failed", zap.Error(err))
@@ -153,6 +170,9 @@ func (a *LinkApi) UpsertCompany(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	if e.ID == 0 {
+		e.UUID = utils.GetUserUuid(c)
+	}
 	if err := linkService.UpsertCompany(&e); err != nil {
 		global.GVA_LOG.Error("save failed", zap.Error(err))
 		response.FailWithMessage("保存失败", c)
@@ -181,6 +201,9 @@ func (a *LinkApi) UpsertCode(c *gin.Context) {
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
+	}
+	if e.ID == 0 {
+		e.UUID = utils.GetUserUuid(c)
 	}
 	if err := linkService.UpsertCode(&e); err != nil {
 		global.GVA_LOG.Error("save failed", zap.Error(err))
@@ -211,6 +234,9 @@ func (a *LinkApi) UpsertTheme(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	if e.ID == 0 {
+		e.UUID = utils.GetUserUuid(c)
+	}
 	if err := linkService.UpsertTheme(&e); err != nil {
 		global.GVA_LOG.Error("save failed", zap.Error(err))
 		response.FailWithMessage("保存失败", c)
@@ -239,6 +265,9 @@ func (a *LinkApi) UpsertComment(c *gin.Context) {
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
+	}
+	if e.ID == 0 {
+		e.UUID = utils.GetUserUuid(c)
 	}
 	if err := linkService.UpsertComment(&e); err != nil {
 		global.GVA_LOG.Error("save failed", zap.Error(err))

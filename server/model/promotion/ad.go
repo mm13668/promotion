@@ -1,13 +1,17 @@
 package promotion
 
-import "github.com/flipped-aurora/gin-vue-admin/server/global"
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/google/uuid"
+)
 
 type AdPlatform struct {
 	global.GVA_MODEL
-	PlatformKey string `json:"platformKey" gorm:"type:varchar(32);uniqueIndex:uk_platform_key"`
-	Name        string `json:"name" gorm:"type:varchar(64)"`
-	Status      uint8  `json:"status" gorm:"index:idx_platform_status"`
-	Remark      string `json:"remark" gorm:"type:varchar(255)"`
+	UUID        uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_platform_uuid;comment:用户UUID"`
+	PlatformKey string    `json:"platformKey" gorm:"type:varchar(32);uniqueIndex:uk_platform_key"`
+	Name        string    `json:"name" gorm:"type:varchar(64)"`
+	Status      uint8     `json:"status" gorm:"index:idx_platform_status"`
+	Remark      string    `json:"remark" gorm:"type:varchar(255)"`
 }
 
 func (AdPlatform) TableName() string {

@@ -1,20 +1,23 @@
 package promotion
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"time"
+
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/google/uuid"
 )
 
 type PromotionDomain struct {
 	global.GVA_MODEL
-	Domain      string `json:"domain" gorm:"type:varchar(255);uniqueIndex:uk_domain_domain"`
-	CnameTarget string `json:"cnameTarget" gorm:"type:varchar(255)"`
-	Status      uint8  `json:"status" gorm:"index:idx_domain_status"`
-	HttpsStatus uint8  `json:"httpsStatus" gorm:"index:idx_domain_https"`
-	CertMode    uint8  `json:"certMode"`
-	Remark      string `json:"remark" gorm:"type:varchar(255)"`
-	CreatedBy   *uint  `json:"createdBy"`
-	UpdatedBy   *uint  `json:"updatedBy"`
+	UUID        uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_domain_uuid;comment:用户UUID"`
+	Domain      string    `json:"domain" gorm:"type:varchar(255);uniqueIndex:uk_domain_domain"`
+	CnameTarget string    `json:"cnameTarget" gorm:"type:varchar(255)"`
+	Status      uint8     `json:"status" gorm:"index:idx_domain_status"`
+	HttpsStatus uint8     `json:"httpsStatus" gorm:"index:idx_domain_https"`
+	CertMode    uint8     `json:"certMode"`
+	Remark      string    `json:"remark" gorm:"type:varchar(255)"`
+	CreatedBy   *uint     `json:"createdBy"`
+	UpdatedBy   *uint     `json:"updatedBy"`
 }
 
 func (PromotionDomain) TableName() string {

@@ -17,6 +17,7 @@ func (a *AdApi) CreatePlatform(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
 	if err := adService.CreatePlatform(e); err != nil {
 		response.FailWithMessage("创建失败", c)
 		return
@@ -27,6 +28,12 @@ func (a *AdApi) UpdatePlatform(c *gin.Context) {
 	var e promotion.AdPlatform
 	if err := c.ShouldBindJSON(&e); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := adService.GetPlatform(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
 		return
 	}
 	if err := adService.UpdatePlatform(&e); err != nil {
@@ -41,6 +48,12 @@ func (a *AdApi) DeletePlatform(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	e.UUID = utils.GetUserUuid(c)
+	oneData, _ := adService.GetPlatform(e.ID, e.UUID)
+	if oneData.ID <= 0 {
+		response.FailWithMessage("数据不存在", c)
+		return
+	}
 	if err := adService.DeletePlatform(e); err != nil {
 		response.FailWithMessage("删除失败", c)
 		return
@@ -53,7 +66,8 @@ func (a *AdApi) GetPlatformList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := adService.GetPlatformList(pageInfo)
+	userUUID := utils.GetUserUuid(c)
+	list, total, err := adService.GetPlatformList(pageInfo, userUUID)
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return

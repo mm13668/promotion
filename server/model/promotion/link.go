@@ -1,17 +1,20 @@
 package promotion
 
-import "github.com/flipped-aurora/gin-vue-admin/server/global"
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/google/uuid"
+)
 
 type PromotionLink struct {
 	global.GVA_MODEL
-	PlatformID uint        `json:"platformId" gorm:"index:idx_link_platform"`
-	AccountID  *uint       `json:"accountId"`
-	RegionID   *uint       `json:"regionId" gorm:"index:idx_link_region"`
-	GroupID    *uint       `json:"groupId" gorm:"index:idx_link_group"`
-	DomainID   *uint       `json:"domainId" gorm:"index:idx_link_domain"`
-	QuestionID *uint       `json:"questionId"`
-	Question   *QAQuestion `json:"question" gorm:"foreignKey:QuestionID;references:ID"`
-	//TagsJSON     string                `json:"tagsJson" gorm:"type:json"`
+	UUID               uuid.UUID             `json:"uuid" gorm:"type:varchar(100);index:idx_link_uuid;comment:用户UUID"`
+	PlatformID         uint                  `json:"platformId" gorm:"index:idx_link_platform"`
+	AccountID          *uint                 `json:"accountId"`
+	RegionID           *uint                 `json:"regionId" gorm:"index:idx_link_region"`
+	GroupID            *uint                 `json:"groupId" gorm:"index:idx_link_group"`
+	DomainID           *uint                 `json:"domainId" gorm:"index:idx_link_domain"`
+	QuestionID         *uint                 `json:"questionId"`
+	Question           *QAQuestion           `json:"question" gorm:"foreignKey:QuestionID;references:ID"`
 	VisitCount         uint                  `json:"visitCount" gorm:"comment:访问次数"`
 	CopyCount          uint                  `json:"copyCount" gorm:"comment:复制次数"`
 	InquiryCount       uint                  `json:"inquiryCount" gorm:"comment:咨询次数"`
@@ -44,19 +47,20 @@ func (PromotionLink) TableName() string {
 
 type PromotionLinkBasic struct {
 	global.GVA_MODEL
-	LinkID               uint   `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
-	TemplateMobileId     *uint  `json:"templateMobileId" gorm:"comment:手机端模板ID（关联promotion_template_widget.id）"`
-	TemplatePcId         *uint  `json:"templatePcId" gorm:"comment:电脑端模板ID（关联promotion_template_widget.id）"`
-	MobileCopyWidgetId   *uint  `json:"mobileCopyWidgetId" gorm:"comment:手机复制插件ID（关联promotion_template_widget.id）"`
-	MobileBottomWidgetId *uint  `json:"mobileBottomWidgetId" gorm:"comment:手机底部插件ID（关联promotion_template_widget.id）"`
-	PcQrcodeWidgetId     *uint  `json:"pcQrcodeWidgetId" gorm:"comment:电脑端二维码插件ID（关联promotion_template_widget.id）"`
-	Show12301Phone       bool   `json:"show12301Phone" gorm:"comment:显示12301投诉电话"`
-	MobileShowQrcode     bool   `json:"mobileShowQrcode" gorm:"comment:移动端显示二维码"`
-	PcShowRightQrcode    bool   `json:"pcShowRightQrcode" gorm:"comment:电脑端右侧二维码"`
-	AutoDetectDevice     bool   `json:"autoDetectDevice" gorm:"comment:自动判断移动电脑端"`
-	SeoKeywords          string `json:"seoKeywords" gorm:"type:varchar(500);comment:SEO关键词（逗号分隔）"`
-	SeoDescription       string `json:"seoDescription" gorm:"type:varchar(500);comment:SEO描述"`
-	SeoTitle             string `json:"seoTitle" gorm:"type:varchar(255);comment:SEO标题"`
+	UUID                 uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_basic_uuid;comment:用户UUID"`
+	LinkID               uint      `json:"linkId" gorm:"uniqueIndex:uk_basic_link"`
+	TemplateMobileId     *uint     `json:"templateMobileId" gorm:"comment:手机端模板ID（关联promotion_template_widget.id）"`
+	TemplatePcId         *uint     `json:"templatePcId" gorm:"comment:电脑端模板ID（关联promotion_template_widget.id）"`
+	MobileCopyWidgetId   *uint     `json:"mobileCopyWidgetId" gorm:"comment:手机复制插件ID（关联promotion_template_widget.id）"`
+	MobileBottomWidgetId *uint     `json:"mobileBottomWidgetId" gorm:"comment:手机底部插件ID（关联promotion_template_widget.id）"`
+	PcQrcodeWidgetId     *uint     `json:"pcQrcodeWidgetId" gorm:"comment:电脑端二维码插件ID（关联promotion_template_widget.id）"`
+	Show12301Phone       bool      `json:"show12301Phone" gorm:"comment:显示12301投诉电话"`
+	MobileShowQrcode     bool      `json:"mobileShowQrcode" gorm:"comment:移动端显示二维码"`
+	PcShowRightQrcode    bool      `json:"pcShowRightQrcode" gorm:"comment:电脑端右侧二维码"`
+	AutoDetectDevice     bool      `json:"autoDetectDevice" gorm:"comment:自动判断移动电脑端"`
+	SeoKeywords          string    `json:"seoKeywords" gorm:"type:varchar(500);comment:SEO关键词（逗号分隔）"`
+	SeoDescription       string    `json:"seoDescription" gorm:"type:varchar(500);comment:SEO描述"`
+	SeoTitle             string    `json:"seoTitle" gorm:"type:varchar(255);comment:SEO标题"`
 }
 
 func (PromotionLinkBasic) TableName() string {
@@ -65,14 +69,15 @@ func (PromotionLinkBasic) TableName() string {
 
 type PromotionLinkCompany struct {
 	global.GVA_MODEL
-	LinkID        uint   `json:"linkId" gorm:"uniqueIndex:uk_company_link"`
-	CompanyName   string `json:"companyName" gorm:"type:varchar(128)"`
-	IcpRecordNo   string `json:"icpRecordNo" gorm:"type:varchar(64)"`
-	LicenseNo     string `json:"licenseNo" gorm:"type:varchar(64)"`
-	HomepageURL   string `json:"homepageUrl" gorm:"type:varchar(255)"`
-	AboutURL      string `json:"aboutUrl" gorm:"type:varchar(255)"`
-	LogoPcURL     string `json:"logoPcUrl" gorm:"type:varchar(255)"`
-	LogoMobileURL string `json:"logoMobileUrl" gorm:"type:varchar(255)"`
+	UUID          uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_company_uuid;comment:用户UUID"`
+	LinkID        uint      `json:"linkId" gorm:"uniqueIndex:uk_company_link"`
+	CompanyName   string    `json:"companyName" gorm:"type:varchar(128)"`
+	IcpRecordNo   string    `json:"icpRecordNo" gorm:"type:varchar(64)"`
+	LicenseNo     string    `json:"licenseNo" gorm:"type:varchar(64)"`
+	HomepageURL   string    `json:"homepageUrl" gorm:"type:varchar(255)"`
+	AboutURL      string    `json:"aboutUrl" gorm:"type:varchar(255)"`
+	LogoPcURL     string    `json:"logoPcUrl" gorm:"type:varchar(255)"`
+	LogoMobileURL string    `json:"logoMobileUrl" gorm:"type:varchar(255)"`
 }
 
 func (PromotionLinkCompany) TableName() string {
@@ -81,11 +86,12 @@ func (PromotionLinkCompany) TableName() string {
 
 type PromotionLinkCode struct {
 	global.GVA_MODEL
-	LinkID           uint   `json:"linkId" gorm:"uniqueIndex:uk_code_link"`
-	StatHeaderHTML   string `json:"statHeaderHtml" gorm:"type:mediumtext"`
-	StatFooterHTML   string `json:"statFooterHtml" gorm:"type:mediumtext"`
-	ConversionScript string `json:"conversionScript" gorm:"type:mediumtext"`
-	CssStyleText     string `json:"cssStyleText" gorm:"type:mediumtext"`
+	UUID             uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_code_uuid;comment:用户UUID"`
+	LinkID           uint      `json:"linkId" gorm:"uniqueIndex:uk_code_link"`
+	StatHeaderHTML   string    `json:"statHeaderHtml" gorm:"type:mediumtext"`
+	StatFooterHTML   string    `json:"statFooterHtml" gorm:"type:mediumtext"`
+	ConversionScript string    `json:"conversionScript" gorm:"type:mediumtext"`
+	CssStyleText     string    `json:"cssStyleText" gorm:"type:mediumtext"`
 }
 
 func (PromotionLinkCode) TableName() string {
@@ -94,11 +100,12 @@ func (PromotionLinkCode) TableName() string {
 
 type PromotionLinkTheme struct {
 	global.GVA_MODEL
-	LinkID           uint   `json:"linkId" gorm:"uniqueIndex:uk_theme_link"`
-	ColorWechatPhone string `json:"colorWechatPhone" gorm:"type:varchar(32)"`
-	ColorServiceName string `json:"colorServiceName" gorm:"type:varchar(32)"`
-	ColorCopyright   string `json:"colorCopyright" gorm:"type:varchar(32)"`
-	BoldAll          bool   `json:"boldAll"`
+	UUID             uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_theme_uuid;comment:用户UUID"`
+	LinkID           uint      `json:"linkId" gorm:"uniqueIndex:uk_theme_link"`
+	ColorWechatPhone string    `json:"colorWechatPhone" gorm:"type:varchar(32)"`
+	ColorServiceName string    `json:"colorServiceName" gorm:"type:varchar(32)"`
+	ColorCopyright   string    `json:"colorCopyright" gorm:"type:varchar(32)"`
+	BoldAll          bool      `json:"boldAll"`
 }
 
 func (PromotionLinkTheme) TableName() string {
@@ -107,9 +114,10 @@ func (PromotionLinkTheme) TableName() string {
 
 type PromotionLinkComment struct {
 	global.GVA_MODEL
-	LinkID        uint   `json:"linkId" gorm:"uniqueIndex:uk_comment_link"`
-	EnableComment bool   `json:"enableComment"`
-	Permission    string `json:"permission" gorm:"type:enum('mobile_login','guest');default:'mobile_login'"`
+	UUID          uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_comment_uuid;comment:用户UUID"`
+	LinkID        uint      `json:"linkId" gorm:"uniqueIndex:uk_comment_link"`
+	EnableComment bool      `json:"enableComment"`
+	Permission    string    `json:"permission" gorm:"type:enum('mobile_login','guest');default:'mobile_login'"`
 }
 
 func (PromotionLinkComment) TableName() string {
