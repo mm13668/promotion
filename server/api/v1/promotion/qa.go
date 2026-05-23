@@ -193,6 +193,22 @@ func (a *QAApi) GetAnswerList(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
 }
 
+func (a *QAApi) GetAnswerDetail(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		response.FailWithMessage("参数错误", c)
+		return
+	}
+	detail, err := qaService.GetAnswerDetail(uint(id))
+	if err != nil {
+		global.GVA_LOG.Error("获取回答详情失败", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(detail, "获取成功", c)
+}
+
 func (a *QAApi) CreateReply(c *gin.Context) {
 	var e promotion.QAReply
 	if err := c.ShouldBindJSON(&e); err != nil {

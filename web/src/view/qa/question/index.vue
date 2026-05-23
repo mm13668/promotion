@@ -70,6 +70,7 @@
           <template #default="{ row }">
             <el-button type="primary" link @click="openReplyPanel(row)">回复管理</el-button>
             <el-button type="primary" link @click="openAnswerForm(row)">编辑</el-button>
+            <el-button size="small" type="success" link @click="openAnswerPreview(row)">预览</el-button>
             <el-button type="primary" link @click="removeAnswer(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -425,6 +426,13 @@ const remove = async (row) => {
 const openPreview = (row) => {
   const routeUrl = router.resolve({
     path: `/qa/question/preview/${row.ID}`,
+  })
+  window.open(routeUrl.href, '_blank')
+}
+
+const openAnswerPreview = (row) => {
+  const routeUrl = router.resolve({
+    path: `/qa/answer/preview/${row.ID}`,
   })
   window.open(routeUrl.href, '_blank')
 }

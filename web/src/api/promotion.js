@@ -228,6 +228,7 @@ export const createQAAnswer = (data) => service({ url: '/promotion/createQAAnswe
 export const updateQAAnswer = (data) => service({ url: '/promotion/updateQAAnswer', method: 'put', data })
 export const deleteQAAnswer = (data) => service({ url: '/promotion/deleteQAAnswer', method: 'delete', data })
 export const getQAAnswerList = (params) => service({ url: '/promotion/getQAAnswerList', method: 'get', params })
+export const getQAAnswerDetail = (id) => service({ url: `/promotion/getQAAnswerDetail/${id}`, method: 'get' })
 export const createQAReply = (data) => service({ url: '/promotion/createQAReply', method: 'post', data })
 export const updateQAReply = (data) => service({ url: '/promotion/updateQAReply', method: 'put', data })
 export const deleteQAReply = (data) => service({ url: '/promotion/deleteQAReply', method: 'delete', data })

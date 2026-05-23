@@ -117,6 +117,21 @@ func (s *QAService) FindAnswer(id uint) (promotion.QAAnswer, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
+func (s *QAService) GetAnswerDetail(id uint) (QAAnswerWithReply, error) {
+	var detail QAAnswerWithReply
+	err := global.GVA_DB.Where("id = ?", id).First(&detail.QAAnswer).Error
+	if err != nil {
+		return detail, err
+	}
+	var replies []promotion.QAReply
+	err = global.GVA_DB.Where("answer_id = ?", id).Order("id asc").Find(&replies).Error
+	if err != nil {
+		return detail, err
+	}
+	detail.Replies = replies
+	return detail, nil
+}
+
 func (s *QAService) GetAnswerList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QAAnswer, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)

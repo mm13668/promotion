@@ -36,6 +36,11 @@ const routes = [
     component: () => import('@/view/qa/question/preview.vue'),
     meta: { title: '问题预览' }
   },
+  {
+    path: '/qa/answer/preview/:id',
+    component: () => import('@/view/qa/question/answer-preview.vue'),
+    meta: { title: '回答预览' }
+  },
 ]
 
 const router = createRouter({
