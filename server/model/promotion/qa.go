@@ -99,7 +99,7 @@ func (QAAvatarNickname) TableName() string {
 type QATitle struct {
 	global.GVA_MODEL
 	UUID   uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_title_uuid;comment:用户UUID"`
-	Name   string    `json:"name" gorm:"type:varchar(50);uniqueIndex:uk_name"`
+	Name   string    `json:"name" gorm:"type:varchar(50);index:idk_name"`
 	Sort   int       `json:"sort" gorm:"index:idx_sort"`
 	Status uint8     `json:"status" gorm:"index:idx_status;default:1"`
 }
@@ -111,7 +111,7 @@ func (QATitle) TableName() string {
 type QASignature struct {
 	global.GVA_MODEL
 	UUID    uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_signature_uuid;comment:用户UUID"`
-	Content string    `json:"content" gorm:"type:varchar(255);uniqueIndex:uk_content"`
+	Content string    `json:"content" gorm:"type:varchar(255);index:idk_content"`
 	Sort    int       `json:"sort" gorm:"index:idx_sort"`
 	Status  uint8     `json:"status" gorm:"index:idx_status;default:1"`
 }
@@ -123,7 +123,7 @@ func (QASignature) TableName() string {
 type QATag struct {
 	global.GVA_MODEL
 	UUID   uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_tag_uuid;comment:用户UUID"`
-	Name   string    `json:"name" gorm:"type:varchar(50);uniqueIndex:uk_name"`
+	Name   string    `json:"name" gorm:"type:varchar(50);index:idk_name"`
 	Sort   int       `json:"sort" gorm:"index:idx_sort"`
 	Status uint8     `json:"status" gorm:"index:idx_status;default:1"`
 }

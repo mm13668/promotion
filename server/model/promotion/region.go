@@ -8,7 +8,7 @@ import (
 type RegionCategory struct {
 	global.GVA_MODEL
 	UUID     uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_region_uuid;comment:用户UUID"`
-	Name     string    `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_region_name"`
+	Name     string    `json:"name" gorm:"type:varchar(64);index:idx_region_name"`
 	ParentID *uint     `json:"parentId" gorm:"index:idx_region_parent"`
 	Sort     int       `json:"sort" gorm:"index:idx_region_sort"`
 	Remark   string    `json:"remark" gorm:"type:varchar(255)"`
