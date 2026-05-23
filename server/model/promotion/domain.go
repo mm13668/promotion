@@ -10,7 +10,7 @@ import (
 type PromotionDomain struct {
 	global.GVA_MODEL
 	UUID        uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_domain_uuid;comment:用户UUID"`
-	Domain      string    `json:"domain" gorm:"type:varchar(255);uniqueIndex:uk_domain_domain"`
+	Domain      string    `json:"domain" gorm:"type:varchar(255);index:idk_domain_domain"`
 	CnameTarget string    `json:"cnameTarget" gorm:"type:varchar(255)"`
 	Status      uint8     `json:"status" gorm:"index:idx_domain_status"`
 	HttpsStatus uint8     `json:"httpsStatus" gorm:"index:idx_domain_https"`

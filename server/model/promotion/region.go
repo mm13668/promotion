@@ -21,7 +21,7 @@ func (RegionCategory) TableName() string {
 type PromotionGroup struct {
 	global.GVA_MODEL
 	UUID     uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_group_uuid;comment:用户UUID"`
-	Name     string    `json:"name" gorm:"type:varchar(64);uniqueIndex:uk_group_name"`
+	Name     string    `json:"name" gorm:"type:varchar(64);index:idx_group_name"`
 	RegionID uint      `json:"regionId" gorm:"index:idx_group_region"`
 	Sort     int       `json:"sort" gorm:"index:idx_group_sort"`
 	Remark   string    `json:"remark" gorm:"type:varchar(255)"`

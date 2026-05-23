@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `promotion_group` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` DATETIME NULL COMMENT '删除时间（软删除）',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_group_name` (`name`),
+  KEY `idx_group_name` (`name`),
   KEY `idx_group_region` (`region_id`),
   KEY `idx_group_sort` (`sort`),
   CONSTRAINT `fk_group_region` FOREIGN KEY (`region_id`) REFERENCES `region_category`(`id`)

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `promotion_domain` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` DATETIME NULL COMMENT '删除时间（软删除）',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_domain_domain` (`domain`),
+  KEY `idk_domain_domain` (`domain`),
   KEY `idx_domain_status` (`status`),
   KEY `idx_domain_https` (`https_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='推广域名管理-域名表';
