@@ -2,8 +2,10 @@ package promotion
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"html/template"
 	"math/rand"
 	"os"
@@ -242,11 +244,17 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	// 3. 查询关联配置
 	var basic promotion.PromotionLinkBasic
 	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&basic).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("请先设置-【基本设置】")
+		}
 		return err
 	}
 
 	var company promotion.PromotionLinkCompany
 	if err := global.GVA_DB.Where("link_id = ?", linkId).First(&company).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("请先设置-【资质公司】")
+		}
 		return err
 	}
 

@@ -305,7 +305,7 @@ func (a *LinkApi) PublishPromotionLink(c *gin.Context) {
 	}
 	if err := linkService.PublishPromotionLink(e.ID); err != nil {
 		global.GVA_LOG.Error("publish failed", zap.Error(err))
-		response.FailWithMessage("发布失败", c)
+		response.FailWithMessage("发布失败："+err.Error(), c)
 		return
 	}
 	response.OkWithMessage("发布成功", c)
