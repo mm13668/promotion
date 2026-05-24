@@ -79,7 +79,9 @@
 <!--            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>-->
 <!--            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>-->
             <el-button type="success" link @click="showLink(row)">推广链接</el-button>
-            <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
+            <el-tooltip content="请先设置好「基本设置」和「资质公司」两个选项，才能发布更新" placement="top">
+              <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
+            </el-tooltip>
 <!--            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>-->
             <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
 <!--            <el-button type="primary" link @click="openPhone(row)">登录信息</el-button>-->
@@ -741,8 +743,14 @@ const openOcpc = (row) => {
 }
 
 // 复制链接
-const copyLink = async (url) => {
-  await navigator.clipboard.writeText(url)
+const copyLink = (url) => {
+  if (!url) return
+  const input = document.createElement('textarea')
+  input.value = url
+  document.body.appendChild(input)
+  input.select()
+  document.execCommand('copy')
+  document.body.removeChild(input)
   ElMessage.success('复制成功')
 }
 
