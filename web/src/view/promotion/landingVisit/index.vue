@@ -57,6 +57,7 @@
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="linkId" label="推广链接ID" width="100" />
         <el-table-column prop="ip" label="IP地址" width="140" />
+        <el-table-column prop="region" label="地区" width="120" />
         <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip />
         <el-table-column prop="requestReferer" label="请求来源" width="200" show-overflow-tooltip />
 <!--        <el-table-column prop="userAgent" label="浏览器UA" width="200" show-overflow-tooltip />-->
@@ -74,7 +75,6 @@
 <!--        <el-table-column prop="deviceType" label="设备类型" width="100" />-->
 <!--        <el-table-column prop="os" label="操作系统" width="100" />-->
 <!--        <el-table-column prop="browser" label="浏览器" width="100" />-->
-        <el-table-column prop="region" label="地区" width="120" />
 <!--        <el-table-column prop="lastReportAt" label="最后上报时间" width="160">-->
 <!--          <template #default="{ row }">-->
 <!--            {{ formatDateTime(row.lastReportAt) }}-->
