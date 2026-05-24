@@ -1,6 +1,7 @@
 package promotion
 
 import (
+	"github.com/google/uuid"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -10,6 +11,7 @@ import (
 type LandingVisit struct {
 	global.GVA_MODEL
 	LinkId                uint      `json:"linkId" gorm:"column:link_id;comment:推广链接ID"`
+	UUID                  uuid.UUID `json:"uuid" gorm:"type:varchar(100);index:idx_landing_visit_uuid;comment:用户UUID"`
 	Ip                    string    `json:"ip" gorm:"column:ip;comment:访问IP"`
 	Referer               string    `json:"referer" gorm:"column:referer;comment:来源链接(JSON body)"`
 	UserAgent             string    `json:"userAgent" gorm:"column:user_agent;comment:浏览器UA(JSON body)"`

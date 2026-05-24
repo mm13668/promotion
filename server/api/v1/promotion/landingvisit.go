@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	promotionReq "github.com/flipped-aurora/gin-vue-admin/server/model/promotion/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"time"
@@ -81,7 +82,8 @@ func (l *LandingVisitApi) GetLandingVisitList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := landingVisitService.GetLandingVisitList(pageInfo)
+	userUUID := utils.GetUserUuid(c)
+	list, total, err := landingVisitService.GetLandingVisitList(pageInfo, userUUID)
 	if err != nil {
 		global.GVA_LOG.Error("获取列表失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

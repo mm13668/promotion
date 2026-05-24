@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"time"
 )
@@ -22,6 +24,12 @@ func (l *LandingVisitService) CreateLandingVisit(ctx context.Context, visit *pro
 		visit.ID = existingVisit.ID
 		return nil
 	}
+	pl, err := new(LinkService).GetPromotionLink(visit.LinkId, uuid.Nil)
+	if err != nil {
+		global.GVA_LOG.Error("CreateLandingVisit GetPromotionLink err", zap.Error(err))
+	}
+	visit.UUID = pl.UUID
+
 	// 不存在记录，创建新记录
 	err = global.GVA_DB.Create(visit).Error
 	if err != nil {
@@ -75,10 +83,15 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 }
 
 // GetLandingVisitList 分页查询访问记录列表
-func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSearch) (list []promotion.LandingVisit, total int64, err error) {
+func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSearch, userUUID uuid.UUID) (list []promotion.LandingVisit, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.LandingVisit{})
+
+	// 按账号隔离：只能查询该账号的数据
+	if userUUID != uuid.Nil {
+		db = db.Where("uuid = ?", userUUID)
+	}
 
 	// 推广链接筛选
 	if info.LinkId != nil {
