@@ -160,31 +160,66 @@
           <el-select v-model="basic.templateMobileId" clearable filterable placeholder="请选择手机端模板" style="width: 300px">
             <el-option v-for="item in mobileTemplateOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
-          <el-button type="primary" link class="ml-2">选择模板</el-button>
+          <el-image
+            v-if="getPreviewImage(mobileTemplateOptions, basic.templateMobileId)"
+            :src="getBaseUrl() + '/' + getPreviewImage(mobileTemplateOptions, basic.templateMobileId)"
+            style="width: 40px; height: 40px; margin-left: 8px; border-radius: 4px; cursor: pointer; vertical-align: middle;"
+            fit="cover"
+            @click="showPreview(mobileTemplateOptions, basic.templateMobileId)"
+          />
+          <el-button type="primary" link class="ml-2" @click="showPreview(mobileTemplateOptions, basic.templateMobileId)">预览</el-button>
         </el-form-item>
         <el-form-item label="电脑端模板">
           <el-select v-model="basic.templatePcId" clearable filterable placeholder="请选择电脑端模板" style="width: 300px">
             <el-option v-for="item in pcTemplateOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
-          <el-button type="primary" link class="ml-2">选择模板</el-button>
+          <el-image
+            v-if="getPreviewImage(pcTemplateOptions, basic.templatePcId)"
+            :src="getBaseUrl() + '/' + getPreviewImage(pcTemplateOptions, basic.templatePcId)"
+            style="width: 40px; height: 40px; margin-left: 8px; border-radius: 4px; cursor: pointer; vertical-align: middle;"
+            fit="cover"
+            @click="showPreview(pcTemplateOptions, basic.templatePcId)"
+          />
+          <el-button type="primary" link class="ml-2" @click="showPreview(pcTemplateOptions, basic.templatePcId)">预览</el-button>
         </el-form-item>
         <el-form-item label="手机复制插件">
           <el-select v-model="basic.mobileCopyWidgetId" clearable filterable placeholder="请选择手机复制插件" style="width: 300px">
             <el-option v-for="item in copyWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
-          <el-button type="primary" link class="ml-2">选择插件</el-button>
+          <el-image
+            v-if="getPreviewImage(copyWidgetOptions, basic.mobileCopyWidgetId)"
+            :src="getBaseUrl() + '/' + getPreviewImage(copyWidgetOptions, basic.mobileCopyWidgetId)"
+            style="width: 40px; height: 40px; margin-left: 8px; border-radius: 4px; cursor: pointer; vertical-align: middle;"
+            fit="cover"
+            @click="showPreview(copyWidgetOptions, basic.mobileCopyWidgetId)"
+          />
+          <el-button type="primary" link class="ml-2" @click="showPreview(copyWidgetOptions, basic.mobileCopyWidgetId)">预览</el-button>
         </el-form-item>
         <el-form-item label="手机底部插件">
           <el-select v-model="basic.mobileBottomWidgetId" clearable filterable placeholder="请选择手机底部插件" style="width: 300px">
             <el-option v-for="item in bottomWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
-          <el-button type="primary" link class="ml-2">选择插件</el-button>
+          <el-image
+            v-if="getPreviewImage(bottomWidgetOptions, basic.mobileBottomWidgetId)"
+            :src="getBaseUrl() + '/' + getPreviewImage(bottomWidgetOptions, basic.mobileBottomWidgetId)"
+            style="width: 40px; height: 40px; margin-left: 8px; border-radius: 4px; cursor: pointer; vertical-align: middle;"
+            fit="cover"
+            @click="showPreview(bottomWidgetOptions, basic.mobileBottomWidgetId)"
+          />
+          <el-button type="primary" link class="ml-2" @click="showPreview(bottomWidgetOptions, basic.mobileBottomWidgetId)">预览</el-button>
         </el-form-item>
         <el-form-item label="电脑端二维码插件">
           <el-select v-model="basic.pcQrcodeWidgetId" clearable filterable placeholder="请选择电脑端二维码插件" style="width: 300px">
             <el-option v-for="item in qrcodeWidgetOptions" :key="item.ID" :label="item.name" :value="item.ID" />
           </el-select>
-          <el-button type="primary" link class="ml-2">选择插件</el-button>
+          <el-image
+            v-if="getPreviewImage(qrcodeWidgetOptions, basic.pcQrcodeWidgetId)"
+            :src="getBaseUrl() + '/' + getPreviewImage(qrcodeWidgetOptions, basic.pcQrcodeWidgetId)"
+            style="width: 40px; height: 40px; margin-left: 8px; border-radius: 4px; cursor: pointer; vertical-align: middle;"
+            fit="cover"
+            @click="showPreview(qrcodeWidgetOptions, basic.pcQrcodeWidgetId)"
+          />
+          <el-button type="primary" link class="ml-2" @click="showPreview(qrcodeWidgetOptions, basic.pcQrcodeWidgetId)">预览</el-button>
         </el-form-item>
         <el-form-item label="显示12301投诉电话">
           <el-switch v-model="basic.show12301Phone" active-text="是" inactive-text="否" />
@@ -487,6 +522,18 @@
           提示：切换开关可设置客服在线/离线状态
         </div>
       </el-dialog>
+
+    <!-- 预览图片弹窗 -->
+    <el-dialog v-model="previewVisible" title="预览" width="auto" :close-on-click-modal="true" align-center>
+      <div class="flex justify-center items-center">
+        <el-image
+          v-if="previewUrl"
+          :src="previewUrl"
+          style="max-width: 80vw; max-height: 80vh"
+          fit="contain"
+        />
+      </div>
+    </el-dialog>
     </div>
   </template>
 
@@ -906,6 +953,26 @@ const handleStatusChange = async (row) => {
     console.error('更新状态失败', e)
     ElMessage.error('状态更新失败')
   }
+}
+
+// 预览相关
+const previewVisible = ref(false)
+const previewUrl = ref('')
+
+const getPreviewImage = (options, id) => {
+  if (!id) return null
+  const item = options.find(opt => opt.ID === id)
+  return item ? item.previewImage : null
+}
+
+const showPreview = (options, id) => {
+  const previewImage = getPreviewImage(options, id)
+  if (!previewImage) {
+    ElMessage.warning('暂无预览图片')
+    return
+  }
+  previewUrl.value = getBaseUrl() + '/' + previewImage
+  previewVisible.value = true
 }
 </script>
 
