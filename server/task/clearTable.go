@@ -30,6 +30,12 @@ func ClearTable(db *gorm.DB) error {
 		Interval:     "168h",
 	})
 
+	ClearTableDetail = append(ClearTableDetail, common.ClearDB{
+		TableName:    "landing_visits",
+		CompareField: "created_at",
+		Interval:     "72h",
+	})
+
 	if db == nil {
 		return errors.New("db Cannot be empty")
 	}
