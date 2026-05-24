@@ -25,6 +25,7 @@ func (l *LandingVisitApi) CreateLandingVisit(c *gin.Context) {
 		return
 	}
 	visit.Ip = c.ClientIP()
+	visit.Region = utils.GetIpRegion(visit.Ip)
 	// 保存 HTTP 请求头中的数据
 	visit.RequestUserAgent = c.Request.UserAgent()
 	visit.RequestReferer = c.Request.Referer()
