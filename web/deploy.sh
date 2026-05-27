@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# 交叉编译到Windows
-# GOOS=windows GOARCH=amd64 go build -o app-windows.exe
-
-# 交叉编译到Mac
-# GOOS=darwin GOARCH=amd64 go build -o app-mac
-
-# 交叉编译到Linux
-# GOOS=linux GOARCH=amd64 go build -o app-linux
-
-
 set -e
 
 # =========================
@@ -18,29 +8,27 @@ set -e
 
 SERVER="root@8.163.59.237"
 
-REMOTE_DIR="/var/www"
+REMOTE_DIR="/var/www/html"
 
-APP_NAME="app-linux"
-
-PACKAGE_NAME="server.tar.gz"
+PACKAGE_NAME="dist.tar.gz"
 
 # =========================
 # 开始部署
 # =========================
 
 echo "========================="
-echo "1. 编译 Linux 服务"
+echo "1. 前端构建"
 echo "========================="
 
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $APP_NAME
+pnpm run build
 
 echo "========================="
-echo "2. 打包"
+echo "2. 打包 dist"
 echo "========================="
 
 rm -f $PACKAGE_NAME
 
-tar -czvf $PACKAGE_NAME $APP_NAME
+COPYFILE_DISABLE=1 tar -czvf $PACKAGE_NAME dist/
 
 echo "========================="
 echo "3. 上传服务器"
@@ -49,30 +37,33 @@ echo "========================="
 scp $PACKAGE_NAME $SERVER:/tmp/
 
 echo "========================="
-echo "4. 开始部署"
+echo "4. 服务器部署"
 echo "========================="
 
 ssh $SERVER << EOF
 
 set -e
 
-cd /tmp
+echo "进入网站目录"
 
-echo "解压文件"
+cd $REMOTE_DIR
 
-tar -xzvf $PACKAGE_NAME
+echo "删除旧文件"
 
-echo "移动到目标目录"
+find . -mindepth 1 -maxdepth 1 ! -name '.well-known' -exec rm -rf {} +
 
-mv -f $APP_NAME $REMOTE_DIR/
+echo "解压新文件"
 
-echo "添加执行权限"
+tar -xzvf /tmp/$PACKAGE_NAME -C /tmp/
 
-chmod +x $REMOTE_DIR/$APP_NAME
+echo "复制 dist 内容"
+
+cp -r /tmp/dist/* $REMOTE_DIR/
 
 echo "清理临时文件"
 
-rm -f $PACKAGE_NAME
+rm -rf /tmp/dist
+rm -f /tmp/$PACKAGE_NAME
 
 echo "部署完成"
 
