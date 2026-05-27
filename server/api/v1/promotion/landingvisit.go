@@ -24,7 +24,7 @@ func (l *LandingVisitApi) CreateLandingVisit(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	visit.Ip = c.ClientIP()
+	visit.Ip = utils.GetClientIP(c)
 	visit.Region = utils.GetIpRegion(visit.Ip)
 	// 保存 HTTP 请求头中的数据
 	visit.RequestUserAgent = c.Request.UserAgent()

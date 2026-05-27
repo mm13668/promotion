@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/mojocn/base64Captcha"
 	"go.uber.org/zap"
@@ -29,7 +30,7 @@ func (b *BaseApi) Captcha(c *gin.Context) {
 	// 判断验证码是否开启
 	openCaptcha := global.GVA_CONFIG.Captcha.OpenCaptcha               // 是否开启防爆次数
 	openCaptchaTimeOut := global.GVA_CONFIG.Captcha.OpenCaptchaTimeOut // 缓存超时时间
-	key := c.ClientIP()
+	key := utils.GetClientIP(c)
 	v, ok := global.BlackCache.Get(key)
 	if !ok {
 		global.BlackCache.Set(key, 1, time.Second*time.Duration(openCaptchaTimeOut))

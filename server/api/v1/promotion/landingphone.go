@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -27,7 +28,7 @@ func (p *ApiGroup) CreateLandingPhone(c *gin.Context) {
 		return
 	}
 	// 自动获取IP和UA
-	landingPhone.Ip = c.ClientIP()
+	landingPhone.Ip = utils.GetClientIP(c)
 	landingPhone.UserAgent = c.Request.UserAgent()
 
 	err = landingPhoneService.CreateLandingPhone(&landingPhone)

@@ -6,6 +6,6 @@ import (
 )
 
 func TestIp(t *testing.T) {
-	res := utils.GetIpRegion("42.194.192.36")
+	res := utils.GetIpRegion("43.133.7.32")
 	t.Log(res)
 }

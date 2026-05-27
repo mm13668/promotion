@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -55,7 +56,7 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 			Time:      time.Now(),
 			Path:      path,
 			Query:     query,
-			IP:        c.ClientIP(),
+			IP:        utils.GetClientIP(c),
 			UserAgent: c.Request.UserAgent(),
 			Error:     strings.TrimRight(c.Errors.ByType(gin.ErrorTypePrivate).String(), "\n"),
 			Cost:      cost,

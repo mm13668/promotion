@@ -10,6 +10,7 @@ import (
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,7 +39,7 @@ func (l LimitConfig) LimitWithTime() gin.HandlerFunc {
 
 // DefaultGenerationKey 默认生成key
 func DefaultGenerationKey(c *gin.Context) string {
-	return "GVA_Limit" + c.ClientIP()
+	return "GVA_Limit" + utils.GetClientIP(c)
 }
 
 func DefaultCheckOrMark(key string, expire int, limit int) (err error) {

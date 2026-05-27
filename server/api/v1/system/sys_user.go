@@ -37,7 +37,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		return
 	}
 
-	key := c.ClientIP()
+	key := utils.GetClientIP(c)
 	// 判断验证码是否开启
 	openCaptcha := global.GVA_CONFIG.Captcha.OpenCaptcha               // 是否开启防爆次数
 	openCaptchaTimeOut := global.GVA_CONFIG.Captcha.OpenCaptchaTimeOut // 缓存超时时间
@@ -54,7 +54,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		// 记录登录失败日志
 		loginLogService.CreateLoginLog(system.SysLoginLog{
 			Username:     l.Username,
-			Ip:           c.ClientIP(),
+			Ip:           utils.GetClientIP(c),
 			Agent:        c.Request.UserAgent(),
 			Status:       false,
 			ErrorMessage: "验证码错误",
@@ -72,7 +72,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		// 记录登录失败日志
 		loginLogService.CreateLoginLog(system.SysLoginLog{
 			Username:     l.Username,
-			Ip:           c.ClientIP(),
+			Ip:           utils.GetClientIP(c),
 			Agent:        c.Request.UserAgent(),
 			Status:       false,
 			ErrorMessage: "用户名不存在或者密码错误",
@@ -87,7 +87,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 		// 记录登录失败日志
 		loginLogService.CreateLoginLog(system.SysLoginLog{
 			Username:     l.Username,
-			Ip:           c.ClientIP(),
+			Ip:           utils.GetClientIP(c),
 			Agent:        c.Request.UserAgent(),
 			Status:       false,
 			ErrorMessage: "用户被禁止登录",
@@ -109,7 +109,7 @@ func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
 	// 记录登录成功日志
 	loginLogService.CreateLoginLog(system.SysLoginLog{
 		Username: user.Username,
-		Ip:       c.ClientIP(),
+		Ip:       utils.GetClientIP(c),
 		Agent:    c.Request.UserAgent(),
 		Status:   true,
 		UserID:   user.ID,

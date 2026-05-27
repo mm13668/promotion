@@ -34,7 +34,7 @@ func ErrorToEmail() gin.HandlerFunc {
 		// 再重新写回请求体body中，ioutil.ReadAll会清空c.Request.Body中的数据
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 		record := system.SysOperationRecord{
-			Ip:     c.ClientIP(),
+			Ip:     utils2.GetClientIP(c),
 			Method: c.Request.Method,
 			Path:   c.Request.URL.Path,
 			Agent:  c.Request.UserAgent(),
