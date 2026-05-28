@@ -95,6 +95,20 @@ func (b *BaseApi) Login(c *gin.Context) {
 		})
 		return
 	}
+	if user.ValidUntil != nil && time.Now().Unix() > *user.ValidUntil {
+		global.GVA_LOG.Error("登陆失败! 用户使用有效期已到期!")
+		global.BlackCache.Increment(key, 1)
+		response.FailWithMessage("使用有效期到期了，请联系专员18028414502", c)
+		loginLogService.CreateLoginLog(system.SysLoginLog{
+			Username:     l.Username,
+			Ip:           utils.GetClientIP(c),
+			Agent:        c.Request.UserAgent(),
+			Status:       false,
+			ErrorMessage: "用户使用有效期已到期",
+			UserID:       user.ID,
+		})
+		return
+	}
 	b.TokenNext(c, *user)
 }
 
@@ -108,11 +122,11 @@ func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
 	}
 	// 记录登录成功日志
 	loginLogService.CreateLoginLog(system.SysLoginLog{
-		Username: user.Username,
-		Ip:       utils.GetClientIP(c),
-		Agent:    c.Request.UserAgent(),
-		Status:   true,
-		UserID:   user.ID,
+		Username:     user.Username,
+		Ip:           utils.GetClientIP(c),
+		Agent:        c.Request.UserAgent(),
+		Status:       true,
+		UserID:       user.ID,
 		ErrorMessage: "登录成功",
 	})
 	if !global.GVA_CONFIG.System.UseMultipoint {
@@ -397,11 +411,12 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 		GVA_MODEL: global.GVA_MODEL{
 			ID: user.ID,
 		},
-		NickName:  user.NickName,
-		HeaderImg: user.HeaderImg,
-		Phone:     user.Phone,
-		Email:     user.Email,
-		Enable:    user.Enable,
+		NickName:   user.NickName,
+		HeaderImg:  user.HeaderImg,
+		Phone:      user.Phone,
+		Email:      user.Email,
+		Enable:     user.Enable,
+		ValidUntil: user.ValidUntil,
 	})
 	if err != nil {
 		global.GVA_LOG.Error("设置失败!", zap.Error(err))

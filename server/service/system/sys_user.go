@@ -228,17 +228,19 @@ func (userService *UserService) DeleteUser(id int) (err error) {
 //@return: err error, user model.SysUser
 
 func (userService *UserService) SetUserInfo(req system.SysUser) error {
+	updates := map[string]interface{}{
+		"updated_at": time.Now(),
+		"nick_name":  req.NickName,
+		"header_img": req.HeaderImg,
+		"phone":      req.Phone,
+		"email":      req.Email,
+		"enable":     req.Enable,
+		"valid_until": req.ValidUntil,
+	}
 	return global.GVA_DB.Model(&system.SysUser{}).
-		Select("updated_at", "nick_name", "header_img", "phone", "email", "enable").
+		Select("updated_at", "nick_name", "header_img", "phone", "email", "enable", "valid_until").
 		Where("id=?", req.ID).
-		Updates(map[string]interface{}{
-			"updated_at": time.Now(),
-			"nick_name":  req.NickName,
-			"header_img": req.HeaderImg,
-			"phone":      req.Phone,
-			"email":      req.Email,
-			"enable":     req.Enable,
-		}).Error
+		Updates(updates).Error
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)

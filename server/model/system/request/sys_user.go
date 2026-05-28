@@ -57,6 +57,7 @@ type ChangeUserInfo struct {
 	Email        string                `json:"email"  gorm:"comment:用户邮箱"`                                                           // 用户邮箱
 	HeaderImg    string                `json:"headerImg" gorm:"default:https://qmplusimg.henrongyi.top/gva_header.jpg;comment:用户头像"` // 用户头像
 	Enable       int                   `json:"enable" gorm:"comment:冻结用户"`                                                           //冻结用户
+	ValidUntil   *int64                `json:"validUntil" gorm:"default:null;comment:用户使用截止有效期(Unix时间戳)"`                           // 用户使用截止有效期
 	Authorities  []system.SysAuthority `json:"-" gorm:"many2many:sys_user_authority;"`
 }
 
