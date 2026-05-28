@@ -105,6 +105,12 @@
           </template>
         </el-table-column>
 
+        <el-table-column align="left" label="有效截止" min-width="150">
+          <template #default="scope">
+            {{ formatValidUntil(scope.row.validUntil) }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作" :min-width="appStore.operateMinWith" fixed="right">
           <template #default="scope">
             <el-button
@@ -242,6 +248,21 @@
             :inactive-value="2"
           />
         </el-form-item>
+        <el-form-item label="有效截止" prop="validUntil">
+          <div class="flex items-center w-full gap-2">
+            <el-date-picker
+              v-model="userInfo.validUntil"
+              type="date"
+              placeholder="选择截止日期"
+              value-format="x"
+              format="YYYY-MM-DD"
+              class="flex-1"
+            />
+            <el-button size="small" @click="addValidUntilMonth(1)">+1月</el-button>
+            <el-button size="small" @click="addValidUntilMonth(12)">+1年</el-button>
+            <el-button size="small" @click="userInfo.validUntil = null">清除</el-button>
+          </div>
+        </el-form-item>
         <el-form-item label="头像" label-width="80px">
           <SelectImage v-model="userInfo.headerImg" />
         </el-form-item>
@@ -273,6 +294,26 @@
   })
 
   const appStore = useAppStore()
+
+  // 格式化时间戳（秒）为 YYYY-MM-DD
+  const formatValidUntil = (ts) => {
+    if (!ts && ts !== 0) return '-'
+    const date = new Date(ts * 1000)
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  // 快捷增加有效期（月）
+  const addValidUntilMonth = (months) => {
+    const now = new Date()
+    if (userInfo.value.validUntil) {
+      now.setTime(Number(userInfo.value.validUntil))
+    }
+    now.setMonth(now.getMonth() + months)
+    userInfo.value.validUntil = now.getTime()  // 毫秒时间戳
+  }
 
   const searchInfo = ref({
     username: '',
@@ -476,7 +517,8 @@
     headerImg: '',
     authorityId: '',
     authorityIds: [],
-    enable: 1
+    enable: 1,
+    validUntil: null
   })
 
   const rules = ref({
@@ -515,6 +557,10 @@
         const req = {
           ...userInfo.value
         }
+        // 前端日期选择器使用毫秒，后端存储秒时间戳
+        if (req.validUntil) {
+          req.validUntil = Math.floor(req.validUntil / 1000)
+        }
         if (dialogFlag.value === 'add') {
           const res = await register(req)
           if (res.code === 0) {
@@ -540,6 +586,7 @@
     userForm.value.resetFields()
     userInfo.value.headerImg = ''
     userInfo.value.authorityIds = []
+    userInfo.value.validUntil = null
     addUserDialog.value = false
   }
 
@@ -577,7 +624,12 @@
 
   const openEdit = (row) => {
     dialogFlag.value = 'edit'
-    userInfo.value = JSON.parse(JSON.stringify(row))
+    const copy = JSON.parse(JSON.stringify(row))
+    // 后端存储秒时间戳，日期选择器需要毫秒
+    if (copy.validUntil) {
+      copy.validUntil = copy.validUntil * 1000
+    }
+    userInfo.value = copy
     addUserDialog.value = true
   }
 

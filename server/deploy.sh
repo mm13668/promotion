@@ -74,6 +74,10 @@ echo "清理临时文件"
 
 rm -f $PACKAGE_NAME
 
+echo "重启服务"
+systemctl daemon-reload
+systemctl restart app
+
 echo "部署完成"
 
 EOF
@@ -81,3 +85,5 @@ EOF
 echo "========================="
 echo "部署成功"
 echo "========================="
+
+rm -f $PACKAGE_NAME

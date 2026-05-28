@@ -18,7 +18,8 @@
             'min-w-fit'
           "
         >
-          {{ $GIN_VUE_ADMIN.appName }}
+          获客仓
+<!--          {{ $GIN_VUE_ADMIN.appName }}-->
         </div>
       </div>
 
