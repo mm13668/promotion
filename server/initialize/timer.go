@@ -113,7 +113,7 @@ func Timer() {
 		}
 
 		// OCPC自动回传定时任务，每10分钟执行一次
-		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */1 * * * ?", func() {
+		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */10 * * * ?", func() {
 			global.GVA_LOG.Info("ocpc auto callback timer start")
 			autoOcpcCallback(global.GVA_DB)
 			global.GVA_LOG.Info("ocpc auto callback timer end")
