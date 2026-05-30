@@ -118,7 +118,7 @@ func Timer() {
 			global.GVA_LOG.Info("ocpc auto callback timer start")
 			autoOcpcCallback(global.GVA_DB)
 			global.GVA_LOG.Info("ocpc auto callback timer end")
-		}, "OCPC自动回传，每10分钟检查并回传符合条件的记录", option...)
+		}, "OCPC自动回传，每30分钟检查并回传符合条件的记录", option...)
 		if err != nil {
 			fmt.Println("add ocpc auto callback timer error:", err)
 		}
