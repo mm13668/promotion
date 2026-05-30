@@ -1,13 +1,89 @@
 package initialize
 
 import (
+	"context"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/task"
 
 	"github.com/robfig/cron/v3"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/callback"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+	"time"
 )
+
+// autoOcpcCallback 自动OCPC回传任务
+func autoOcpcCallback(db *gorm.DB) {
+	var visits []promotion.LandingVisit
+	oneHourAgo := time.Now().Add(-1 * time.Hour)
+
+	// 查询符合条件的访问记录：最近1小时、未回传、有复制时间（有转化行为的）
+	err := db.Debug().
+		Model(&promotion.LandingVisit{}).
+		Joins("JOIN promotion_link ON promotion_link.id = landing_visits.link_id").
+		Where("landing_visits.created_at >= ?", oneHourAgo).
+		Where("landing_visits.is_ocpc_callback = ?", false).
+		Where("landing_visits.copied_at IS NOT NULL").
+		Where("landing_visits.duration > promotion_link.ocpc_min_duration").
+		Where("promotion_link.ocpc_callback_type = ?", 2).   // 自动回传
+		Where("promotion_link.ocpc_key != ?", "").
+		Where("promotion_link.ocpc_conversion_type != ?", 0).
+		Select("landing_visits.*").
+		Find(&visits).Error
+	if err != nil {
+		global.GVA_LOG.Error("auto ocpc callback query failed", zap.Error(err))
+		return
+	}
+
+	if len(visits) == 0 {
+		return
+	}
+
+	factory := callback.GetDefaultFactory()
+	provider, err := factory.GetProvider("baidu")
+	if err != nil {
+		global.GVA_LOG.Error("auto ocpc callback get provider failed", zap.Error(err))
+		return
+	}
+
+	for _, visit := range visits {
+		var link promotion.PromotionLink
+		if err := db.Where("id = ?", visit.LinkId).First(&link).Error; err != nil {
+			global.GVA_LOG.Error("auto ocpc callback find link failed", zap.Uint("linkId", visit.LinkId), zap.Error(err))
+			continue
+		}
+
+		if visit.RefererUrl == "" {
+			continue
+		}
+
+		req := &callback.ConversionRequest{
+			Token:          callback.GetBaiduToken(link.OcpcKey),
+			LogidUrl:       visit.RefererUrl,
+			ConversionType: int(link.OcpcConversionType),
+		}
+
+		if err := provider.UploadConversion(context.Background(), req); err != nil {
+			global.GVA_LOG.Error("auto ocpc callback upload failed",
+				zap.Uint("visitId", visit.ID),
+				zap.Error(err))
+			continue
+		}
+
+		now := time.Now()
+		db.Model(&promotion.LandingVisit{}).Where("id = ?", visit.ID).
+			Updates(map[string]interface{}{
+				"is_ocpc_callback": true,
+				"ocpc_callback_at": now,
+			})
+
+		// 每次回传后短暂休眠，避免触发百度API限流
+		time.Sleep(200 * time.Millisecond)
+	}
+}
 
 func Timer() {
 	go func() {
@@ -24,14 +100,14 @@ func Timer() {
 			fmt.Println("add timer error:", err)
 		}
 
-		// 其他定时任务定在这里 参考上方使用方法
-
-		//_, err := global.GVA_Timer.AddTaskByFunc("定时任务标识", "corn表达式", func() {
-		//	具体执行内容...
-		//  ......
-		//}, option...)
-		//if err != nil {
-		//	fmt.Println("add timer error:", err)
-		//}
+		// OCPC自动回传定时任务，每10分钟执行一次
+		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */10 * * * ?", func() {
+			global.GVA_LOG.Info("ocpc auto callback timer start")
+			autoOcpcCallback(global.GVA_DB)
+			global.GVA_LOG.Info("ocpc auto callback timer end")
+		}, "OCPC自动回传，每10分钟检查并回传符合条件的记录", option...)
+		if err != nil {
+			fmt.Println("add ocpc auto callback timer error:", err)
+		}
 	}()
 }

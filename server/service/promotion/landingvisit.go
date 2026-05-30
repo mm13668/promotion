@@ -2,8 +2,10 @@ package promotion
 
 import (
 	"context"
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/callback"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -65,12 +67,14 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 		return nil
 	}
 
+	now := time.Now()
 	// 更新访问记录的复制信息
 	err = global.GVA_DB.Model(&promotion.LandingVisit{}).Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"is_copied":               true,
 			"copied_service_phone":    phone,
 			"copied_service_nickname": nickname,
+			"copied_at":               now,
 		}).Error
 	if err != nil {
 		return err
@@ -80,6 +84,64 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 	err = global.GVA_DB.Model(&promotion.PromotionLink{}).Where("id = ?", visit.LinkId).
 		Update("copy_count", gorm.Expr("copy_count + 1")).Error
 	return err
+}
+
+func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
+	var visit promotion.LandingVisit
+	err := global.GVA_DB.Where("id = ?", visitId).First(&visit).Error
+	if err != nil {
+		return fmt.Errorf("landing visit not found: %w", err)
+	}
+
+	if visit.IsOcpcCallback {
+		return fmt.Errorf("landing visit %d has already been called back", visitId)
+	}
+
+	var link promotion.PromotionLink
+	err = global.GVA_DB.Where("id = ?", visit.LinkId).First(&link).Error
+	if err != nil {
+		return fmt.Errorf("promotion link not found: %w", err)
+	}
+
+	if link.OcpcKey == "" {
+		return fmt.Errorf("promotion link %d has no OCPC key configured", visit.LinkId)
+	}
+
+	// TODO: 后续接入新平台时根据 link.PlatformID 映射不同的 provider
+	providerName := "baidu"
+	factory := callback.GetDefaultFactory()
+	provider, err := factory.GetProvider(providerName)
+	if err != nil {
+		return fmt.Errorf("get callback provider failed: %w", err)
+	}
+
+	req := &callback.ConversionRequest{
+		Token:          callback.GetBaiduToken(link.OcpcKey),
+		LogidUrl:       visit.RefererUrl,
+		ConversionType: int(link.OcpcConversionType),
+	}
+
+	if req.LogidUrl == "" {
+		return fmt.Errorf("landing visit %d has no referer URL (logidUrl required for OCPC)", visitId)
+	}
+
+	ctx := context.Background()
+	if err := provider.UploadConversion(ctx, req); err != nil {
+		return fmt.Errorf("ocpc callback failed: %w", err)
+	}
+
+	now := time.Now()
+	err = global.GVA_DB.Model(&promotion.LandingVisit{}).Where("id = ?", visitId).
+		Updates(map[string]interface{}{
+			"is_ocpc_callback": true,
+			"ocpc_callback_at": now,
+		}).Error
+	if err != nil {
+		global.GVA_LOG.Error("update ocpc callback status failed", zap.Error(err))
+		return err
+	}
+
+	return nil
 }
 
 // GetLandingVisitList 分页查询访问记录列表
@@ -116,6 +178,11 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 	// 是否复制客服信息筛选
 	if info.IsCopied != nil {
 		db = db.Where("is_copied = ?", *info.IsCopied)
+	}
+
+	// 是否OCPC回传筛选
+	if info.IsOcpcCallback != nil {
+		db = db.Where("is_ocpc_callback = ?", *info.IsOcpcCallback)
 	}
 
 	// 创建时间范围筛选

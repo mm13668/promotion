@@ -27,6 +27,7 @@ type PromotionLink struct {
 	OcpcSecret         string                `json:"ocpcSecret" gorm:"type:varchar(128);comment:OCPC Secret"`
 	OcpcConversionType uint8                 `json:"ocpcConversionType" gorm:"comment:OCPC转化类型 1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义"`
 	OcpcCallbackType   uint8                 `json:"ocpcCallbackType" gorm:"comment:OCPC回传方式 1=手动回传 2=自动回传"`
+	OcpcMinDuration    int                   `json:"ocpcMinDuration" gorm:"default:30;comment:自动回传最小浏览时长(秒)"`
 	HttpsEnabled       bool                  `json:"httpsEnabled"`
 	Sort               int                   `json:"sort"`
 	Remark             string                `json:"remark" gorm:"type:varchar(255)"`

@@ -25,6 +25,10 @@ type LandingVisit struct {
 	IsCopied              bool      `json:"isCopied" gorm:"column:is_copied;default:false;comment:是否复制客服信息"`
 	CopiedServicePhone    string    `json:"copiedServicePhone" gorm:"column:copied_service_phone;comment:复制的客服号码"`
 	CopiedServiceNickname string    `json:"copiedServiceNickname" gorm:"column:copied_service_nickname;comment:复制的客服昵称"`
+	CopiedAt              *time.Time `json:"copiedAt" gorm:"column:copied_at;comment:复制时间"`
+	IsOcpcCallback        bool      `json:"isOcpcCallback" gorm:"column:is_ocpc_callback;default:false;comment:是否已OCPC回传"`
+	OcpcCallbackAt        *time.Time `json:"ocpcCallbackAt" gorm:"column:ocpc_callback_at;comment:OCPC回传时间"`
+	RefererUrl            string    `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
 	LastReportAt          time.Time `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
 }
 
@@ -37,7 +41,8 @@ type LandingVisitSearch struct {
 	Ip             string `json:"ip" form:"ip"`
 	Referer        string `json:"referer" form:"referer"`
 	RequestReferer string `json:"requestReferer" form:"requestReferer"`
-	IsCopied       *bool  `json:"isCopied" form:"isCopied"`
+	IsCopied        *bool  `json:"isCopied" form:"isCopied"`
+	IsOcpcCallback  *bool  `json:"isOcpcCallback" form:"isOcpcCallback"`
 	StartTime      string `json:"startTime" form:"startTime"`
 	EndTime        string `json:"endTime" form:"endTime"`
 	request.PageInfo

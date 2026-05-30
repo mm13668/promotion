@@ -314,7 +314,8 @@
                         body: JSON.stringify({
                             referer: document.referrer,
                             userAgent: navigator.userAgent,
-                            linkId: Number(window.LINK_ID)
+                            linkId: Number(window.LINK_ID),
+                            refererUrl: window.location.href
                         })
                     }).then(res => res.json()).then(res => {
                         if (res.code === 0 && res.data) {

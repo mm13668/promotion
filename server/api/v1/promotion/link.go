@@ -334,6 +334,7 @@ func (a *LinkApi) UpdatePromotionLinkOcpc(c *gin.Context) {
 	exist.OcpcSecret = e.OcpcSecret
 	exist.OcpcConversionType = e.OcpcConversionType
 	exist.OcpcCallbackType = e.OcpcCallbackType
+	exist.OcpcMinDuration = e.OcpcMinDuration
 	if err := linkService.UpdatePromotionLink(&exist); err != nil {
 		global.GVA_LOG.Error("update ocpc failed", zap.Error(err))
 		response.FailWithMessage("OCPC配置更新失败", c)

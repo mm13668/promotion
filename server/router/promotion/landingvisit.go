@@ -19,5 +19,6 @@ func (s *LandingVisitRouter) InitLandingVisitRouter(PublicRouter *gin.RouterGrou
 	landingVisitPrivateRouter := PrivateRouter.Group("promotion/landingVisit")
 	{
 		landingVisitPrivateRouter.GET("list", promoApi.GetLandingVisitList)
+		landingVisitPrivateRouter.POST("reportManualOcpcCallback", promoApi.ReportManualOcpcCallback)
 	}
 }
