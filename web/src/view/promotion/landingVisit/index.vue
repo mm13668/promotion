@@ -28,6 +28,13 @@
             <el-option label="未复制" :value="false" />
           </el-select>
         </el-form-item>
+        <el-form-item label="是否回传">
+          <el-select v-model="search.isOcpcCallback" clearable placeholder="是否回传" style="width: 120px">
+            <el-option label="全部" :value="null" />
+            <el-option label="已回传" :value="true" />
+            <el-option label="未回传" :value="false" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="search.dates"
@@ -72,6 +79,18 @@
         </el-table-column>
         <el-table-column prop="copiedServicePhone" label="复制客服号码" width="120" />
         <el-table-column prop="copiedServiceNickname" label="复制客服昵称" width="120" />
+        <el-table-column prop="copiedAt" label="复制时间" width="170">
+          <template #default="{ row }">
+            {{ formatDateTime(row.copiedAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="isOcpcCallback" label="是否回传" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.isOcpcCallback ? 'success' : 'warning'" style="cursor: pointer" @click="handleManualCallback(row)">
+              {{ row.isOcpcCallback ? '已回传' : '未回传' }}
+            </el-tag>
+          </template>
+        </el-table-column>
 <!--        <el-table-column prop="deviceType" label="设备类型" width="100" />-->
 <!--        <el-table-column prop="os" label="操作系统" width="100" />-->
 <!--        <el-table-column prop="browser" label="浏览器" width="100" />-->
@@ -102,9 +121,9 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { getLandingVisitList } from '@/api/promotion'
+import { getLandingVisitList, reportManualOcpcCallback } from '@/api/promotion'
 import { getPromotionLinkList } from '@/api/promotion'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const tableData = ref([])
 const page = ref(1)
@@ -118,6 +137,7 @@ const search = reactive({
   referer: '',
   requestReferer: '',
   isCopied: null,
+  isOcpcCallback: null,
   dates: []
 })
 
@@ -156,6 +176,9 @@ const getTableData = async () => {
   if (search.isCopied !== null) {
     params.isCopied = search.isCopied
   }
+  if (search.isOcpcCallback !== null) {
+    params.isOcpcCallback = search.isOcpcCallback
+  }
   if (search.dates && search.dates.length === 2) {
     const [s, e] = search.dates
     params.startTime = s ? formatDate(s) : undefined
@@ -187,6 +210,7 @@ const onReset = () => {
   search.referer = ''
   search.requestReferer = ''
   search.isCopied = null
+  search.isOcpcCallback = null
   search.dates = []
   page.value = 1
   getTableData()
@@ -201,6 +225,27 @@ const handleSizeChange = (val) => {
 const handleCurrentChange = (val) => {
   page.value = val
   getTableData()
+}
+
+// 手动OCPC回传
+const handleManualCallback = async (row) => {
+  if (row.isOcpcCallback) return
+  try {
+    await ElMessageBox.confirm(
+      `确认对该访问记录（ID: ${row.ID}）进行OCPC回传？`,
+      'OCPC回传确认',
+      { confirmButtonText: '确认回传', cancelButtonText: '取消', type: 'warning' }
+    )
+    const res = await reportManualOcpcCallback({ id: row.ID })
+    if (res.code === 0) {
+      ElMessage.success('OCPC回传成功')
+      getTableData()
+    } 
+  } catch (e) {
+    if (e !== 'cancel') {
+      console.error('OCPC回传失败', e)
+    }
+  }
 }
 
 // 导出
