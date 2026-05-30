@@ -107,16 +107,24 @@ func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
 		return fmt.Errorf("promotion link %d has no OCPC key configured", visit.LinkId)
 	}
 
-	// TODO: 后续接入新平台时根据 link.PlatformID 映射不同的 provider
-	providerName := "baidu"
-	factory := callback.GetDefaultFactory()
-	provider, err := factory.GetProvider(providerName)
+	// 从 ad_platform 获取 platform_key 作为 provider 名称
+	var platform promotion.AdPlatform
+	err = global.GVA_DB.Where("id = ?", link.PlatformID).First(&platform).Error
 	if err != nil {
-		return fmt.Errorf("get callback provider failed: %w", err)
+		return fmt.Errorf("ad platform not found for link %d: %w", visit.LinkId, err)
+	}
+	if platform.PlatformKey == "" {
+		return fmt.Errorf("ad platform %d has no platform_key configured", link.PlatformID)
+	}
+
+	factory := callback.GetDefaultFactory()
+	provider, err := factory.GetProvider(platform.PlatformKey)
+	if err != nil {
+		return fmt.Errorf("get callback provider '%s' failed: %w", platform.PlatformKey, err)
 	}
 
 	req := &callback.ConversionRequest{
-		Token:          callback.GetBaiduToken(link.OcpcKey),
+		Token:          provider.GetToken(link.OcpcKey),
 		LogidUrl:       visit.RefererUrl,
 		ConversionType: int(link.OcpcConversionType),
 	}

@@ -15,6 +15,8 @@ type ConversionRequest struct {
 type CallbackProvider interface {
 	// Name 返回广告平台唯一标识
 	Name() string
+	// GetToken 解析 ocpc_key 为平台需要的 token
+	GetToken(ocpcKey string) string
 	// UploadConversion 上传转化数据到广告平台
 	UploadConversion(ctx context.Context, req *ConversionRequest) error
 }

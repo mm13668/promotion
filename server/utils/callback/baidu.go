@@ -12,7 +12,8 @@ import (
 
 const (
 	baiduApiUrl = "https://ocpc.baidu.com/ocpcapi/api/uploadConvertData"
-	baiduName   = "baidu"
+	// 与 ad_platform.platform_key 的值保持一致
+	baiduName = "baidu_ocpc"
 )
 
 // BaiduProvider 百度OCPC回传提供者
@@ -27,6 +28,10 @@ func (p *BaiduProvider) Name() string {
 	return baiduName
 }
 
+func (p *BaiduProvider) GetToken(ocpcKey string) string {
+	return ocpcKey
+}
+
 // baiduConversionTypeItem 百度OCPC回传单个转化类型
 type baiduConversionTypeItem struct {
 	LogidUrl string `json:"logidUrl"`
@@ -35,15 +40,25 @@ type baiduConversionTypeItem struct {
 
 // baiduUploadRequest 百度OCPC回传请求体
 type baiduUploadRequest struct {
-	Token            string                     `json:"token"`
-	ConversionTypes  []baiduConversionTypeItem  `json:"conversionTypes"`
+	Token           string                    `json:"token"`
+	ConversionTypes []baiduConversionTypeItem `json:"conversionTypes"`
+}
+
+type baiduResponseError struct {
+	Code     int    `json:"code"`
+	Message  string `json:"message"`
+	Position string `json:"position"`
+}
+
+type baiduResponseHeader struct {
+	Desc   string               `json:"desc"`
+	Status int                  `json:"status"`
+	Errors []baiduResponseError `json:"errors,omitempty"`
 }
 
 // baiduUploadResponse 百度OCPC回传响应
 type baiduUploadResponse struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Header baiduResponseHeader `json:"header"`
 }
 
 func (p *BaiduProvider) UploadConversion(ctx context.Context, req *ConversionRequest) error {
@@ -72,17 +87,21 @@ func (p *BaiduProvider) UploadConversion(ctx context.Context, req *ConversionReq
 		return fmt.Errorf("baidu ocpc decode response failed: %w", err)
 	}
 
-	if result.Code != 0 {
-		return fmt.Errorf("baidu ocpc api error: code=%d message=%s", result.Code, result.Message)
+	header := result.Header
+	switch header.Status {
+	case 0:
+		return nil
+	case 1:
+		return fmt.Errorf("baidu ocpc partial success: desc=%s errors=%v", header.Desc, header.Errors)
+	case 2:
+		return fmt.Errorf("baidu ocpc all failed: desc=%s errors=%v", header.Desc, header.Errors)
+	case 3:
+		return fmt.Errorf("baidu ocpc token invalid: desc=%s", header.Desc)
+	case 4:
+		return fmt.Errorf("baidu ocpc server error: desc=%s", header.Desc)
+	default:
+		return fmt.Errorf("baidu ocpc unknown status: status=%d desc=%s", header.Status, header.Desc)
 	}
-
-	return nil
-}
-
-// GetBaiduToken 获取百度OCPC的token（直接使用ocpc_key）
-// 后续如果百度需要动态获取token，可以在这里修改逻辑
-func GetBaiduToken(ocpcKey string) string {
-	return ocpcKey
 }
 
 // init 在包初始化时自动注册百度提供者到默认工厂

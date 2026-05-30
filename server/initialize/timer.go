@@ -28,7 +28,7 @@ func autoOcpcCallback(db *gorm.DB) {
 		Where("landing_visits.is_ocpc_callback = ?", false).
 		Where("landing_visits.copied_at IS NOT NULL").
 		Where("landing_visits.duration > promotion_link.ocpc_min_duration").
-		Where("promotion_link.ocpc_callback_type = ?", 2).   // 自动回传
+		Where("promotion_link.ocpc_callback_type = ?", 2). // 自动回传
 		Where("promotion_link.ocpc_key != ?", "").
 		Where("promotion_link.ocpc_conversion_type != ?", 0).
 		Select("landing_visits.*").
@@ -43,11 +43,6 @@ func autoOcpcCallback(db *gorm.DB) {
 	}
 
 	factory := callback.GetDefaultFactory()
-	provider, err := factory.GetProvider("baidu")
-	if err != nil {
-		global.GVA_LOG.Error("auto ocpc callback get provider failed", zap.Error(err))
-		return
-	}
 
 	for _, visit := range visits {
 		var link promotion.PromotionLink
@@ -60,8 +55,25 @@ func autoOcpcCallback(db *gorm.DB) {
 			continue
 		}
 
+		// 从 ad_platform 获取 platform_key 作为 provider 名称
+		var platform promotion.AdPlatform
+		if err := db.Where("id = ?", link.PlatformID).First(&platform).Error; err != nil {
+			global.GVA_LOG.Error("auto ocpc callback find platform failed", zap.Uint("platformId", link.PlatformID), zap.Error(err))
+			continue
+		}
+		if platform.PlatformKey == "" {
+			global.GVA_LOG.Error("auto ocpc callback platform has no key", zap.String("platform", platform.Name))
+			continue
+		}
+
+		provider, err := factory.GetProvider(platform.PlatformKey)
+		if err != nil {
+			global.GVA_LOG.Error("auto ocpc callback get provider failed", zap.String("platformKey", platform.PlatformKey), zap.Error(err))
+			continue
+		}
+
 		req := &callback.ConversionRequest{
-			Token:          callback.GetBaiduToken(link.OcpcKey),
+			Token:          provider.GetToken(link.OcpcKey),
 			LogidUrl:       visit.RefererUrl,
 			ConversionType: int(link.OcpcConversionType),
 		}
@@ -80,7 +92,7 @@ func autoOcpcCallback(db *gorm.DB) {
 				"ocpc_callback_at": now,
 			})
 
-		// 每次回传后短暂休眠，避免触发百度API限流
+		// 每次回传后短暂休眠，避免触发API限流
 		time.Sleep(200 * time.Millisecond)
 	}
 }
@@ -101,7 +113,7 @@ func Timer() {
 		}
 
 		// OCPC自动回传定时任务，每10分钟执行一次
-		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */10 * * * ?", func() {
+		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */1 * * * ?", func() {
 			global.GVA_LOG.Info("ocpc auto callback timer start")
 			autoOcpcCallback(global.GVA_DB)
 			global.GVA_LOG.Info("ocpc auto callback timer end")
