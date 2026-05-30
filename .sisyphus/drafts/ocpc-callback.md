@@ -1,40 +1,36 @@
-# Draft: OCPC回调功能
+# Draft: OCPC回传转化类型标记
 
 ## Requirements (confirmed)
-- [OCPC配置]: 在推广链接编辑页OCPC弹窗中，当回传方式=自动时，新增「浏览时长大于」的表单配置
-- [百度OCPC回传]: 接入百度OCPC uploadConvertData API
-- [工厂模式]: 回传接口用工厂模式设计，后续支持更多广告平台
-- [自动回传]: 定时器每10分钟扫描，条件：duration > ocpc_min_duration && is_ocpc_callback=false && created_at>=最近1小时
-- [手动回传]: landing_visits 列表页新增复制时间、是否回传字段展示；
-  点击「未回传」确认后调用对应广告平台回传接口
-- [SQL迁移]: 所有修改的SQL放在 docs/plan 下
+- [需求]: `landing_visits` 表新增 `conversion_type` 字段，记录用户访问触发的转化类型
+- [转化类型值]: 微信复制按钮点击=35, 表单提交成功=3, 注册激活后登录(注册转化)=49
+- [定时器改造]: `autoOcpcCallback` 需要判断访问记录是否触发到对应的转化类型，才能进行自动回传
+- [SQL迁移]: 所有修改的SQL放在 docs/plan 下，一个文件
 
-## Technical Decisions
-- promotion_link 新字段: ocpc_min_duration (int, 秒)
-- landing_visits 新字段: referer_url, copied_at, is_ocpc_callback, ocpc_callback_at
-- OCPC token: 直接用 ocpc_key 作为百度API的token
-- logidUrl来源: landing page前端JS在init上报时携带 pageUrl: window.location.href，存入 referer_url 字段
-- 自动回传条件: created_at >= now()-1h && is_ocpc_callback=false && duration > ocpc_min_duration
-- 手动回传: 确认即回传，用link上已配置的ocpc_conversion_type
-- 历史数据: 无 copied_at 的记录不参与回传
-- 工厂模式: 定义 CallbackProvider 接口，先只实现百度OCPC
-- 测试策略: 无单测，手动验证
+## Technical Analysis
 
-## Research Findings
-- PromotionLink 已有 OcpcKey, OcpcSecret, OcpcConversionType, OcpcCallbackType 字段
-- LandingVisit 已有 Duration, IsCopied, CopiedServicePhone, CopiedServiceNickname, LastReportAt
-- 已有 HttpRequest 工具在 server/utils/request/http.go
-- 定时器模式: global.GVA_Timer.AddTaskByFunc("name", "cron表达式", func, desc, cron.WithSeconds())
-- 现有 OCPC UI 在 link/index.vue 第391-423行，ocpcForm 对象在746行
-- LandingVisit router 已有 public 和 private 路由组
+### 现有流程
+- `POST landingVisit/reportCopy` (promoApi.ReportCopy) → `UpdateCopyInfo` → 更新 landing_visits 的 is_copied/copied_at 等字段。**请求体中已有 visit ID** (`LandingVisitCopyReport.Id`)
+- `POST landingMessage/create` (promoApi.CreateLandingMessage) → `CreateLandingMessage` → 创建 landing_messages 记录。**请求体中无 visit ID**
+- `POST landingPhone/create` (promoApi.CreateLandingPhone) → `CreateLandingPhone` → 创建 landing_phones 记录。**请求体中无 visit ID**
+- 定时器目前用 `copied_at IS NOT NULL` 判断"有转化行为"
+
+### 改动点
+1. **Model**: `LandingVisit` 增加 `ConversionType *uint8` 字段
+2. **SQL**: `ALTER TABLE landing_visits ADD COLUMN conversion_type tinyint DEFAULT NULL COMMENT '转化类型:35=微信复制 3=表单提交 49=注册转化';`
+3. **ReportCopy/UpdateCopyInfo**: 已有 visit ID → 同时写 `conversion_type=35`
+4. **CreateLandingMessage**: 需要找到对应 landing_visits 记录 → 写 `conversion_type=3`
+5. **CreateLandingPhone**: 需要找到对应 landing_visits 记录 → 写 `conversion_type=49`
+6. **autoOcpcCallback**: 条件从 `copied_at IS NOT NULL` 改为 `conversion_type IS NOT NULL`
+
+### 关键设计决策
+CreateLandingMessage 和 CreateLandingPhone 目前没有 landing_visit_id，需要决定如何关联：
+
+- **Option A**: 在 `LandingMessage`/`LandingPhone` 请求体中增加 `visitId` 字段，前端提交时传入（前端已有 visit ID，`init` 接口返回了 ID）
+- **Option B**: 后端通过 `ip + link_id` 查找匹配的 landing_visits 记录
 
 ## Open Questions
-- [已解决] 字段命名：ocpc_min_duration, referer_url, copied_at, is_ocpc_callback, ocpc_callback_at
-- [已解决] 前端模板修改 init 上报 pageUrl：包含在本需求内
-- [已解决] 手动回传确认流程：确认即回传，用link已配转化类型
-- [已解决] 自动回传条件：created_at最近1h + is_ocpc_callback=false
-- [已解决] 工厂模式：先定义接口，只实现百度
+- [待确认]: Message/Phone 提交时如何关联到 landing_visits 记录？
 
 ## Scope Boundaries
-- IN: promotion_link加字段、landing_visits加字段、OCPC配置UI、百度OCPC回传、工厂模式、自动定时器、手动回传UI、前端模板修改、SQL迁移脚本
-- EXCLUDE: 导出功能、其他广告平台实现、单元测试
+- IN: landing_visits 加字段、三个 API 写转化类型、定时器条件改造、SQL迁移文件
+- EXCLUDE: 前端模板修改（只涉及后端改动）

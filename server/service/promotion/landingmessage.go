@@ -3,6 +3,8 @@ package promotion
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type LandingMessageService struct{}
@@ -10,7 +12,19 @@ type LandingMessageService struct{}
 // CreateLandingMessage 创建落地页留言记录
 func (l *LandingMessageService) CreateLandingMessage(landingMessage *promotion.LandingMessage) (err error) {
 	err = global.GVA_DB.Create(landingMessage).Error
-	return err
+	if err != nil {
+		return err
+	}
+
+	if landingMessage.LandingVisitID != nil {
+		if visitErr := global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Where("id = ?", *landingMessage.LandingVisitID).
+			Update("conversion_type", gorm.Expr("CONCAT_WS(',', NULLIF(conversion_type, ''), ?)", promotion.ConversionTypeFormSubmit)).Error; visitErr != nil {
+			global.GVA_LOG.Error("update landing visit conversion_type failed", zap.Error(visitErr))
+		}
+	}
+
+	return nil
 }
 
 // GetLandingMessageList 分页获取落地页留言列表

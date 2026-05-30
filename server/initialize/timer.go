@@ -20,13 +20,14 @@ func autoOcpcCallback(db *gorm.DB) {
 	var visits []promotion.LandingVisit
 	oneHourAgo := time.Now().Add(-1 * time.Hour)
 
-	// 查询符合条件的访问记录：最近1小时、未回传、有复制时间（有转化行为的）
+	// 查询符合条件的访问记录：最近1小时、未回传、已触发该链接配置的转化类型
 	err := db.Debug().
 		Model(&promotion.LandingVisit{}).
 		Joins("JOIN promotion_link ON promotion_link.id = landing_visits.link_id").
 		Where("landing_visits.created_at >= ?", oneHourAgo).
 		Where("landing_visits.is_ocpc_callback = ?", false).
-		Where("landing_visits.copied_at IS NOT NULL").
+		Where("landing_visits.conversion_type IS NOT NULL AND landing_visits.conversion_type != ''").
+		Where("FIND_IN_SET(promotion_link.ocpc_conversion_type, landing_visits.conversion_type)").
 		Where("landing_visits.duration > promotion_link.ocpc_min_duration").
 		Where("promotion_link.ocpc_callback_type = ?", 2). // 自动回传
 		Where("promotion_link.ocpc_key != ?", "").
@@ -113,7 +114,7 @@ func Timer() {
 		}
 
 		// OCPC自动回传定时任务，每10分钟执行一次
-		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */10 * * * ?", func() {
+		_, err = global.GVA_Timer.AddTaskByFunc("OcpcAutoCallback", "0 */1 * * * ?", func() {
 			global.GVA_LOG.Info("ocpc auto callback timer start")
 			autoOcpcCallback(global.GVA_DB)
 			global.GVA_LOG.Info("ocpc auto callback timer end")

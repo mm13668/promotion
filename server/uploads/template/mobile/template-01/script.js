@@ -17,7 +17,7 @@ async function handleRegister() {
         await fetch('/api/promotion/landingPhone/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
+            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone, landingVisitId: window.LANDING_VISIT_ID ? Number(window.LANDING_VISIT_ID) : undefined })
         });
         // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
@@ -159,7 +159,7 @@ async function handleLogin() {
         await fetch('/api/promotion/landingPhone/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone })
+            body: JSON.stringify({ linkId: window.LINK_ID, phone: phone, landingVisitId: window.LANDING_VISIT_ID ? Number(window.LANDING_VISIT_ID) : undefined })
         });
         // 模拟登录状态，存储手机号
         localStorage.setItem('user_token', 'mock_token_' + Date.now());
@@ -203,7 +203,8 @@ async function submitReply() {
                 body: JSON.stringify({ 
                     linkId: window.LINK_ID, 
                     content: pendingReply.content,
-                    phone: localStorage.getItem('user_phone') || ''
+                    phone: localStorage.getItem('user_phone') || '',
+                    landingVisitId: window.LANDING_VISIT_ID ? Number(window.LANDING_VISIT_ID) : undefined
                 })
             });
         } catch(e) {

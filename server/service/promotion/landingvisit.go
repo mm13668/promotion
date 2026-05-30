@@ -75,6 +75,7 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 			"copied_service_phone":    phone,
 			"copied_service_nickname": nickname,
 			"copied_at":               now,
+			"conversion_type":         gorm.Expr("CONCAT_WS(',', NULLIF(conversion_type, ''), ?)", promotion.ConversionTypeCopy),
 		}).Error
 	if err != nil {
 		return err

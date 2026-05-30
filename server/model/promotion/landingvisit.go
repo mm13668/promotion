@@ -8,6 +8,13 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 )
 
+// 转化类型常量（与百度OCPC枚举值对齐）
+const (
+	ConversionTypeCopy       = "35" // 微信复制按钮点击
+	ConversionTypeFormSubmit = "3"  // 表单提交成功
+	ConversionTypeRegister   = "49" // 注册激活后登录（注册转化）
+)
+
 type LandingVisit struct {
 	global.GVA_MODEL
 	LinkId                uint      `json:"linkId" gorm:"column:link_id;comment:推广链接ID"`
@@ -30,6 +37,7 @@ type LandingVisit struct {
 	OcpcCallbackAt        *time.Time `json:"ocpcCallbackAt" gorm:"column:ocpc_callback_at;comment:OCPC回传时间"`
 	RefererUrl            string    `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
 	LastReportAt          time.Time `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
+	ConversionType        string    `json:"conversionType" gorm:"column:conversion_type;type:varchar(32);comment:转化类型(多个用逗号分隔):35=微信复制 3=表单提交 49=注册转化"`
 }
 
 func (LandingVisit) TableName() string {
