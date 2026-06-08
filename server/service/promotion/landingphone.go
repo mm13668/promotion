@@ -3,6 +3,8 @@ package promotion
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type LandingPhoneService struct{}
@@ -10,7 +12,19 @@ type LandingPhoneService struct{}
 // CreateLandingPhone 创建落地页手机号收集记录
 func (l *LandingPhoneService) CreateLandingPhone(landingPhone *promotion.LandingPhone) (err error) {
 	err = global.GVA_DB.Create(landingPhone).Error
-	return err
+	if err != nil {
+		return err
+	}
+
+	if landingPhone.LandingVisitID != nil {
+		if visitErr := global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Where("id = ?", *landingPhone.LandingVisitID).
+			Update("conversion_type", gorm.Expr("CONCAT_WS(',', NULLIF(conversion_type, ''), ?)", promotion.ConversionTypeRegister)).Error; visitErr != nil {
+			global.GVA_LOG.Error("update landing visit conversion_type failed", zap.Error(visitErr))
+		}
+	}
+
+	return nil
 }
 
 // GetLandingPhoneList 分页获取落地页手机号列表

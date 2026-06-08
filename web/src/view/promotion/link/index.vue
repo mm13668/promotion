@@ -82,7 +82,7 @@
             <el-tooltip content="请先设置好「基本设置」和「资质公司」两个选项，才能发布更新" placement="top">
               <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
             </el-tooltip>
-<!--            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>-->
+            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
             <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
 <!--            <el-button type="primary" link @click="openPhone(row)">登录信息</el-button>-->
             <el-button type="primary" link @click="remove(row)">删除</el-button>
@@ -397,20 +397,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Key">
-          <el-input v-model="ocpcForm.ocpcKey" placeholder="请输入Key" />
+          <el-input v-model="ocpcForm.ocpcKey" placeholder="请输入Key或Token" />
         </el-form-item>
         <el-form-item label="Secret">
           <el-input v-model="ocpcForm.ocpcSecret" placeholder="请输入Secret" />
         </el-form-item>
         <el-form-item label="转化类型">
           <el-select v-model="ocpcForm.ocpcConversionType" placeholder="请选择转化类型">
-            <el-option label="表单提交(线索转化)" :value="1" />
-            <el-option label="有效电话拨打" :value="2" />
-            <el-option label="一句话咨询(咨询转化)" :value="3" />
-            <el-option label="订单(订单转化)" :value="4" />
-            <el-option label="注册(注册转化)" :value="5" />
-            <el-option label="创建角色(创建角色转化)" :value="6" />
-            <el-option label="客户自定义类型" :value="7" />
+            <el-option label="微信复制按钮点击" :value="35" />
+            <el-option label="表单提交成功" :value="3" />
+            <el-option label="注册激活后登录（注册转化）" :value="49" />
           </el-select>
         </el-form-item>
         <el-form-item label="回传方式">
@@ -418,6 +414,10 @@
             <el-option label="手动回传" :value="1" />
             <el-option label="自动回传" :value="2" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="浏览时长大于" v-if="ocpcForm.ocpcCallbackType === 2">
+          <el-input-number v-model="ocpcForm.ocpcMinDuration" :min="0" :max="3600" style="width: 180px" />
+          <span style="margin-left: 8px; color: #999;">秒</span>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -747,7 +747,7 @@ const comment = ref({ linkId: 0, enableComment: false, permission: 'mobile_login
 const linkDialogVisible = ref(false)
 const ocpcDialogVisible = ref(false)
 const currentLink = ref({ mobileUrl: '', pcUrl: '' })
-const ocpcForm = ref({ ID: 0, platformId: null, ocpcKey: '', ocpcSecret: '', ocpcConversionType: null, ocpcCallbackType: null })
+const ocpcForm = ref({ ID: 0, platformId: null, ocpcKey: '', ocpcSecret: '', ocpcConversionType: null, ocpcCallbackType: null, ocpcMinDuration: 30 })
 
 // 留言信息相关
 const messageDialogVisible = ref(false)
@@ -784,7 +784,8 @@ const openOcpc = (row) => {
     ocpcKey: row.ocpcKey || '',
     ocpcSecret: row.ocpcSecret || '',
     ocpcConversionType: row.ocpcConversionType || null,
-    ocpcCallbackType: row.ocpcCallbackType || null
+    ocpcCallbackType: row.ocpcCallbackType || null,
+    ocpcMinDuration: row.ocpcMinDuration || 30
   }
   ocpcDialogVisible.value = true
 }

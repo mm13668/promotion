@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,6 +54,16 @@ func JWTAuth() gin.HandlerFunc {
 		//	c.Abort()
 		//}
 		c.Set("claims", claims)
+
+		// 校验用户使用截止有效期
+		var userSys system.SysUser
+		if err := global.GVA_DB.Select("valid_until").Where("id = ?", claims.BaseClaims.ID).First(&userSys).Error; err == nil && userSys.ValidUntil != nil && *userSys.ValidUntil > 0 && time.Now().Unix() > *userSys.ValidUntil {
+			utils.ClearToken(c)
+			response.NoAuth("使用有效期到期了，请联系专员18028414502", c)
+			c.Abort()
+			return
+		}
+
 		if claims.ExpiresAt.Unix()-time.Now().Unix() < claims.BufferTime {
 			dr, _ := utils.ParseDuration(global.GVA_CONFIG.JWT.ExpiresTime)
 			claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(dr))

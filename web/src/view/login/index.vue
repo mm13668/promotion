@@ -17,10 +17,11 @@
             </div>
             <div class="mb-9">
               <p class="text-center text-4xl font-bold">
-                {{ $GIN_VUE_ADMIN.appName }}
+                获客仓
+<!--                {{ $GIN_VUE_ADMIN.appName }}-->
               </p>
               <p class="text-center text-sm font-normal text-gray-500 mt-2.5">
-                A management platform using Golang and Vue
+                A management platform for Customer Acquisition Warehouse
               </p>
             </div>
             <el-form
@@ -110,7 +111,7 @@
           <img src="@/assets/kefu.png" class="w-8 h-8" alt="客服" />
         </a>
         <a
-          href="https://github.com/flipped-aurora/gin-vue-admin"
+          href="."
           target="_blank"
         >
           <img src="@/assets/github.png" class="w-8 h-8" alt="github" />

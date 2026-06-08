@@ -16,6 +16,23 @@ type LandingVisitApi struct{}
 
 var landingVisitService = service.ServiceGroupApp.PromotionServiceGroup.LandingVisitService
 
+// ReportManualOcpcCallback 手动触发OCPC回传
+func (l *LandingVisitApi) ReportManualOcpcCallback(c *gin.Context) {
+	var req struct {
+		ID uint `json:"id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage("参数错误", c)
+		return
+	}
+	if err := landingVisitService.ReportManualOcpcCallback(req.ID); err != nil {
+		global.GVA_LOG.Error("OCPC回传失败", zap.Error(err))
+		response.FailWithMessage("回传失败："+err.Error(), c)
+		return
+	}
+	response.OkWithMessage("OCPC回传成功", c)
+}
+
 // CreateLandingVisit 初始化上报访问信息
 func (l *LandingVisitApi) CreateLandingVisit(c *gin.Context) {
 	var visit promotion.LandingVisit

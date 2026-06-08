@@ -10,6 +10,6 @@ func (s *LandingMessageRouter) InitLandingMessageRouter(PublicRouter *gin.Router
 	// 公开接口，不需要认证
 	landingMessagePublicRouter := PublicRouter.Group("promotion/landingMessage")
 	{
-		landingMessagePublicRouter.POST("create", promoApi.CreateLandingMessage)
+		landingMessagePublicRouter.POST("create", promoApi.CreateLandingMessage) //提交表单
 	}
 }

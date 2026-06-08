@@ -21,7 +21,13 @@ func ClearTable(db *gorm.DB) error {
 	ClearTableDetail = append(ClearTableDetail, common.ClearDB{
 		TableName:    "sys_operation_records",
 		CompareField: "created_at",
-		Interval:     "2160h",
+		Interval:     "168h",
+	})
+
+	ClearTableDetail = append(ClearTableDetail, common.ClearDB{
+		TableName:    "sys_error",
+		CompareField: "created_at",
+		Interval:     "168h",
 	})
 
 	ClearTableDetail = append(ClearTableDetail, common.ClearDB{

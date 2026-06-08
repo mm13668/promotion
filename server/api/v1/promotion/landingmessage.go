@@ -27,9 +27,10 @@ func (p *ApiGroup) CreateLandingMessage(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	// 自动获取IP和UA
+	// 自动获取IP、UA和访问链接
 	landingMessage.Ip = utils.GetClientIP(c)
 	landingMessage.UserAgent = c.Request.UserAgent()
+	landingMessage.LinkUrl = c.Request.Header.Get("Referer")
 
 	err = landingMessageService.CreateLandingMessage(&landingMessage)
 	if err != nil {

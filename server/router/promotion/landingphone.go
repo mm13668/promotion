@@ -10,6 +10,6 @@ func (s *LandingPhoneRouter) InitLandingPhoneRouter(PublicRouter *gin.RouterGrou
 	// 公开接口，不需要认证
 	landingPhonePublicRouter := PublicRouter.Group("promotion/landingPhone")
 	{
-		landingPhonePublicRouter.POST("create", promoApi.CreateLandingPhone)
+		landingPhonePublicRouter.POST("create", promoApi.CreateLandingPhone) //注册转化
 	}
 }

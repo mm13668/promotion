@@ -315,6 +315,10 @@ export const getLandingVisitList = (params) => {
   return service({ url: '/promotion/landingVisit/list', method: 'get', params })
 }
 
+export const reportManualOcpcCallback = (data) => {
+  return service({ url: '/promotion/landingVisit/reportManualOcpcCallback', method: 'post', data })
+}
+
 // 获取推广链接的客服列表
 export const getLinkGroupMembers = (params) => {
   return service({ url: '/promotion/getLinkGroupMembers', method: 'get', params })

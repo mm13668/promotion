@@ -12,12 +12,13 @@ func (s *LandingVisitRouter) InitLandingVisitRouter(PublicRouter *gin.RouterGrou
 	{
 		landingVisitPublicRouter.POST("init", promoApi.CreateLandingVisit)
 		landingVisitPublicRouter.POST("reportDuration", promoApi.ReportDuration)
-		landingVisitPublicRouter.POST("reportCopy", promoApi.ReportCopy)
+		landingVisitPublicRouter.POST("reportCopy", promoApi.ReportCopy) //复制号码
 	}
 
 	// 管理后台接口，需要认证
 	landingVisitPrivateRouter := PrivateRouter.Group("promotion/landingVisit")
 	{
 		landingVisitPrivateRouter.GET("list", promoApi.GetLandingVisitList)
+		landingVisitPrivateRouter.POST("reportManualOcpcCallback", promoApi.ReportManualOcpcCallback)
 	}
 }
