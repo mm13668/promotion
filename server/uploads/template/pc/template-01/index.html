@@ -15,10 +15,10 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <img src="/api/{{.LogoURL}}" alt="logo" class="logo">
+                {{if .LogoURL}}<img src="/api/{{.LogoURL}}" alt="logo" class="logo">{{end}}
                 <nav class="nav">
-                    <a href="{{.HomepageURL}}" target="_blank">官网首页</a>
-                    <a href="{{.AboutURL}}" target="_blank">关于我们</a>
+                    {{if .HomepageURL}}<a href="{{.HomepageURL}}" target="_blank">官网首页</a>{{end}}
+                    {{if .AboutURL}}<a href="{{.AboutURL}}" target="_blank">关于我们</a>{{end}}
                 </nav>
             </div>
         </header>
