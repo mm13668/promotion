@@ -22,7 +22,7 @@
                 {{end}}
             </div>
             <div class="flex items-center">
-                <img src="/api/{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
+                <img src="{{$.SourceDomainURL}}/api/{{.QuestionAvatar}}" class="w-10 h-10 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                 <div class="flex-1">
                     <div class="flex items-center gap-2">
                         <span class="text-base font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -55,7 +55,7 @@
             {{range .Answers}}
             <div class="bg-white p-4 shadow-sm rounded">
                 <div class="flex items-center mb-3">
-                    <img src="/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
+                    <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-3" alt="avatar" onerror="this.style.display='none'">
                     <div class="flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-medium text-blue-500">昵称：{{.Nickname}}</span>
@@ -90,7 +90,7 @@
                 {{range .Replies}}
                 <div class="bg-yellow-50 p-3 rounded mb-2">
                     <div class="flex items-center gap-2 mb-2 flex-wrap">
-                        <img src="/api/{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
+                        <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="w-6 h-6 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                         <span class="text-green-600 font-medium text-sm">{{.Nickname}}</span>
                         {{if .TitleName}}
                         <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -190,7 +190,7 @@
                         }
                         // 上报复制事件（仅第一次）
                         if (window.LANDING_VISIT_ID && !copyReported) {
-                            fetch('/api/promotion/landingVisit/reportCopy', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -230,7 +230,7 @@
                     }
                     // 上报复制事件（仅第一次）
                     if (window.LANDING_VISIT_ID && !copyReported) {
-                        fetch('/api/promotion/landingVisit/reportCopy', {
+                        fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -293,7 +293,7 @@
                     // 定时上报时长，每5秒上报一次
                     setInterval(() => {
                         if (window.LANDING_VISIT_ID) {
-                            fetch('/api/promotion/landingVisit/reportDuration', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -306,7 +306,7 @@
                         }
                     }, 5000);
                 } else {
-                    fetch('/api/promotion/landingVisit/init', {
+                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/init', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -324,7 +324,7 @@
                             // 定时上报时长，每5秒上报一次
                             setInterval(() => {
                                 if (window.LANDING_VISIT_ID) {
-                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'

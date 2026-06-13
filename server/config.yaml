@@ -47,6 +47,16 @@ cors:
           allow-headers: content-type
           expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
           allow-credentials: true
+        - allow-origin: http://admin-h5.huokecang.online
+          allow-methods: POST, GET, OPTIONS
+          allow-headers: Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id
+          expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
+          allow-credentials: true
+        - allow-origin: http://localhost:8080
+          allow-methods: POST, GET, OPTIONS
+          allow-headers: Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id
+          expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
+          allow-credentials: true
 db-list:
     - type: ""
       alias-name: ""

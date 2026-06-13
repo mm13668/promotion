@@ -15,7 +15,7 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                {{if .LogoURL}}<img src="/api/{{.LogoURL}}" alt="logo" class="logo">{{end}}
+                {{if .LogoURL}}<img src="{{$.SourceDomainURL}}/api/{{.LogoURL}}" alt="logo" class="logo">{{end}}
                 <nav class="nav">
                     {{if .HomepageURL}}<a href="{{.HomepageURL}}" target="_blank">官网首页</a>{{end}}
                     {{if .AboutURL}}<a href="{{.AboutURL}}" target="_blank">关于我们</a>{{end}}
@@ -34,7 +34,7 @@
                             {{end}}
                         </div>
                         <div class="flex items-center mb-6">
-                            <img src="/api/{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
+                            <img src="{{$.SourceDomainURL}}/api/{{.QuestionAvatar}}" class="w-12 h-12 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-lg font-medium text-orange-500">{{.QuestionNickname}}</span>
@@ -64,7 +64,7 @@
                         {{range .Answers}}
                         <div class="bg-white p-6 rounded-lg shadow-sm">
                             <div class="flex items-center mb-4">
-                                <img src="/api/{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
+                                <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="w-10 h-10 rounded-full mr-4" alt="avatar" onerror="this.style.display='none'">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="text-base font-medium text-blue-500">{{.Nickname}}</span>
@@ -99,7 +99,7 @@
                             {{range .Replies}}
                             <div class="bg-yellow-50 p-4 rounded mb-2 ml-14">
                                  <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                     <img src="/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
+                                     <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="w-8 h-8 rounded-full mr-2" alt="avatar" onerror="this.style.display='none'">
                                      <span class="text-green-600 font-medium">{{.Nickname}}</span>
                                      {{if .TitleName}}
                                      <span class="px-1 py-0.5 bg-orange-100 text-orange-600 rounded text-xs">{{.TitleName}}</span>
@@ -230,7 +230,7 @@
                         }
                         // 上报复制事件（仅第一次）
                         if (window.LANDING_VISIT_ID && !copyReported) {
-                            fetch('/api/promotion/landingVisit/reportCopy', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -270,7 +270,7 @@
                     }
                     // 上报复制事件（仅第一次）
                     if (window.LANDING_VISIT_ID && !copyReported) {
-                        fetch('/api/promotion/landingVisit/reportCopy', {
+                        fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -333,7 +333,7 @@
                     // 定时上报时长，每30秒上报一次
                     setInterval(() => {
                         if (window.LANDING_VISIT_ID) {
-                            fetch('/api/promotion/landingVisit/reportDuration', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -346,7 +346,7 @@
                         }
                     }, 30000);
                 } else {
-                    fetch('/api/promotion/landingVisit/init', {
+                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/init', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -364,7 +364,7 @@
                             // 定时上报时长，每30秒上报一次
                             setInterval(() => {
                                 if (window.LANDING_VISIT_ID) {
-                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'

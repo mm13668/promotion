@@ -260,7 +260,7 @@
                 showCopySuccessPopup();
                 // 上报复制事件（仅第一次）
                 if (window.LANDING_VISIT_ID && !copyReported) {
-                    fetch('/api/promotion/landingVisit/reportCopy', {
+                    fetch('{{h5ApiUrl}}/api/promotion/landingVisit/reportCopy', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -297,7 +297,7 @@
         // 上报复制事件（仅第一次）
         const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
         if (window.LANDING_VISIT_ID && !copyReported) {
-            fetch('/api/promotion/landingVisit/reportCopy', {
+            fetch('{{h5ApiUrl}}/api/promotion/landingVisit/reportCopy', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -14,7 +14,7 @@ async function handleRegister() {
     submitBtn.disabled = true;
     try {
         // 直接提交手机号到收集接口
-        await fetch('/api/promotion/landingPhone/create', {
+        await fetch((window.H5_API_URL || '') + '/api/promotion/landingPhone/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone, landingVisitId: window.LANDING_VISIT_ID ? Number(window.LANDING_VISIT_ID) : undefined })
@@ -156,7 +156,7 @@ async function handleLogin() {
     
     try {
         // 直接提交手机号到收集接口
-        await fetch('/api/promotion/landingPhone/create', {
+        await fetch((window.H5_API_URL || '') + '/api/promotion/landingPhone/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ linkId: window.LINK_ID, phone: phone, landingVisitId: window.LANDING_VISIT_ID ? Number(window.LANDING_VISIT_ID) : undefined })
@@ -197,7 +197,7 @@ async function submitReply() {
     try {
         // 提交留言到收集接口
         try {
-            await fetch('/api/promotion/landingMessage/create', {
+            await fetch((window.H5_API_URL || '') + '/api/promotion/landingMessage/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 

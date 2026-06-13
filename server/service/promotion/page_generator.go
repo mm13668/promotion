@@ -87,6 +87,9 @@ type TemplateData struct {
 	SeoKeywords    string // SEO关键词（逗号分隔）
 	SeoDescription string // SEO描述
 	SeoTitle       string // SEO标题
+	// 域名配置
+	SourceDomainURL string // 图片等资源域名
+	H5ApiURL        string // 落地页API接口请求URL
 }
 
 // PageGenerator 页面生成器
@@ -151,7 +154,7 @@ func (g *PageGenerator) InjectPlugin(html string, selector string, pluginHTML st
 }
 
 // BuildTemplateData 组装模板数据
-func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, question QaQuestion, isMobile bool) TemplateData {
+func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, question QaQuestion, isMobile bool, sourceDomainURL string, h5ApiURL string) TemplateData {
 	// 处理回答和回复的富文本内容
 	processedAnswers := make([]Answer, 0, len(question.Answers))
 	for _, ans := range question.Answers {
@@ -204,6 +207,8 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		SeoKeywords:           basic.SeoKeywords,
 		SeoDescription:        basic.SeoDescription,
 		SeoTitle:              basic.SeoTitle,
+		SourceDomainURL:       sourceDomainURL,
+		H5ApiURL:              h5ApiURL,
 	}
 	if isMobile {
 		data.LogoURL = company.LogoMobileURL
@@ -239,9 +244,11 @@ func (g *PageGenerator) GeneratePageWithData(data TemplateData, templateName str
 
 	// 2. 注入插件
 	pluginData := map[string]string{
-		"wechat":    "",
-		"phone":     "",
-		"qrcodeUrl": data.QrcodeURL,
+		"wechat":         "",
+		"phone":          "",
+		"qrcodeUrl":      data.QrcodeURL,
+		"sourceDomainUrl": data.SourceDomainURL,
+		"h5ApiUrl":       data.H5ApiURL,
 	}
 
 	if isMobile {
@@ -274,7 +281,30 @@ func (g *PageGenerator) GeneratePageWithData(data TemplateData, templateName str
 		}
 	}
 
-	// 3. 写入文件
+	// 3. 注入域名JS变量
+	var jsVars string
+	if data.SourceDomainURL != "" || data.H5ApiURL != "" {
+		jsVars = "<script>"
+		if data.SourceDomainURL != "" {
+			jsVars += `window.SOURCE_DOMAIN_URL="` + data.SourceDomainURL + `";`
+		}
+		if data.H5ApiURL != "" {
+			jsVars += `window.H5_API_URL="` + data.H5ApiURL + `";`
+		}
+		jsVars += "</script>"
+		html = strings.Replace(html, "</head>", jsVars+"</head>", 1)
+	}
+
+	// 4. 替换/api/前缀为完整域名路径
+	if data.SourceDomainURL != "" {
+		html = strings.ReplaceAll(html, `src="/api/`, `src="`+data.SourceDomainURL+`/api/`)
+		html = strings.ReplaceAll(html, `"/api/"`, `"`+data.SourceDomainURL+`/api/"`)
+	}
+	if data.H5ApiURL != "" {
+		html = strings.ReplaceAll(html, `fetch('/api/`, `fetch('`+data.H5ApiURL+`/api/`)
+	}
+
+	// 5. 写入文件
 	err = os.WriteFile(outputPath, []byte(html), 0644)
 	if err != nil {
 		return "", err

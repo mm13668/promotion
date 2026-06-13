@@ -15,7 +15,7 @@
     <div class="container">
         <header class="header">
             <div class="header-content">
-                <img src="/api/{{.LogoURL}}" alt="logo" class="logo">
+                <img src="{{$.SourceDomainURL}}/api/{{.LogoURL}}" alt="logo" class="logo">
                 <nav class="nav">
                     <a href="{{.HomepageURL}}" target="_blank">官网首页</a>
                     <a href="{{.AboutURL}}" target="_blank">关于我们</a>
@@ -34,7 +34,7 @@
                             {{end}}
                         </div>
                         <div class="author-info">
-                            <img src="/api/{{.QuestionAvatar}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                            <img src="{{$.SourceDomainURL}}/api/{{.QuestionAvatar}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
                             <div class="author-details">
                                 <div class="author-name">
                                     <span class="nickname">{{.QuestionNickname}}</span>
@@ -75,7 +75,7 @@
                         {{range .Answers}}
                         <div class="answer-card">
                             <div class="answer-header">
-                                <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                                <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
                                 <div class="answer-author">
                                     <div class="author-name">
                                         <span class="nickname">{{.Nickname}}</span>
@@ -111,7 +111,7 @@
                             {{range .Replies}}
                             <div class="reply-card">
                                 <div class="reply-header">
-                                    <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                                    <img src="{{$.SourceDomainURL}}/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
                                     <div class="reply-author">
                                         <div class="author-name">
                                             <span class="nickname">{{.Nickname}}</span>
@@ -247,7 +247,7 @@
                         }
                         // 上报复制事件（仅第一次）
                         if (window.LANDING_VISIT_ID && !copyReported) {
-                            fetch('/api/promotion/landingVisit/reportCopy', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -287,7 +287,7 @@
                     }
                     // 上报复制事件（仅第一次）
                     if (window.LANDING_VISIT_ID && !copyReported) {
-                        fetch('/api/promotion/landingVisit/reportCopy', {
+                        fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportCopy', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -350,7 +350,7 @@
                     // 定时上报时长，每30秒上报一次
                     setInterval(() => {
                         if (window.LANDING_VISIT_ID) {
-                            fetch('/api/promotion/landingVisit/reportDuration', {
+                            fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -363,7 +363,7 @@
                         }
                     }, 30000);
                 } else {
-                    fetch('/api/promotion/landingVisit/init', {
+                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/init', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -381,7 +381,7 @@
                             // 定时上报时长，每30秒上报一次
                             setInterval(() => {
                                 if (window.LANDING_VISIT_ID) {
-                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                    fetch('{{.H5ApiURL}}/api/promotion/landingVisit/reportDuration', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'

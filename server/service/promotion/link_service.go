@@ -15,6 +15,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 )
 
 // GroupMember 客服成员结构体
@@ -406,7 +407,17 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		}
 	}
 
-	// 5. 生成页面
+	// 5. 查询域名配置
+	sourceDomainURL := ""
+	h5ApiURL := ""
+	if sysParam, err := new(system.SysParamsService).GetSysParam("source_domain_url"); err == nil {
+		sourceDomainURL = sysParam.Value
+	}
+	if sysParam, err := new(system.SysParamsService).GetSysParam("h5_api_url"); err == nil {
+		h5ApiURL = sysParam.Value
+	}
+
+	// 6. 生成页面
 	generator := &PageGenerator{}
 
 	// 创建随机编号目录
@@ -418,7 +429,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	fmt.Println("databyte", string(databyte))
 
 	// 生成移动端页面
-	mobileData := generator.BuildTemplateData(link, basic, company, question, true)
+	mobileData := generator.BuildTemplateData(link, basic, company, question, true, sourceDomainURL, h5ApiURL)
 	// 替换客服信息
 	mobileData.ServiceListJSON = serviceListJSON
 	mobilePlugins := map[string]string{
@@ -430,7 +441,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 		return err
 	}
 	// 生成PC端页面
-	pcData := generator.BuildTemplateData(link, basic, company, question, false)
+	pcData := generator.BuildTemplateData(link, basic, company, question, false, sourceDomainURL, h5ApiURL)
 	// 替换客服信息
 	pcData.ServiceListJSON = serviceListJSON
 	pcPlugins := map[string]string{
