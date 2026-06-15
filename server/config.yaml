@@ -255,4 +255,4 @@ zap:
     retention-day: -1
 conf:
     main-domain: 'admin-h5.huokecang.online'
-    ldy-domain: 'ldy.huokecang.online'
+    ldy-domain: 'admin-h5.huokecang.online'
