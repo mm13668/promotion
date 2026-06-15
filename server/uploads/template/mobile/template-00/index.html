@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
+    {{if .SeoKeywords}}
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    {{end}}
+    {{if .SeoDescription}}
+    <meta name="description" content="{{.SeoDescription}}">
+    {{end}}
+</head>
+<body>
+    <div class="ql-editor-content" id="questionContent">{{.QuestionContent}}</div>
+    <div id="plugin-copy"></div>
+    <div id="plugin-bottom"></div>
+
+    <script>
+        window.LINK_ID = "{{.LinkID}}";
+
+        (function() {
+            let serviceList = [];
+            try {
+                const serviceListStr = {{.ServiceListJSON}} || "[]";
+                serviceList = JSON.parse(serviceListStr);
+            } catch (e) {
+                console.error('客服列表解析失败', e);
+                serviceList = [];
+            }
+            let currentService = {
+                nickname: "",
+                wechat: "",
+                mobile: ""
+            };
+
+            if (Array.isArray(serviceList) && serviceList.length > 0) {
+                serviceList = serviceList.filter(item => item && item.wechat);
+                if (serviceList.length > 0) {
+                    const savedService = localStorage.getItem('promotion_service_' + window.location.pathname);
+                    if (savedService) {
+                        try {
+                            const parsed = JSON.parse(savedService);
+                            if (parsed && parsed.wechat) {
+                                currentService = parsed;
+                            } else {
+                                currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                                localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                            }
+                        } catch (e) {
+                            currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                            localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                        }
+                    } else {
+                        currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                        localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                    }
+                }
+            }
+
+            window.currentService = currentService;
+
+            window.copyWechatGlobal = function(wechat) {
+                const copyWechat = wechat || window.currentService?.wechat || window.wechat;
+
+                const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(copyWechat).then(function() {
+                        if (window.showCopySuccessPopup) {
+                            showCopySuccessPopup();
+                        } else {
+                            alert('微信复制成功，快去添加好友吧！');
+                        }
+                        if (window.LANDING_VISIT_ID && !copyReported) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            }).then(() => {
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                            }).catch(() => {
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                            });
+                        }
+                    }).catch(function() {
+                        fallbackCopy(copyWechat);
+                    });
+                } else {
+                    fallbackCopy(copyWechat);
+                }
+
+                function fallbackCopy(text) {
+                    const input = document.createElement('input');
+                    input.value = text;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    if (window.showCopySuccessPopup) {
+                        showCopySuccessPopup();
+                    } else {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }
+                    if (window.LANDING_VISIT_ID && !copyReported) {
+                        fetch('/api/promotion/landingVisit/reportCopy', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: Number(window.LANDING_VISIT_ID),
+                                servicePhone: window.currentService?.mobile || '',
+                                serviceNickname: window.currentService?.nickname || ''
+                            })
+                        }).then(() => {
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                        }).catch(() => {
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                        });
+                    }
+                }
+            }
+
+            window.addCount = function(el) {
+                const match = el.textContent.match(/\d+/);
+                if (match) {
+                    const current = parseInt(match[0]) || 0;
+                    el.textContent = el.textContent.replace(/\d+/, current + 1);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const contentEls = document.querySelectorAll('.ql-editor-content');
+                contentEls.forEach(el => {
+                    let html = el.innerHTML;
+                    let displayText = currentService.wechat;
+                    if (currentService.nickname) {
+                        displayText = `${currentService.nickname}（微信：${currentService.wechat}）`;
+                    }
+                    const wechatHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${displayText}</span>`;
+                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    el.innerHTML = html;
+                });
+
+                document.querySelectorAll('.wechat').forEach(el => {
+                    el.textContent = currentService.wechat;
+                });
+                document.querySelectorAll('.phone').forEach(el => {
+                    el.textContent = currentService.mobile;
+                });
+
+                const savedVisitId = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+                if (savedVisitId) {
+                    window.LANDING_VISIT_ID = savedVisitId;
+                    setInterval(() => {
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportDuration', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    addDuration: 5
+                                })
+                            });
+                        }
+                    }, 5000);
+                } else {
+                    fetch('/api/promotion/landingVisit/init', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            referer: document.referrer,
+                            userAgent: navigator.userAgent,
+                            linkId: Number(window.LINK_ID),
+                            refererUrl: window.location.href
+                        })
+                    }).then(res => res.json()).then(res => {
+                        if (res.code === 0 && res.data) {
+                            window.LANDING_VISIT_ID = res.data;
+                            localStorage.setItem('landing_visit_id_' + window.location.pathname, res.data);
+                            setInterval(() => {
+                                if (window.LANDING_VISIT_ID) {
+                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            id: Number(window.LANDING_VISIT_ID),
+                                            addDuration: 5
+                                        })
+                                    });
+                                }
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+
+</body>
+</html>
