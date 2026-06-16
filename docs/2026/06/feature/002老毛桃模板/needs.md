@@ -1,10 +1,12 @@
 # 需求
-增加空模板 template-00
+增加老毛桃模板 template-03
 
 模板目录
 /Users/wangjingjun/work/promotion/server/uploads/template
 
-模板的内容
+模板的内容布局要参考 https://www.laomaotao.net/help/2020/0806/8620.html
+可以参考其他模板的变量使用
+要做的跟官网差不多的样子，然后查看新闻详情页的模样
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,12 +22,9 @@
 </body>
 
 其他的数据上报统计，客服昵称替换等都需要保存这些功能
-只是模板内容，自定义而已
 
-样式全部都需要自定义
+
 要求：移动端支持自适应
-
-目的：我要在富文本中填写内容，通过模板生成展示出来，只需要展示模板内容
 
 # 涉及文件
 模板目录：/Users/wangjingjun/work/promotion/server/uploads/template/
