@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
+    {{if .SeoKeywords}}
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    {{end}}
+    {{if .SeoDescription}}
+    <meta name="description" content="{{.SeoDescription}}">
+    {{end}}
+</head>
+<body>
+    <div class="header">
+        <div class="wrap">
+            <a href="{{.HomepageURL}}" class="logo">{{.CompanyName}}</a>
+            <ul class="nav">
+                <li><a href="{{.HomepageURL}}">首 页</a></li>
+                <li><a href="javascript:;">视频教程</a></li>
+                <li><a href="javascript:;">下载中心</a></li>
+                <li class="nav-select"><a href="{{.AboutURL}}">帮助中心</a></li>
+                <li><a href="javascript:;">最新动态</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="banner-s"></div>
+
+        <div class="main-layout">
+            <div class="main-left">
+                <div class="main-panel">
+                    <div class="position"><a href="{{.HomepageURL}}">首页</a> &gt; <a href="{{.AboutURL}}">帮助中心</a> &gt; {{.QuestionTitle}}</div>
+                    <div class="news-view">
+                        <h3>{{.QuestionTitle}}</h3>
+                        {{if .QuestionTimeAt}}
+                        <div class="dateView">时间：{{.QuestionTimeAt}}{{if .QuestionNickname}} | 作者：{{.QuestionNickname}}{{end}}</div>
+                        {{end}}
+                        <div class="content-body">
+                            {{.QuestionContent}}
+                        </div>
+                    </div>
+                </div>
+
+                {{if .Answers}}
+                <div class="main-panel" style="margin-top:15px;">
+                    <div class="box-title">全部回答</div>
+                    {{range .Answers}}
+                    <div class="answer-item">
+                        <div class="answer-header">
+                            {{if .AvatarUrl}}<img src="/api/{{.AvatarUrl}}" class="avatar" alt="" onerror="this.style.display='none'">{{end}}
+                            <div class="answer-meta">
+                                <span class="answer-nickname">{{.Nickname}}</span>
+                                {{if .TitleName}}<span class="title-badge">{{.TitleName}}</span>{{end}}
+                                {{if .TimeText}}<span class="answer-time">{{.TimeText}}</span>{{end}}
+                            </div>
+                        </div>
+                        <div class="answer-content">{{.Content}}</div>
+                        {{if .Replies}}
+                        <div class="reply-list">
+                            {{range .Replies}}
+                            <div class="reply-item">
+                                <div class="reply-header">
+                                    {{if .AvatarUrl}}<img src="/api/{{.AvatarUrl}}" class="avatar-sm" alt="" onerror="this.style.display='none'">{{end}}
+                                    <span class="reply-nickname">{{.Nickname}}</span>
+                                    {{if .TitleName}}<span class="title-badge-sm">{{.TitleName}}</span>{{end}}
+                                </div>
+                                <div class="reply-content">{{.Content}}</div>
+                            </div>
+                            {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+
+            <div class="main-right">
+                <div class="main-panel">
+                    <div class="box-title">客服信息</div>
+                    <div class="service-info">
+                        <div class="service-row">
+                            <span class="service-label">微信：</span>
+                            <span class="service-value wechat"></span>
+                            <span class="copy-btn" onclick="copyWechatGlobal()">复制</span>
+                        </div>
+                        <div class="service-row">
+                            <span class="service-label">电话：</span>
+                            <span class="service-value phone"></span>
+                        </div>
+                        <div class="service-row">
+                            <span class="service-label">公司：</span>
+                            <span class="service-value">{{.CompanyName}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{if .Answers}}
+                <div class="main-panel">
+                    <div class="box-title">热门回答</div>
+                    <ul class="side-list">
+                        {{range .Answers}}
+                        <li>
+                            <span>{{.TimeText}}</span>
+                            <a href="javascript:;"><abbr title="{{.Nickname}}的回答">{{.Nickname}}的回答</abbr></a>
+                        </li>
+                        {{end}}
+                    </ul>
+                </div>
+                {{end}}
+
+                <div id="plugin-copy"></div>
+                <div id="plugin-qrcode"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <div class="footer">
+        Copyright Allright Reserved. <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a><br>
+        <a href="{{.HomepageURL}}" target="_blank">网站首页</a>
+        {{if .Show12301Phone}}<br>全国文化市场举报电话：12318 | 12301旅游投诉热线{{end}}
+    </div>
+
+    <script>
+        window.LINK_ID = "{{.LinkID}}";
+
+        (function() {
+            let serviceList = [];
+            try {
+                var serviceListStr = {{.ServiceListJSON}} || "[]";
+                window.serviceListJSON = serviceListStr;
+                serviceList = JSON.parse(serviceListStr);
+            } catch (e) {
+                console.error('客服列表解析失败', e);
+                serviceList = [];
+            }
+            let currentService = { nickname: "", wechat: "", mobile: "" };
+
+            if (Array.isArray(serviceList) && serviceList.length > 0) {
+                serviceList = serviceList.filter(function(item) { return item && item.wechat; });
+                if (serviceList.length > 0) {
+                    var savedService = localStorage.getItem('promotion_service_' + window.location.pathname);
+                    if (savedService) {
+                        try {
+                            var parsed = JSON.parse(savedService);
+                            if (parsed && parsed.wechat) {
+                                currentService = parsed;
+                            } else {
+                                currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                                localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                            }
+                        } catch (e) {
+                            currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                            localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                        }
+                    } else {
+                        currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                        localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                    }
+                }
+            }
+
+            window.currentService = currentService;
+            window.wechat = currentService.wechat;
+            window.phone = currentService.mobile;
+
+            window.copyWechatGlobal = function(wechat) {
+                var copyWechat = wechat || window.currentService?.wechat || window.wechat;
+                var copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(copyWechat).then(function() {
+                        if (window.showCopySuccessPopup) {
+                            showCopySuccessPopup();
+                        } else {
+                            alert('微信复制成功，快去添加好友吧！');
+                        }
+                        if (window.LANDING_VISIT_ID && !copyReported) {
+                            fetch('/api/promotion/landingVisit/reportCopy', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    id: Number(window.LANDING_VISIT_ID),
+                                    servicePhone: window.currentService?.mobile || '',
+                                    serviceNickname: window.currentService?.nickname || ''
+                                })
+                            }).then(function() {
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                            }).catch(function() {
+                                localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                            });
+                        }
+                    }).catch(function() {
+                        fallbackCopy(copyWechat);
+                    });
+                } else {
+                    fallbackCopy(copyWechat);
+                }
+
+                function fallbackCopy(text) {
+                    var input = document.createElement('input');
+                    input.value = text;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    if (window.showCopySuccessPopup) {
+                        showCopySuccessPopup();
+                    } else {
+                        alert('微信复制成功，快去添加好友吧！');
+                    }
+                    if (window.LANDING_VISIT_ID && !copyReported) {
+                        fetch('/api/promotion/landingVisit/reportCopy', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                id: Number(window.LANDING_VISIT_ID),
+                                servicePhone: window.currentService?.mobile || '',
+                                serviceNickname: window.currentService?.nickname || ''
+                            })
+                        }).then(function() {
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                        }).catch(function() {
+                            localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                        });
+                    }
+                }
+            };
+
+            window.addCount = function(el) {
+                var match = el.textContent.match(/\d+/);
+                if (match) {
+                    var current = parseInt(match[0]) || 0;
+                    el.textContent = el.textContent.replace(/\d+/, current + 1);
+                }
+            };
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var contentEls = document.querySelectorAll('.content-body, .answer-content, .reply-content');
+                contentEls.forEach(function(el) {
+                    var html = el.innerHTML;
+                    var displayText = currentService.wechat;
+                    if (currentService.nickname) {
+                        displayText = currentService.nickname + '（微信：' + currentService.wechat + '）';
+                    }
+                    var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#c00;">' + displayText + '</span>';
+                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    el.innerHTML = html;
+                });
+
+                document.querySelectorAll('.wechat').forEach(function(el) {
+                    el.textContent = currentService.wechat;
+                });
+                document.querySelectorAll('.phone').forEach(function(el) {
+                    el.textContent = currentService.mobile;
+                });
+
+                var savedVisitId = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+                if (savedVisitId) {
+                    window.LANDING_VISIT_ID = savedVisitId;
+                    setInterval(function() {
+                        if (window.LANDING_VISIT_ID) {
+                            fetch('/api/promotion/landingVisit/reportDuration', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                            });
+                        }
+                    }, 30000);
+                } else {
+                    fetch('/api/promotion/landingVisit/init', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            referer: document.referrer,
+                            userAgent: navigator.userAgent,
+                            linkId: Number(window.LINK_ID),
+                            refererUrl: window.location.href
+                        })
+                    }).then(function(res) { return res.json(); }).then(function(res) {
+                        if (res.code === 0 && res.data) {
+                            window.LANDING_VISIT_ID = res.data;
+                            localStorage.setItem('landing_visit_id_' + window.location.pathname, res.data);
+                            setInterval(function() {
+                                if (window.LANDING_VISIT_ID) {
+                                    fetch('/api/promotion/landingVisit/reportDuration', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                                    });
+                                }
+                            }, 30000);
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

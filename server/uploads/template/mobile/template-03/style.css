@@ -1,0 +1,78 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", "宋体", Arial, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; font-size: 14px; }
+a { color: #333; text-decoration: none; }
+a:hover { color: #c00; }
+img { max-width: 100%; height: auto; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 10px; }
+
+.header { background: #fff; border-bottom: 2px solid #c00; }
+.header .wrap { display: flex; align-items: center; justify-content: space-between; height: 50px; position: relative; }
+.logo { font-size: 22px; font-weight: bold; color: #c00; white-space: nowrap; }
+.logo:hover { color: #c00; }
+.menu-toggle { display: flex; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; }
+.menu-toggle span { display: block; width: 24px; height: 2px; background: #333; border-radius: 1px; }
+.nav { display: none; list-style: none; position: absolute; top: 50px; left: 0; right: 0; background: #fff; border: 1px solid #ddd; z-index: 1000; }
+.nav.nav-open { display: block; }
+.nav li { border-bottom: 1px solid #eee; }
+.nav li a { display: block; padding: 12px 15px; font-size: 14px; color: #333; }
+.nav li.nav-select a { color: #c00; font-weight: bold; }
+.nav li a:hover { background: #f5f5f5; color: #c00; }
+
+.position { padding: 10px 0; font-size: 12px; color: #999; }
+.position a { color: #999; }
+.position a:hover { color: #c00; }
+
+.main-panel { background: #fff; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+.news-view { padding: 15px; }
+.news-view h3 { font-size: 20px; color: #333; margin-bottom: 10px; line-height: 1.4; font-weight: bold; }
+.dateView { font-size: 12px; color: #999; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+.content-body { font-size: 15px; line-height: 1.8; color: #333; }
+.content-body p { margin-bottom: 10px; }
+.content-body img { max-width: 100%; height: auto; margin: 10px 0; border-radius: 2px; }
+
+.box-title { font-size: 16px; font-weight: bold; color: #333; padding: 12px 15px; border-bottom: 2px solid #c00; margin-bottom: 0; }
+
+.answer-item { padding: 15px; border-bottom: 1px solid #f0f0f0; }
+.answer-item:last-child { border-bottom: none; }
+.answer-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.answer-meta { flex: 1; }
+.answer-nickname { font-size: 14px; font-weight: bold; color: #333; }
+.title-badge { display: inline-block; padding: 1px 6px; background: #c00; color: #fff; border-radius: 2px; font-size: 11px; margin-left: 5px; }
+.answer-time { display: block; font-size: 12px; color: #999; margin-top: 2px; }
+.answer-content { font-size: 14px; line-height: 1.7; color: #555; padding-left: 46px; }
+.answer-content img { max-width: 100%; height: auto; }
+
+.reply-list { margin-top: 10px; padding-left: 46px; background: #fafafa; border-radius: 4px; padding: 10px; }
+.reply-item { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+.reply-item:last-child { border-bottom: none; }
+.reply-header { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.avatar-sm { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+.reply-nickname { font-size: 12px; font-weight: bold; color: #333; }
+.title-badge-sm { display: inline-block; padding: 1px 5px; background: #999; color: #fff; border-radius: 2px; font-size: 10px; }
+.reply-content { font-size: 13px; color: #555; line-height: 1.6; }
+
+.sidebar { margin-bottom: 10px; }
+.side-list { list-style: none; padding: 5px 0; }
+.side-list li { padding: 8px 15px; border-bottom: 1px dashed #eee; font-size: 13px; }
+.side-list li:last-child { border-bottom: none; }
+.side-list li span { color: #999; font-size: 11px; margin-right: 8px; }
+.side-list li a { color: #333; }
+.side-list li a:hover { color: #c00; }
+
+.contact-info { background: #fff; border-radius: 4px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.info-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; }
+.info-row:last-child { margin-bottom: 0; }
+.info-label { color: #999; white-space: nowrap; }
+.info-value { color: #333; font-weight: bold; }
+.info-value.wechat { color: #c00; }
+.copy-btn { padding: 3px 10px; background: #c00; color: #fff; border-radius: 3px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.copy-btn:active { opacity: 0.8; }
+
+.footer { background: #fff; border-top: 2px solid #c00; padding: 20px 10px; text-align: center; font-size: 12px; color: #999; line-height: 1.8; margin-top: 10px; }
+.footer a { color: #666; }
+.footer a:hover { color: #c00; }
+
+.wechat-clickable:hover { text-decoration: underline; }
