@@ -20,6 +20,8 @@ func (a *LinkApi) CreatePromotionLink(c *gin.Context) {
 		return
 	}
 	e.UUID = utils.GetUserUuid(c)
+
+	e.RandomCode = utils.GenerateRandomCode(8)
 	if err := linkService.CreatePromotionLink(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
