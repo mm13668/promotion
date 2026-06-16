@@ -544,6 +544,34 @@ body {
   text-align: center;
   font-size: 0.88rem;
 }
+.footer-icp {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-icp a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-icp a:hover {
+  color: rgba(255,255,255,0.8);
+}
+.footer-icp .sep {
+  color: rgba(255,255,255,0.2);
+}
+.beian-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.beian-link img {
+  width: 16px;
+  height: 16px;
+}
 
 /* Section backgrounds */
 .bg-light {
