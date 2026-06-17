@@ -6,8 +6,8 @@ set -e
 # 配置
 # =========================
 
-# SERVER="root@8.163.59.237"
-SERVER="root@119.28.114.156" # its-me.club
+ SERVER="root@8.163.59.237"
+#SERVER="root@119.28.114.156" # its-me.club
 
 REMOTE_DIR="/var/www/html"
 
