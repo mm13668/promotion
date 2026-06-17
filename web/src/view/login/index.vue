@@ -102,19 +102,7 @@
       </div>
     </div>
 
-    <BottomInfo class="left-0 right-0 absolute bottom-3 mx-auto w-full z-20">
-
-      <div class="footer-bottom text-center mt-3 text-xs text-gray-400">
-<!--        <p class="mb-1">&copy; 2026 获客仓 All Rights Reserved.</p>-->
-        <div class="footer-icp">
-          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-300">粤ICP备2026070007号</a>
-          <span class="sep mx-1">|</span>
-          <a href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank" rel="noopener" class="text-gray-400 hover:text-gray-300">
-            粤公网安备44081102000115号
-          </a>
-        </div>
-      </div>
-    </BottomInfo>
+    <BottomInfo class="left-0 right-0 absolute bottom-3 mx-auto w-full z-20"></BottomInfo>
 
     <!-- 浮动客服气泡 -->
     <div class="contact-bubble" @click="handleContact">
@@ -342,7 +330,7 @@
   transform: scale(0.95);
 }
 .bubble-text {
-  font-size: 11px;
+  font-size: 18px;
   font-weight: 600;
   white-space: nowrap;
   writing-mode: vertical-rl;
