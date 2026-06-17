@@ -13,15 +13,23 @@
 </head>
 <body>
     <div class="container">
+        {{if or .LogoURL .HomepageURL .AboutURL}}
         <header class="header">
             <div class="header-content">
+                {{if .LogoURL}}
                 <img src="/api/{{.LogoURL}}" alt="logo" class="logo">
+                {{end}}
                 <nav class="nav">
+                    {{if .HomepageURL}}
                     <a href="{{.HomepageURL}}" target="_blank">官网首页</a>
+                    {{end}}
+                    {{if .AboutURL}}
                     <a href="{{.AboutURL}}" target="_blank">关于我们</a>
+                    {{end}}
                 </nav>
             </div>
         </header>
+        {{end}}
         <main class="main">
             <!-- 问题头部 -->
             <div class="question-header">
@@ -32,15 +40,21 @@
                     {{end}}
                 </div>
                 <div class="author-info">
+                    {{if .QuestionAvatar}}
                     <img src="/api/{{.QuestionAvatar}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                    {{end}}
                     <div class="author-details">
                         <div class="author-name">
+                            {{if .QuestionNickname}}
                             <span class="nickname">{{.QuestionNickname}}</span>
+                            {{end}}
                             {{if .QuestionTitleName}}
                             <span class="title-badge">{{.QuestionTitleName}}</span>
                             {{end}}
                         </div>
+                        {{if .QuestionTimeAt}}
                         <div class="time">{{.QuestionTimeAt}}</div>
+                        {{end}}
                     </div>
                 </div>
             </div>
@@ -73,7 +87,9 @@
                 {{range .Answers}}
                 <div class="answer-card">
                     <div class="answer-header">
+                        {{if .AvatarUrl}}
                         <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                        {{end}}
                         <div class="answer-author">
                             <div class="author-name">
                                 <span class="nickname">{{.Nickname}}</span>
@@ -84,7 +100,9 @@
                                 <span class="level-badge">LV.{{.Level}}</span>
                                 {{end}}
                             </div>
+                            {{if .TimeText}}
                             <div class="time">{{.TimeText}}</div>
+                            {{end}}
                         </div>
                     </div>
                     <div class="answer-body">
@@ -109,7 +127,9 @@
                     {{range .Replies}}
                     <div class="reply-card">
                         <div class="reply-header">
+                            {{if .AvatarUrl}}
                             <img src="/api/{{.AvatarUrl}}" class="avatar" alt="avatar" onerror="this.style.display='none'">
+                            {{end}}
                             <div class="reply-author">
                                 <div class="author-name">
                                     <span class="nickname">{{.Nickname}}</span>
@@ -136,27 +156,12 @@
                 {{end}}
             </div>
 
-            <div class="contact-info">
-                <div class="info-item">
-                    <span class="label">客服微信：</span>
-                    <span class="value wechat"></span>
-                </div>
-                <div class="info-item">
-                    <span class="label">公司名称：</span>
-                    <span class="value">{{.CompanyName}}</span>
-                </div>
-                <div class="info-item">
-                    <span class="label">ICP备案号：</span>
-                    <span class="value">{{.IcpRecordNo}}</span>
-                </div>
-            </div>
-
             <!-- 插件插槽 -->
             <div id="plugin-copy"></div>
             <div id="plugin-bottom"></div>
         </main>
         <footer class="footer">
-            <p>© {{.Year}} {{.CompanyName}} 版权所有 | ICP备案号：{{.IcpRecordNo}}</p>
+            <p>© {{.Year}}{{if .CompanyName}} {{.CompanyName}}{{end}} 版权所有{{if .IcpRecordNo}} | ICP备案号：{{.IcpRecordNo}}{{end}}</p>
             {{if .Show12301Phone}}
             <p class="phone-12301">全国文化市场举报电话：12318 | 12301旅游投诉热线</p>
             {{end}}

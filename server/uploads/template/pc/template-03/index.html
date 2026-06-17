@@ -12,18 +12,28 @@
     {{end}}
 </head>
 <body>
+    {{if or .HomepageURL .AboutURL .CompanyName}}
     <div class="header">
         <div class="wrap">
+            {{if .HomepageURL}}
             <a href="{{.HomepageURL}}" class="logo">{{.CompanyName}}</a>
+            {{else if .CompanyName}}
+            <span class="logo">{{.CompanyName}}</span>
+            {{end}}
             <ul class="nav">
+                {{if .HomepageURL}}
                 <li><a href="{{.HomepageURL}}">首 页</a></li>
+                {{end}}
                 <li><a href="javascript:;">视频教程</a></li>
                 <li><a href="javascript:;">下载中心</a></li>
+                {{if .AboutURL}}
                 <li class="nav-select"><a href="{{.AboutURL}}">帮助中心</a></li>
+                {{end}}
                 <li><a href="javascript:;">最新动态</a></li>
             </ul>
         </div>
     </div>
+    {{end}}
 
     <div class="wrap">
         <div class="banner-s"></div>
@@ -31,7 +41,7 @@
         <div class="main-layout">
             <div class="main-left">
                 <div class="main-panel">
-                    <div class="position"><a href="{{.HomepageURL}}">首页</a> &gt; <a href="{{.AboutURL}}">帮助中心</a> &gt; {{.QuestionTitle}}</div>
+                    <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">帮助中心</a> &gt; {{end}}{{.QuestionTitle}}</div>
                     <div class="news-view">
                         <h3>{{.QuestionTitle}}</h3>
                         {{if .QuestionTimeAt}}
@@ -119,8 +129,8 @@
 
     <div class="clearfix"></div>
     <div class="footer">
-        Copyright Allright Reserved. <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a><br>
-        <a href="{{.HomepageURL}}" target="_blank">网站首页</a>
+        Copyright Allright Reserved.{{if .IcpRecordNo}} <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a>{{end}}<br>
+        {{if .HomepageURL}}<a href="{{.HomepageURL}}" target="_blank">网站首页</a>{{end}}
         {{if .Show12301Phone}}<br>全国文化市场举报电话：12318 | 12301旅游投诉热线{{end}}
     </div>
 
