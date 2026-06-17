@@ -24,24 +24,27 @@
                 {{if .HomepageURL}}
                 <li><a href="{{.HomepageURL}}">首 页</a></li>
                 {{end}}
-                <li><a href="javascript:;">视频教程</a></li>
-                <li><a href="javascript:;">下载中心</a></li>
+                <li><a href="javascript:;">热门景点</a></li>
+                <li><a href="javascript:;">精彩攻略</a></li>
                 {{if .AboutURL}}
-                <li class="nav-select"><a href="{{.AboutURL}}">帮助中心</a></li>
+                <li class="nav-select"><a href="{{.AboutURL}}">线路推荐</a></li>
                 {{end}}
-                <li><a href="javascript:;">最新动态</a></li>
+                <li><a href="javascript:;">旅行资讯</a></li>
             </ul>
         </div>
     </div>
     {{end}}
 
     <div class="wrap">
-        <div class="banner-s"></div>
+        <div class="banner-s">
+            <h2>探索世界，发现美好</h2>
+            <p>专业旅游顾问为您量身定制精彩旅程</p>
+        </div>
 
         <div class="main-layout">
             <div class="main-left">
                 <div class="main-panel">
-                    <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">帮助中心</a> &gt; {{end}}{{.QuestionTitle}}</div>
+                    <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">旅游攻略</a> &gt; {{end}}{{.QuestionTitle}}</div>
                     <div class="news-view">
                         <h3>{{.QuestionTitle}}</h3>
                         {{if .QuestionTimeAt}}
@@ -55,7 +58,7 @@
 
                 {{if .Answers}}
                 <div class="main-panel" style="margin-top:15px;">
-                    <div class="box-title">全部回答</div>
+                    <div class="box-title">精选回答</div>
                     {{range .Answers}}
                     <div class="answer-item">
                         <div class="answer-header">
@@ -92,16 +95,16 @@
                     <div class="box-title">客服信息</div>
                     <div class="service-info">
                         <div class="service-row">
-                            <span class="service-label">微信：</span>
+                            <span class="service-label">旅游顾问：</span>
                             <span class="service-value wechat"></span>
                             <span class="copy-btn" onclick="copyWechatGlobal()">复制</span>
                         </div>
                         <div class="service-row">
-                            <span class="service-label">电话：</span>
+                            <span class="service-label">咨询热线：</span>
                             <span class="service-value phone"></span>
                         </div>
                         <div class="service-row">
-                            <span class="service-label">公司：</span>
+                            <span class="service-label">所属公司：</span>
                             <span class="service-value">{{.CompanyName}}</span>
                         </div>
                     </div>
@@ -109,7 +112,7 @@
 
                 {{if .Answers}}
                 <div class="main-panel">
-                    <div class="box-title">热门回答</div>
+                    <div class="box-title">热门推荐</div>
                     <ul class="side-list">
                         {{range .Answers}}
                         <li>
@@ -129,9 +132,9 @@
 
     <div class="clearfix"></div>
     <div class="footer">
-        Copyright Allright Reserved.{{if .IcpRecordNo}} <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a>{{end}}<br>
+        {{if .CompanyName}}{{.CompanyName}} - {{end}}用心服务每一段旅程{{if .IcpRecordNo}}<br><a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a>{{end}}<br>
         {{if .HomepageURL}}<a href="{{.HomepageURL}}" target="_blank">网站首页</a>{{end}}
-        {{if .Show12301Phone}}<br>全国文化市场举报电话：12318 | 12301旅游投诉热线{{end}}
+        {{if .Show12301Phone}}<br>旅游投诉热线：12301{{end}}
     </div>
 
     <script>
@@ -256,7 +259,7 @@
                     if (currentService.nickname) {
                         displayText = currentService.nickname + '（微信：' + currentService.wechat + '）';
                     }
-                    var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#c00;">' + displayText + '</span>';
+                    var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#1abc9c;">' + displayText + '</span>';
                     html = html.replace(/##客服昵称##/g, wechatHtml);
                     el.innerHTML = html;
                 });

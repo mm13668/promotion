@@ -30,7 +30,7 @@
                 <li><a href="{{.HomepageURL}}">首 页</a></li>
                 {{end}}
                 {{if .AboutURL}}
-                <li class="nav-select"><a href="{{.AboutURL}}">帮助中心</a></li>
+                <li class="nav-select"><a href="{{.AboutURL}}">旅游攻略</a></li>
                 {{end}}
             </ul>
         </div>
@@ -38,7 +38,7 @@
     {{end}}
 
     <div class="wrap">
-        <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">帮助中心</a> &gt; {{end}}{{.QuestionTitle}}</div>
+        <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">旅游攻略</a> &gt; {{end}}{{.QuestionTitle}}</div>
 
         <div class="main-content">
             <div class="main-panel">
@@ -55,7 +55,7 @@
 
             {{if .Answers}}
             <div class="main-panel">
-                <div class="box-title">回答</div>
+                <div class="box-title">精选回答</div>
                 {{range .Answers}}
                 <div class="answer-item">
                     <div class="answer-header">
@@ -88,25 +88,31 @@
 
             <div class="contact-info">
                 <div class="info-row">
-                    <span class="info-label">客服微信：</span>
+                    <span class="info-label">旅游顾问：</span>
                     <span class="info-value wechat"></span>
                     <span class="copy-btn" onclick="copyWechatGlobal()">复制</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">联系电话：</span>
+                    <span class="info-label">咨询热线：</span>
                     <span class="info-value phone"></span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">公司名称：</span>
                     <span class="info-value">{{.CompanyName}}</span>
                 </div>
+                {{if .QrcodeURL}}
+                <div class="qrcode-section">
+                    <img src="/api/{{.QrcodeURL}}" alt="旅游顾问二维码">
+                    <p>扫码添加旅游顾问</p>
+                </div>
+                {{end}}
             </div>
         </div>
 
         {{if .Answers}}
         <div class="sidebar">
             <div class="main-panel">
-                <div class="box-title">热门回答</div>
+                <div class="box-title">热门推荐</div>
                 <ul class="side-list">
                     {{range .Answers}}
                     <li>
@@ -121,9 +127,9 @@
     </div>
 
     <div class="footer">
-        Copyright Allright Reserved.{{if .IcpRecordNo}} {{.IcpRecordNo}}{{end}}<br>
+        {{if .CompanyName}}{{.CompanyName}} - {{end}}用心服务每一段旅程{{if .IcpRecordNo}}<br>{{.IcpRecordNo}}{{end}}<br>
         {{if .HomepageURL}}<a href="{{.HomepageURL}}" target="_blank">网站首页</a>{{end}}
-        {{if .Show12301Phone}}<br>全国文化市场举报电话：12318 | 12301旅游投诉热线{{end}}
+        {{if .Show12301Phone}}<br>旅游投诉热线：12301{{end}}
     </div>
 
     <div id="plugin-copy"></div>
@@ -250,7 +256,7 @@
                     if (currentService.nickname) {
                         displayText = currentService.nickname + '（微信：' + currentService.wechat + '）';
                     }
-                    var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#c00;">' + displayText + '</span>';
+                    var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#1abc9c;">' + displayText + '</span>';
                     html = html.replace(/##客服昵称##/g, wechatHtml);
                     el.innerHTML = html;
                 });
