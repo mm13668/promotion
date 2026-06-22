@@ -31,12 +31,16 @@ func (s *AdService) GetPlatform(id uint, userUUID uuid.UUID) (promotion.AdPlatfo
 	return data, err
 }
 
-func (s *AdService) GetPlatformList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.AdPlatform, total int64, err error) {
+func (s *AdService) GetPlatformList(info request.PageInfo, userUUID uuid.UUID, status *int) (list []promotion.AdPlatform, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.AdPlatform{})
-	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+	if status != nil {
+		if *status > 0 {
+			db = db.Where("status = ?", *status)
+		}
+	} else {
+		db = db.Where("status = 1")
 	}
 	err = db.Count(&total).Error
 	if err != nil {
