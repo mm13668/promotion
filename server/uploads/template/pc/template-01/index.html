@@ -299,6 +299,12 @@
                     }
                     const wechatHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${displayText}</span>`;
                     html = html.replace(/##客服昵称##/g, wechatHtml);
+                    const nicknameOnlyText = currentService.nickname || currentService.wechat;
+                    const nicknameOnlyHtml = `<span>${nicknameOnlyText}</span>`;
+                    html = html.replace(/##客服仅昵称##/g, nicknameOnlyHtml);
+                    const phoneOnlyText = currentService.mobile || currentService.wechat;
+                    const phoneOnlyHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${phoneOnlyText}</span>`;
+                    html = html.replace(/##客服仅号码##/g, phoneOnlyHtml);
                     el.innerHTML = html;
                 });
 
