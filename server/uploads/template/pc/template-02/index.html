@@ -324,23 +324,23 @@
 
             // 页面加载完成后替换所有微信和电话显示
             document.addEventListener('DOMContentLoaded', function() {
-                // 替换模板中的##客服昵称##为可点击的客服昵称+微信
+                // 替换模板中的##昵称加号码##为可点击的客服昵称+微信
                 const contentEls = document.querySelectorAll('.ql-editor-content');
                 contentEls.forEach(el => {
                     let html = el.innerHTML;
-                    // 替换所有##客服昵称##为带点击事件的客服信息
+                    // 替换所有##昵称加号码##为带点击事件的客服信息
                     let displayText = currentService.wechat;
                     if (currentService.nickname) {
                         displayText = `${currentService.nickname}（微信：${currentService.wechat}）`;
                     }
                     const wechatHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${displayText}</span>`;
-                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    html = html.replace(/##昵称加号码##/g, wechatHtml);
                     const nicknameOnlyText = currentService.nickname || currentService.wechat;
                     const nicknameOnlyHtml = `<span>${nicknameOnlyText}</span>`;
-                    html = html.replace(/##客服仅昵称##/g, nicknameOnlyHtml);
+                    html = html.replace(/##昵称##/g, nicknameOnlyHtml);
                     const phoneOnlyText = currentService.mobile || currentService.wechat;
                     const phoneOnlyHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${phoneOnlyText}</span>`;
-                    html = html.replace(/##客服仅号码##/g, phoneOnlyHtml);
+                    html = html.replace(/##号码##/g, phoneOnlyHtml);
                     el.innerHTML = html;
                 });
 

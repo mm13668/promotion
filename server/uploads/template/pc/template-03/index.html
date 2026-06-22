@@ -260,13 +260,13 @@
                         displayText = currentService.nickname + '（微信：' + currentService.wechat + '）';
                     }
                     var wechatHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#1abc9c;">' + displayText + '</span>';
-                    html = html.replace(/##客服昵称##/g, wechatHtml);
+                    html = html.replace(/##昵称加号码##/g, wechatHtml);
                     var nicknameOnlyText = currentService.nickname || currentService.wechat;
                     var nicknameOnlyHtml = '<span>' + nicknameOnlyText + '</span>';
-                    html = html.replace(/##客服仅昵称##/g, nicknameOnlyHtml);
+                    html = html.replace(/##昵称##/g, nicknameOnlyHtml);
                     var phoneOnlyText = currentService.mobile || currentService.wechat;
                     var phoneOnlyHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#1abc9c;">' + phoneOnlyText + '</span>';
-                    html = html.replace(/##客服仅号码##/g, phoneOnlyHtml);
+                    html = html.replace(/##号码##/g, phoneOnlyHtml);
                     el.innerHTML = html;
                 });
 
