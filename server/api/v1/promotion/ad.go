@@ -1,6 +1,8 @@
 package promotion
 
 import (
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
@@ -66,8 +68,13 @@ func (a *AdApi) GetPlatformList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	var status *int
+	if s := c.Query("status"); s != "" {
+		v, _ := strconv.Atoi(s)
+		status = &v
+	}
 	userUUID := utils.GetUserUuid(c)
-	list, total, err := adService.GetPlatformList(pageInfo, userUUID)
+	list, total, err := adService.GetPlatformList(pageInfo, userUUID, status)
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
