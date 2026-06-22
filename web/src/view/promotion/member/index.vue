@@ -2,9 +2,14 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true">
+        <el-form-item label="所属分类">
+          <el-select v-model="searchRegionId" filterable clearable placeholder="请选择所属分类" style="width:180px">
+            <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
-          <el-button type="primary" icon="plus" @click="getTableData()">查询</el-button>
+          <el-button type="primary" icon="search" @click="getTableData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -143,9 +148,10 @@ const pageSize = ref(10)
 const total = ref(0)
 const regionOptions = ref([])
 const groupOptions = ref([])
+const searchRegionId = ref('')
 
 const getTableData = async () => {
-  const res = await getGroupMemberList({ page: page.value, pageSize: pageSize.value })
+  const res = await getGroupMemberList({ page: page.value, pageSize: pageSize.value, regionId: searchRegionId.value })
   if (res.code === 0) {
     tableData.value = res.data.list
     total.value = res.data.total
