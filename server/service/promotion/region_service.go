@@ -125,12 +125,15 @@ func (s *MemberService) FindGroupMember(id uint, userUUID uuid.UUID) (promotion.
 	return data, err
 }
 
-func (s *MemberService) GetGroupMemberList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.GroupMember, total int64, err error) {
+func (s *MemberService) GetGroupMemberList(info request.PageInfo, userUUID uuid.UUID, regionId uint) (list []promotion.GroupMember, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.GroupMember{})
 	if userUUID != uuid.Nil {
 		db = db.Where("uuid = ?", userUUID)
+	}
+	if regionId > 0 {
+		db = db.Where("region_id = ?", regionId)
 	}
 	err = db.Count(&total).Error
 	if err != nil {

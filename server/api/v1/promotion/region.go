@@ -1,6 +1,8 @@
 package promotion
 
 import (
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -311,7 +313,8 @@ func (a *MemberApi) GetGroupMemberList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := memberService.GetGroupMemberList(pageInfo, utils.GetUserUuid(c))
+	regionId, _ := strconv.ParseUint(c.Query("regionId"), 10, 64)
+	list, total, err := memberService.GetGroupMemberList(pageInfo, utils.GetUserUuid(c), uint(regionId))
 	if err != nil {
 		global.GVA_LOG.Error("list failed", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
