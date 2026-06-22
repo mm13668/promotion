@@ -1,31 +1,11 @@
 # 需求
-增加老毛桃模板 template-03
+1. 修改后台提示词
+页面 /Users/wangjingjun/work/promotion/web/src/view/qa/question/index.vue 
+内容（客服昵称使用统一`##客服昵称##`代替）替换为 内容（客服昵称号码使用统一`##客服昵称##`代替，仅昵称使用统一`##客服仅昵称##`代替，客服号码使用统一`##客服仅号码##`代替）
 
-模板目录
-/Users/wangjingjun/work/promotion/server/uploads/template
+2. 根据提示词，修改模板
+   /Users/wangjingjun/work/promotion/server/uploads/template
+html = html.replace(/##客服昵称##/g, wechatHtml);
 
-模板的内容布局要参考 https://www.laomaotao.net/help/2020/0806/8620.html
-可以参考其他模板的变量使用
-要做的跟官网差不多的样子，然后查看新闻详情页的模样
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
-    {{if .SeoKeywords}}
-    <meta name="keywords" content="{{.SeoKeywords}}">
-    {{end}}
-    {{if .SeoDescription}}
-    <meta name="description" content="{{.SeoDescription}}">
-    {{end}}
-</head>
-<body>{{.QuestionContent}}
-</body>
-
-其他的数据上报统计，客服昵称替换等都需要保存这些功能
-
-
-要求：移动端支持自适应
-
-# 涉及文件
-模板目录：/Users/wangjingjun/work/promotion/server/uploads/template/
-发布更新推广链接函数位置：/Users/wangjingjun/work/promotion/server/service/promotion/link_service.go func (s *LinkService) PublishPromotionLink(linkId uint) error {
+其中，##客服仅昵称## 只是展示昵称，点击没有其他反应
+##客服仅号码## 只展示替换为展示号码，点击号码，的作用跟 ##客服昵称## 一样，都需要弹窗复制号码

@@ -181,7 +181,7 @@
         <el-form-item label="排序">
           <el-input-number v-model="form.sort" />
         </el-form-item>
-        <el-form-item label="内容（客服昵称使用统一`##客服昵称##`代替）">
+        <el-form-item label="内容（客服昵称号码使用统一`##客服昵称##`代替，仅昵称使用统一`##客服仅昵称##`代替，客服号码使用统一`##客服仅号码##`代替）">
           <RichEdit v-model="form.content" :height="400" />
         </el-form-item>
       </el-form>
@@ -247,7 +247,7 @@
             <el-radio :label="0">未审核</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="内容（客服昵称使用统一`##客服昵称##`代替）">
+        <el-form-item label="内容（客服昵称号码使用统一`##客服昵称##`代替，仅昵称使用统一`##客服仅昵称##`代替，客服号码使用统一`##客服仅号码##`代替）">
           <RichEdit v-model="answerForm.content" :height="300" />
         </el-form-item>
       </el-form>
@@ -313,7 +313,7 @@
             <el-radio :label="0">未审核</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="内容（客服昵称使用统一`##客服昵称##`代替）">
+        <el-form-item label="内容（客服昵称号码使用统一`##客服昵称##`代替，仅昵称使用统一`##客服仅昵称##`代替，客服号码使用统一`##客服仅号码##`代替）">
           <RichEdit v-model="replyForm.content" :height="200" />
         </el-form-item>
       </el-form>
