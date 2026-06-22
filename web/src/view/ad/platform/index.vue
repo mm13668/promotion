@@ -1,9 +1,20 @@
 <template>
   <div>
     <div class="gva-search-box">
+      <el-form :inline="true">
+        <el-form-item label="状态">
+          <el-select v-model="searchStatus" style="width: 120px" @change="getTableData()">
+            <el-option label="全部" :value="0" />
+            <el-option label="启用" :value="1" />
+            <el-option label="停用" :value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="search" @click="getTableData()">查询</el-button>
+        </el-form-item>
+      </el-form>
       <div class="gva-btn-list">
         <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
-        <el-button type="primary" icon="plus" @click="getTableData()">查询</el-button>
       </div>
     </div>
     <div class="gva-table-box">
@@ -65,12 +76,13 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const searchStatus = ref(0)
 const statusOptions = ref([
   { label: '启用', value: 1 },
   { label: '停用', value: 2 }
 ])
 const getTableData = async () => {
-  const res = await getAdPlatformList({ page: page.value, pageSize: pageSize.value })
+  const res = await getAdPlatformList({ page: page.value, pageSize: pageSize.value, status: searchStatus.value })
   if (res.code === 0) { tableData.value = res.data.list; total.value = res.data.total; page.value = res.data.page; pageSize.value = res.data.pageSize }
 }
 getTableData()
