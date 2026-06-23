@@ -50,7 +50,7 @@
                 <div class="main-panel" style="margin-top:15px;">
                     <div class="box-title">精选回答</div>
                     {{range .Answers}}
-                    <div class="answer-item">
+                    <div class="answer-item" id="answer-{{.ID}}">
                         <div class="answer-header">
                             {{if .AvatarUrl}}<img src="/api/{{.AvatarUrl}}" class="avatar" alt="" onerror="this.style.display='none'">{{end}}
                             <div class="answer-meta">
@@ -103,7 +103,7 @@
                         {{range .Answers}}
                         <li>
                             <span>{{.TimeText}}</span>
-                            <a href="javascript:;"><abbr title="{{.Nickname}}的回答">{{.Nickname}}的回答</abbr></a>
+                            <a href="#answer-{{.ID}}"><abbr title="{{.Nickname}}的回答">{{.Nickname}}的回答</abbr></a>
                         </li>
                         {{end}}
                     </ul>

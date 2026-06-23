@@ -306,6 +306,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 			// 组装回答
 			answers = append(answers, Answer{
+				ID:            qaAnswer.ID,
 				AvatarUrl:     qaAnswer.AvatarURL,
 				Nickname:      qaAnswer.Nickname,
 				TitleName:     qaAnswer.TitleName,

@@ -30,6 +30,7 @@ type Reply struct {
 
 // Answer 回答结构
 type Answer struct {
+	ID            uint
 	AvatarUrl     string
 	Nickname      string
 	TitleName     string // 回复者称号
@@ -168,6 +169,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 			})
 		}
 		processedAnswers = append(processedAnswers, Answer{
+			ID:            ans.ID,
 			AvatarUrl:     ans.AvatarUrl,
 			Nickname:      ans.Nickname,
 			TimeText:      ans.TimeText,
