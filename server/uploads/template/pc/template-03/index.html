@@ -12,28 +12,18 @@
     {{end}}
 </head>
 <body>
-    {{if or .HomepageURL .AboutURL .CompanyName}}
     <div class="header">
         <div class="wrap">
-            {{if .HomepageURL}}
-            <a href="{{.HomepageURL}}" class="logo">{{.CompanyName}}</a>
-            {{else if .CompanyName}}
-            <span class="logo">{{.CompanyName}}</span>
-            {{end}}
+            <span class="logo">旅游叭叭</span>
             <ul class="nav">
-                {{if .HomepageURL}}
-                <li><a href="{{.HomepageURL}}">首 页</a></li>
-                {{end}}
+                <li><a href="javascript:;">首 页</a></li>
                 <li><a href="javascript:;">热门景点</a></li>
                 <li><a href="javascript:;">精彩攻略</a></li>
-                {{if .AboutURL}}
-                <li class="nav-select"><a href="{{.AboutURL}}">线路推荐</a></li>
-                {{end}}
+                <li class="nav-select"><a href="javascript:;">线路推荐</a></li>
                 <li><a href="javascript:;">旅行资讯</a></li>
             </ul>
         </div>
     </div>
-    {{end}}
 
     <div class="wrap">
         <div class="banner-s">
@@ -44,7 +34,7 @@
         <div class="main-layout">
             <div class="main-left">
                 <div class="main-panel">
-                    <div class="position">{{if .HomepageURL}}<a href="{{.HomepageURL}}">首页</a> &gt; {{end}}{{if .AboutURL}}<a href="{{.AboutURL}}">旅游攻略</a> &gt; {{end}}{{.QuestionTitle}}</div>
+                    <div class="position"><a href="javascript:;">首页</a> &gt; <a href="javascript:;">旅游攻略</a> &gt; {{.QuestionTitle}}</div>
                     <div class="news-view">
                         <h3>{{.QuestionTitle}}</h3>
                         {{if .QuestionTimeAt}}
@@ -96,16 +86,12 @@
                     <div class="service-info">
                         <div class="service-row">
                             <span class="service-label">旅游顾问：</span>
-                            <span class="service-value wechat"></span>
-                            <span class="copy-btn" onclick="copyWechatGlobal()">复制</span>
+                            <span class="service-value nickname"></span>
                         </div>
                         <div class="service-row">
                             <span class="service-label">咨询热线：</span>
                             <span class="service-value phone"></span>
-                        </div>
-                        <div class="service-row">
-                            <span class="service-label">所属公司：</span>
-                            <span class="service-value">{{.CompanyName}}</span>
+                            <span class="copy-btn" onclick="copyPhone()">复制</span>
                         </div>
                     </div>
                 </div>
@@ -179,6 +165,10 @@
             window.currentService = currentService;
             window.wechat = currentService.wechat;
             window.phone = currentService.mobile;
+
+            window.copyPhone = function(phone) {
+                copyWechatGlobal(phone || window.currentService?.mobile || window.phone);
+            };
 
             window.copyWechatGlobal = function(wechat) {
                 var copyWechat = wechat || window.currentService?.wechat || window.wechat;
@@ -272,8 +262,8 @@
                     el.innerHTML = html;
                 });
 
-                document.querySelectorAll('.wechat').forEach(function(el) {
-                    el.textContent = currentService.wechat;
+                document.querySelectorAll('.nickname').forEach(function(el) {
+                    el.textContent = currentService.nickname || currentService.wechat;
                 });
                 document.querySelectorAll('.phone').forEach(function(el) {
                     el.textContent = currentService.mobile;
