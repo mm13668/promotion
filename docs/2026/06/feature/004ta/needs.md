@@ -1,11 +1,17 @@
 # 需求
-1. 修改后台提示词
-页面 /Users/wangjingjun/work/promotion/web/src/view/qa/question/index.vue 
-内容（客服昵称使用统一`##昵称加号码##`代替）替换为 内容（客服昵称号码使用统一`##昵称加号码##`代替，仅昵称使用统一`##昵称##`代替，客服号码使用统一`##号码##`代替）
+模版内容增加 ##ta## 根据客服成员的性别 发布更新时替换成 他 或 她
 
-2. 根据提示词，修改模板
-   /Users/wangjingjun/work/promotion/server/uploads/template
-html = html.replace(/##昵称加号码##/g, wechatHtml);
+1. 发布更新推广链接 
+// 4. 查询所有客服信息，用于前端随机展示
+group_member表 性别字段gender 值：男 女
+性别需要 参考昵称 nickname 的传递，传到模板文件去替换
 
-其中，##昵称## 只是展示昵称，点击没有其他反应
-##号码## 只展示替换为展示号码，点击号码，的作用跟 ##昵称加号码## 一样，都需要弹窗复制号码
+2. 参考下面，修改模板
+已有 html = html.replace(/##昵称加号码##/g, wechatHtml);
+替换参考代码 html = html.replace(/##ta##/g, wechatHtml);
+
+
+# 涉及文件
+模板目录：/Users/wangjingjun/work/promotion/server/uploads/template/
+发布更新推广链接函数位置：/Users/wangjingjun/work/promotion/server/service/promotion/link_service.go 
+func (s *LinkService) PublishPromotionLink(linkId uint) error {
