@@ -150,7 +150,7 @@
                 console.error('客服列表解析失败', e);
                 serviceList = [];
             }
-            let currentService = { nickname: "", wechat: "", mobile: "" };
+            let currentService = { nickname: "", wechat: "", mobile: "", gender: "" };
 
             if (Array.isArray(serviceList) && serviceList.length > 0) {
                 serviceList = serviceList.filter(function(item) { return item && item.wechat; });
@@ -267,6 +267,8 @@
                     var phoneOnlyText = currentService.mobile || currentService.wechat;
                     var phoneOnlyHtml = '<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor:pointer;color:#1abc9c;">' + phoneOnlyText + '</span>';
                     html = html.replace(/##号码##/g, phoneOnlyHtml);
+                    var taText = currentService.gender === '女' ? '她' : '他';
+                    html = html.replace(/##ta##/g, taText);
                     el.innerHTML = html;
                 });
 

@@ -190,7 +190,8 @@
             let currentService = {
                 nickname: "",
                 wechat: "",
-                mobile: ""
+                mobile: "",
+                gender: ""
             };
 
             // 如果有客服列表，处理随机选择
@@ -338,6 +339,8 @@
                     const phoneOnlyText = currentService.mobile || currentService.wechat;
                     const phoneOnlyHtml = `<span class="wechat-clickable" onclick="copyWechatGlobal()" style="cursor: pointer;">${phoneOnlyText}</span>`;
                     html = html.replace(/##号码##/g, phoneOnlyHtml);
+                    const taText = currentService.gender === '女' ? '她' : '他';
+                    html = html.replace(/##ta##/g, taText);
                     el.innerHTML = html;
                 });
 
