@@ -9,8 +9,11 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
+
+var superAdminUUID = uuid.MustParse(promotion.SuperAdminUUID)
 
 type QAApi struct{}
 
@@ -305,12 +308,21 @@ func (a *QAApi) UpdateAvatarNickname(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetAvatarNickname(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindAvatarNickname(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许编辑", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -327,12 +339,21 @@ func (a *QAApi) DeleteAvatarNickname(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetAvatarNickname(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindAvatarNickname(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许删除", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -344,21 +365,21 @@ func (a *QAApi) DeleteAvatarNickname(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetAvatarNicknameList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.QAAvatarNicknameSearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetAvatarNicknameList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetAvatarNicknameList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledAvatarNickname(c *gin.Context) {
 	list, err := qaService.GetAllEnabledAvatarNickname(utils.GetUserUuid(c))
@@ -390,12 +411,21 @@ func (a *QAApi) UpdateTitle(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetTitle(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindTitle(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许编辑", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -412,12 +442,21 @@ func (a *QAApi) DeleteTitle(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetTitle(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindTitle(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许删除", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -429,21 +468,21 @@ func (a *QAApi) DeleteTitle(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetTitleList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.QATitleSearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetTitleList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetTitleList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledTitle(c *gin.Context) {
 	list, err := qaService.GetAllEnabledTitle(utils.GetUserUuid(c))
@@ -475,12 +514,21 @@ func (a *QAApi) UpdateSignature(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetSignature(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindSignature(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许编辑", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -497,12 +545,21 @@ func (a *QAApi) DeleteSignature(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetSignature(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindSignature(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许删除", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -514,21 +571,21 @@ func (a *QAApi) DeleteSignature(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetSignatureList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.QASignatureSearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetSignatureList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetSignatureList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledSignature(c *gin.Context) {
 	list, err := qaService.GetAllEnabledSignature(utils.GetUserUuid(c))
@@ -560,12 +617,21 @@ func (a *QAApi) UpdateTag(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetTag(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindTag(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许编辑", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -582,12 +648,21 @@ func (a *QAApi) DeleteTag(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	e.UUID = utils.GetUserUuid(c)
-	oneData, _ := qaService.GetTag(e.ID, e.UUID)
+	userUUID := utils.GetUserUuid(c)
+	oneData, _ := qaService.FindTag(e.ID)
 	if oneData.ID <= 0 {
 		response.FailWithMessage("数据不存在", c)
 		return
 	}
+	if oneData.UUID == superAdminUUID {
+		response.FailWithMessage("超级账号数据不允许删除", c)
+		return
+	}
+	if oneData.UUID != userUUID {
+		response.FailWithMessage("无权操作该数据", c)
+		return
+	}
+	e.UUID = userUUID
 	if err := utils.Verify(e.GVA_MODEL, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -599,21 +674,21 @@ func (a *QAApi) DeleteTag(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetTagList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.QATagSearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetTagList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetTagList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
 }
 func (a *QAApi) GetAllEnabledTag(c *gin.Context) {
 	list, err := qaService.GetAllEnabledTag(utils.GetUserUuid(c))
