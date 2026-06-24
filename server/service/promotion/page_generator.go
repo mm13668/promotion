@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"html/template"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,6 +42,7 @@ type Answer struct {
 	FavoriteCount int // 收藏数
 	LikeCount     int // 点赞数
 	Replies       []Reply
+	RankPoints    int // 排行榜积分（伪造）
 }
 
 // QaQuestion 问题结构
@@ -155,7 +157,7 @@ func (g *PageGenerator) InjectPlugin(html string, selector string, pluginHTML st
 func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic promotion.PromotionLinkBasic, company promotion.PromotionLinkCompany, question QaQuestion, isMobile bool) TemplateData {
 	// 处理回答和回复的富文本内容
 	processedAnswers := make([]Answer, 0, len(question.Answers))
-	for _, ans := range question.Answers {
+	for i, ans := range question.Answers {
 		processedReplies := make([]Reply, 0, len(ans.Replies))
 		for _, reply := range ans.Replies {
 			processedReplies = append(processedReplies, Reply{
@@ -168,6 +170,10 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 				Level:         reply.Level,
 			})
 		}
+		fakePoints := 3800 - i*600 - rand.Intn(100)
+		if fakePoints < 500 {
+			fakePoints = 500
+		}
 		processedAnswers = append(processedAnswers, Answer{
 			ID:            ans.ID,
 			AvatarUrl:     ans.AvatarUrl,
@@ -179,6 +185,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 			LikeCount:     ans.LikeCount,
 			Replies:       processedReplies,
 			Level:         ans.Level,
+			RankPoints:    fakePoints,
 		})
 	}
 

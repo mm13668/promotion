@@ -1,0 +1,143 @@
+<div class="plugin-pc-qrcode-3">
+    <div class="p3-side-card">
+        <div class="p3-side-header">
+            <i class="p3-side-icon p3-side-phone"></i>
+            <span>金牌行程规划师</span>
+        </div>
+        <div class="p3-side-body">
+            <div class="p3-qrcode-area">
+                <img src="https://picsum.photos/200/200" alt="二维码" class="p3-qrcode-img">
+                <p class="p3-qrcode-tip">扫一扫上面的二维码，加我为朋友</p>
+            </div>
+            <div class="p3-side-row">
+                <span class="p3-side-label">旅行顾问：</span>
+                <span class="p3-side-val nickname"></span>
+            </div>
+            <div class="p3-side-row">
+                <span class="p3-side-label">咨询热线：</span>
+                <span class="p3-side-val wechat"></span>
+                <button class="p3-copy-btn p3-copy-wechat" onclick="copyWechat()">复制微信</button>
+            </div>
+            <div class="p3-wechat-tip">
+                电脑端微信添加好友快捷方法【电脑需要登录微信哦！】
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.plugin-pc-qrcode-3 {
+    position: sticky;
+    top: 40px;
+}
+.plugin-pc-qrcode-3 .p3-side-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.plugin-pc-qrcode-3 .p3-side-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+.plugin-pc-qrcode-3 .p3-side-icon {
+    font-size: 18px;
+}
+.plugin-pc-qrcode-3 .p3-side-icon.p3-side-phone::before {
+    content: "\260E";
+}
+.plugin-pc-qrcode-3 .p3-side-body {
+    padding: 20px;
+}
+.plugin-pc-qrcode-3 .p3-qrcode-area {
+    text-align: center;
+    margin-bottom: 16px;
+}
+.plugin-pc-qrcode-3 .p3-qrcode-img {
+    width: 180px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+.plugin-pc-qrcode-3 .p3-qrcode-tip {
+    font-size: 13px;
+    color: #999;
+    margin: 0;
+}
+.plugin-pc-qrcode-3 .p3-side-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 14px;
+}
+.plugin-pc-qrcode-3 .p3-side-row:last-of-type {
+    border-bottom: none;
+}
+.plugin-pc-qrcode-3 .p3-side-label {
+    color: #666;
+    white-space: nowrap;
+}
+.plugin-pc-qrcode-3 .p3-side-val {
+    flex: 1;
+    color: #333;
+    font-weight: 500;
+}
+.plugin-pc-qrcode-3 .p3-copy-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+.plugin-pc-qrcode-3 .p3-copy-btn:hover {
+    opacity: 0.85;
+}
+.plugin-pc-qrcode-3 .p3-copy-wechat {
+    background: linear-gradient(135deg, #07c160, #06ad56);
+    color: #fff;
+}
+.plugin-pc-qrcode-3 .p3-wechat-tip {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #ad8b00;
+    line-height: 1.5;
+}
+</style>
+
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentService = window.currentService;
+
+        var nicknameEl = document.querySelector('.plugin-pc-qrcode-3 .nickname');
+        if (nicknameEl && currentService) {
+            nicknameEl.textContent = currentService.nickname || currentService.wechat || '';
+        }
+
+        var qrcodeImg = document.querySelector('.plugin-pc-qrcode-3 .p3-qrcode-img');
+        if (qrcodeImg && currentService) {
+            var qrcodeUrl = currentService.wechat_qrcode;
+            if (qrcodeUrl) {
+                qrcodeImg.src = '/api/' + qrcodeUrl;
+                qrcodeImg.onerror = function() {
+                    this.src = 'https://picsum.photos/200/200';
+                };
+            }
+        }
+    });
+})();
+</script>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
+    {{if .SeoKeywords}}
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    {{end}}
+    {{if .SeoDescription}}
+    <meta name="description" content="{{.SeoDescription}}">
+    {{end}}
+</head>
+<body>
+<div class="page-wrap">
+    <header class="ldy-header">
+        <div class="ldy-wrap">
+            <div class="ldy-header-inner">
+                <div class="ldy-logo-area">
+                    {{if .LogoURL}}
+                    <img src="/api/{{.LogoURL}}" alt="" class="ldy-logo" onerror="this.style.display='none'">
+                    {{else}}
+                    <span class="ldy-logo-text">旅游问答</span>
+                    {{end}}
+                </div>
+                <nav class="ldy-nav">
+                    <a href="{{if .HomepageURL}}{{.HomepageURL}}{{else}}javascript:;{{end}}" class="ldy-nav-item" target="_blank">首页</a>
+                    <a href="javascript:;" class="ldy-nav-item ldy-nav-active">问答</a>
+                    <a href="javascript:;" class="ldy-nav-item">小组</a>
+                    <a href="javascript:;" class="ldy-nav-item">旅游周边</a>
+                    <a href="{{if .AboutURL}}{{.AboutURL}}{{else}}javascript:;{{end}}" class="ldy-nav-item" target="_blank">咨询</a>
+                </nav>
+                <div class="ldy-user-icon" onclick="showLoginModal()">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.9)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E" alt="" width="32" height="32">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="ldy-wrap">
+        <div class="ldy-main-layout">
+            <div class="ldy-main-left">
+                <div class="ldy-question-box">
+                    <h1 class="ldy-question-title">{{.QuestionTitle}}</h1>
+                    {{if .QuestionTags}}
+                    <div class="ldy-tags">
+                        {{range .QuestionTags}}
+                        <span class="ldy-tag">{{.}}</span>
+                        {{end}}
+                    </div>
+                    {{end}}
+                    <div class="ldy-question-content ql-editor-content">{{.QuestionContent}}</div>
+                    <div class="ldy-question-meta">
+                        <div class="ldy-meta-left">
+                            {{if .QuestionAvatar}}
+                            <img src="/api/{{.QuestionAvatar}}" alt="" class="ldy-avatar-sm" onerror="this.style.display='none'">
+                            {{end}}
+                            <span class="ldy-nickname">{{.QuestionNickname}}</span>
+                            {{if .QuestionTitleName}}
+                            <span class="ldy-badge ldy-badge-orange">{{.QuestionTitleName}}</span>
+                            {{end}}
+                        </div>
+                        <div class="ldy-meta-info">
+                            <span>发布于：{{.QuestionTimeAt}}</span>
+                            <span>{{.QuestionLookCount}} 浏览</span>
+                        </div>
+                    </div>
+                    <div class="ldy-question-actions">
+                        <div class="ldy-action-item" onclick="showLoginModal()">
+                            <i class="ldy-act-icon ldy-act-answer"></i>
+                            <span>我来回答</span>
+                        </div>
+                        <div class="ldy-action-item">
+                            <i class="ldy-act-icon ldy-act-share"></i>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                    <div class="ldy-question-stats">
+                        <span>浏览 {{.QuestionLookCount}}</span>
+                        <button class="ldy-stat-btn" onclick="addCount(this)">点赞 {{.QuestionLikeCount}}</button>
+                        <span>关注 {{.QuestionFollowCount}}</span>
+                        <span>收藏 {{.QuestionFavoriteCount}}</span>
+                    </div>
+                </div>
+
+                {{if .Answers}}
+                <div class="ldy-section-header">
+                    <i class="ldy-section-icon"></i>
+                    <span>精选回答</span>
+                </div>
+                <div class="ldy-answer-list">
+                    {{range $i, $a := .Answers}}
+                    <div class="ldy-answer-card" id="answer-{{.ID}}">
+                        {{if eq $i 0}}
+                        <div class="ldy-best-tag">最佳答案</div>
+                        {{end}}
+                        <div class="ldy-answer-user">
+                            {{if .AvatarUrl}}
+                            <img src="/api/{{.AvatarUrl}}" alt="" class="ldy-avatar" onerror="this.style.display='none'">
+                            {{end}}
+                            <div class="ldy-user-info">
+                                <div class="ldy-user-name">
+                                    <strong>{{.Nickname}}</strong>
+                                    {{if .TitleName}}
+                                    <span class="ldy-badge ldy-badge-orange">{{.TitleName}}</span>
+                                    {{end}}
+                                    {{if .Level}}
+                                    <span class="ldy-badge ldy-badge-level">LV.{{.Level}}</span>
+                                    {{end}}
+                                </div>
+                                <div class="ldy-user-time">发布于 {{.TimeText}}</div>
+                            </div>
+                        </div>
+                        <div class="ldy-answer-content ql-editor-content">{{.Content}}</div>
+                        <div class="ldy-adopt-badge">
+                            <i class="ldy-adopt-icon"></i>
+                            <span>该回答已被 <strong>{{.LikeCount}}</strong> 位用户认可</span>
+                        </div>
+                        <div class="ldy-answer-actions">
+                            <button class="ldy-act-btn" onclick="addCount(this)">
+                                <i class="ldy-act-icon ldy-act-like"></i> 有用 {{.LikeCount}}
+                            </button>
+                            <button class="ldy-act-btn">
+                                <i class="ldy-act-icon ldy-act-star"></i> 收藏 {{.FavoriteCount}}
+                            </button>
+                            <button class="ldy-act-btn" onclick="showReplyInput(this)">
+                                <i class="ldy-act-icon ldy-act-cm"></i> 评论
+                            </button>
+                            <button class="ldy-act-btn">
+                                <i class="ldy-act-icon ldy-act-share-sm"></i> 分享
+                            </button>
+                        </div>
+
+                        <div class="ldy-reply-wrap" style="display:none;">
+                            <textarea class="ldy-reply-textarea" rows="3" placeholder="写下你的评论..."></textarea>
+                            <button class="ldy-reply-submit" onclick="publishReply(this)">发布评论</button>
+                        </div>
+
+                        {{if .Replies}}
+                        <div class="ldy-reply-list">
+                            {{range .Replies}}
+                            <div class="ldy-reply-item">
+                                <div class="ldy-reply-user">
+                                    {{if .AvatarUrl}}
+                                    <img src="/api/{{.AvatarUrl}}" alt="" class="ldy-avatar-xs" onerror="this.style.display='none'">
+                                    {{end}}
+                                    <strong>{{.Nickname}}</strong>
+                                    {{if .TitleName}}
+                                    <span class="ldy-badge ldy-badge-green">{{.TitleName}}</span>
+                                    {{end}}
+                                </div>
+                                <div class="ldy-reply-content ql-editor-content">{{.Content}}</div>
+                            </div>
+                            {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+
+            <div class="ldy-main-right">
+                <div class="ldy-side-card">
+                    <div class="ldy-side-header">
+                        <i class="ldy-side-icon ldy-side-user"></i>
+                        <span>用户信息</span>
+                    </div>
+                    <div class="ldy-side-user-info">
+                        {{if .QuestionAvatar}}
+                        <img src="/api/{{.QuestionAvatar}}" alt="" class="ldy-side-avatar" onerror="this.style.display='none'">
+                        {{else}}
+                        <div class="ldy-side-avatar ldy-side-avatar-placeholder"></div>
+                        {{end}}
+                        <div class="ldy-side-username">{{.QuestionNickname}}</div>
+                        {{if .QuestionTitleName}}
+                        <div class="ldy-side-badge">{{.QuestionTitleName}}</div>
+                        {{end}}
+                        <div class="ldy-side-stats">
+                            <div class="ldy-side-stat">
+                                <span class="ldy-side-stat-num">{{.QuestionLikeCount}}</span>
+                                <span class="ldy-side-stat-label">获赞</span>
+                            </div>
+                            <div class="ldy-side-stat">
+                                <span class="ldy-side-stat-num">{{.QuestionFollowCount}}</span>
+                                <span class="ldy-side-stat-label">关注</span>
+                            </div>
+                            <div class="ldy-side-stat">
+                                <span class="ldy-side-stat-num">{{.QuestionFavoriteCount}}</span>
+                                <span class="ldy-side-stat-label">收藏</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{if .Answers}}
+                <div class="ldy-side-card">
+                    <div class="ldy-side-header">
+                        <i class="ldy-side-icon ldy-side-rank"></i>
+                        <span>回答排行榜</span>
+                    </div>
+                    <div class="ldy-rank-list">
+                        {{range $i, $a := .Answers}}
+                        <a href="#answer-{{.ID}}" class="ldy-rank-item">
+                            <div class="ldy-rank-num {{if eq $i 0}}ldy-rank-gold{{else if eq $i 1}}ldy-rank-silver{{else if eq $i 2}}ldy-rank-bronze{{end}}"></div>
+                            <div class="ldy-rank-user">
+                                {{if .AvatarUrl}}
+                                <img src="/api/{{.AvatarUrl}}" alt="" class="ldy-rank-avatar" onerror="this.style.display='none'">
+                                {{end}}
+                                <div class="ldy-rank-info">
+                                    <div class="ldy-rank-name">{{.Nickname}}</div>
+                                    <div class="ldy-rank-meta">
+                                        {{if .Level}}<span class="ldy-rank-level">LV.{{.Level}}</span>{{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ldy-rank-score">
+                                <span class="ldy-rank-score-num">{{.RankPoints}}</span>
+                                <span class="ldy-rank-score-label">积分</span>
+                            </div>
+                        </a>
+                        {{end}}
+                    </div>
+                </div>
+                {{end}}
+
+                <div id="plugin-copy"></div>
+                <div id="plugin-qrcode"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="ldy-footer">
+        <div class="ldy-wrap">
+            {{if .CompanyName}}<p>{{.CompanyName}}</p>{{end}}
+            <p>© {{.Year}} 版权所有{{if .IcpRecordNo}} | <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a>{{end}}</p>
+            {{if .Show12301Phone}}
+            <p class="ldy-hotline">全国文化市场举报电话：12318 | 旅游投诉热线：12301</p>
+            {{end}}
+        </div>
+    </footer>
+
+    <div class="ldy-modal hidden" id="loginModal">
+        <div class="ldy-modal-panel">
+            <div class="ldy-modal-header">
+                <strong>登录/注册</strong>
+                <button class="ldy-modal-close" onclick="closeLoginModal()">✖</button>
+            </div>
+            <input id="loginPhone" type="text" placeholder="请输入手机号">
+            <input id="loginPwd" type="password" placeholder="请输入密码">
+            <div class="ldy-modal-actions">
+                <button onclick="handleRegister()">注册</button>
+                <button class="ldy-btn-primary" onclick="handleLogin()">登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.LINK_ID = "{{.LinkID}}";
+
+(function() {
+    var serviceList = [];
+    try {
+        var serviceListStr = `{{.ServiceListJSON}}` || "[]";
+        window.serviceListJSON = serviceListStr;
+        serviceList = JSON.parse(serviceListStr);
+    } catch(e) { serviceList = []; }
+
+    var currentService = { nickname: "", wechat: "", mobile: "", gender: "" };
+
+    if (Array.isArray(serviceList) && serviceList.length > 0) {
+        serviceList = serviceList.filter(function(i) { return i && i.wechat; });
+        if (serviceList.length > 0) {
+            var saved = localStorage.getItem('promotion_service_' + window.location.pathname);
+            if (saved) {
+                try {
+                    var p = JSON.parse(saved);
+                    if (p && p.wechat) { currentService = p; }
+                    else { currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                        localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService)); }
+                } catch(e) {
+                    currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                    localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                }
+            } else {
+                currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+            }
+        }
+    }
+
+    window.currentService = currentService;
+    window.wechat = currentService.wechat;
+    window.phone = currentService.mobile;
+
+    window.copyWechatGlobal = function(wechat) {
+        var text = wechat || window.currentService?.wechat || window.wechat;
+        var reported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+        var doReport = function() {
+            if (window.LANDING_VISIT_ID && !reported) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), servicePhone: window.currentService?.mobile || '', serviceNickname: window.currentService?.nickname || '' })
+                }).then(function() { localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true'); }).catch(function() { localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true'); });
+            }
+        };
+        var fallback = function(t) {
+            var inp = document.createElement('input'); inp.value = t; document.body.appendChild(inp); inp.select();
+            document.execCommand('copy'); document.body.removeChild(inp);
+            alert('复制成功，快去添加好友吧！'); doReport();
+        };
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() { alert('复制成功，快去添加好友吧！'); doReport(); }).catch(function() { fallback(text); });
+        } else { fallback(text); }
+    };
+
+    window.addCount = function(el) {
+        var m = el.textContent.match(/\d+/);
+        if (m) { var c = parseInt(m[0]) || 0; el.textContent = el.textContent.replace(/\d+/, c + 1); }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var els = document.querySelectorAll('.ql-editor-content');
+        els.forEach(function(el) {
+            var h = el.innerHTML;
+            var d = currentService.wechat;
+            if (currentService.nickname) d = currentService.nickname + '（微信：' + currentService.wechat + '）';
+            h = h.replace(/##昵称加号码##/g, '<span class="ldy-wx-link" onclick="copyWechatGlobal()">' + d + '</span>');
+            h = h.replace(/##昵称##/g, '<span>' + (currentService.nickname || currentService.wechat) + '</span>');
+            h = h.replace(/##号码##/g, '<span class="ldy-wx-link" onclick="copyWechatGlobal()">' + (currentService.mobile || currentService.wechat) + '</span>');
+            h = h.replace(/##ta##/g, currentService.gender === '女' ? '她' : '他');
+            el.innerHTML = h;
+        });
+        document.querySelectorAll('.nickname').forEach(function(el) { el.textContent = currentService.nickname || currentService.wechat; });
+        document.querySelectorAll('.phone').forEach(function(el) { el.textContent = currentService.mobile; });
+        document.querySelectorAll('.wechat').forEach(function(el) { el.textContent = currentService.wechat; });
+
+        var sid = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+        if (sid) {
+            window.LANDING_VISIT_ID = sid;
+            setInterval(function() {
+                if (window.LANDING_VISIT_ID) fetch('/api/promotion/landingVisit/reportDuration', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                });
+            }, 30000);
+        } else {
+            fetch('/api/promotion/landingVisit/init', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ referer: document.referrer, userAgent: navigator.userAgent, linkId: Number(window.LINK_ID), refererUrl: window.location.href })
+            }).then(function(r) { return r.json(); }).then(function(r) {
+                if (r.code === 0 && r.data) {
+                    window.LANDING_VISIT_ID = r.data;
+                    localStorage.setItem('landing_visit_id_' + window.location.pathname, r.data);
+                    setInterval(function() {
+                        if (window.LANDING_VISIT_ID) fetch('/api/promotion/landingVisit/reportDuration', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                        });
+                    }, 30000);
+                }
+            });
+        }
+    });
+})();
+</script>
+</body>
+</html>
