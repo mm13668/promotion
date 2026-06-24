@@ -2,8 +2,12 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="search">
+        <el-form-item label="称号名称">
+          <el-input v-model="search.name" clearable placeholder="称号名称模糊搜索" style="width: 200px" />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="plus" @click="openForm()">新增</el-button>
+          <el-button type="primary" icon="search" @click="getTableData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -21,8 +25,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="{ row }">
-            <el-button type="primary" link @click="openForm(row)">编辑</el-button>
-            <el-button type="primary" link @click="remove(row)">删除</el-button>
+            <el-button type="primary" link :disabled="isSuperAdmin(row)" @click="openForm(row)">编辑</el-button>
+            <el-button type="primary" link :disabled="isSuperAdmin(row)" @click="remove(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -70,14 +74,18 @@ import {
   getQATitleList
 } from '@/api/promotion'
 
+const SUPER_ADMIN_UUID = '4f53b2a2-e6cd-40df-b3f9-50f0ef9a297b'
+const isSuperAdmin = (row) => row.uuid === SUPER_ADMIN_UUID
+
 const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
-const search = ref({})
+const search = ref({ name: '' })
 
 const getTableData = async () => {
   let params = { page: page.value, pageSize: pageSize.value }
+  if (search.value.name) params.name = search.value.name
   const res = await getQATitleList(params)
   if (res.code === 0) { 
     tableData.value = res.data.list; 

@@ -210,22 +210,25 @@ func (s *QAService) FindAvatarNickname(id uint) (promotion.QAAvatarNickname, err
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetAvatarNicknameList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QAAvatarNickname, total int64, err error) {
+func (s *QAService) GetAvatarNicknameList(info promotion.QAAvatarNicknameSearch, userUUID uuid.UUID) (list []promotion.QAAvatarNickname, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QAAvatarNickname{})
 	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+		db = db.Where("(uuid = ? OR uuid = ?)", userUUID, promotion.SuperAdminUUID)
+	}
+	if info.Nickname != "" {
+		db = db.Where("nickname LIKE ?", "%"+info.Nickname+"%")
 	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
 func (s *QAService) GetAllEnabledAvatarNickname(userUUID uuid.UUID) (list []promotion.QAAvatarNickname, err error) {
-	err = global.GVA_DB.Where("uuid = ?", userUUID).Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	err = global.GVA_DB.Where("(uuid = ? OR uuid = ?) AND status = 1", userUUID, promotion.SuperAdminUUID).Order("id desc").Find(&list).Error
 	return
 }
 
@@ -253,22 +256,25 @@ func (s *QAService) FindTitle(id uint) (promotion.QATitle, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetTitleList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QATitle, total int64, err error) {
+func (s *QAService) GetTitleList(info promotion.QATitleSearch, userUUID uuid.UUID) (list []promotion.QATitle, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QATitle{})
 	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+		db = db.Where("(uuid = ? OR uuid = ?)", userUUID, promotion.SuperAdminUUID)
+	}
+	if info.Name != "" {
+		db = db.Where("name LIKE ?", "%"+info.Name+"%")
 	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
 func (s *QAService) GetAllEnabledTitle(userUUID uuid.UUID) (list []promotion.QATitle, err error) {
-	err = global.GVA_DB.Where("uuid = ?", userUUID).Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	err = global.GVA_DB.Where("(uuid = ? OR uuid = ?) AND status = 1", userUUID, promotion.SuperAdminUUID).Order("id desc").Find(&list).Error
 	return
 }
 
@@ -296,22 +302,25 @@ func (s *QAService) FindSignature(id uint) (promotion.QASignature, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetSignatureList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QASignature, total int64, err error) {
+func (s *QAService) GetSignatureList(info promotion.QASignatureSearch, userUUID uuid.UUID) (list []promotion.QASignature, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QASignature{})
 	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+		db = db.Where("(uuid = ? OR uuid = ?)", userUUID, promotion.SuperAdminUUID)
+	}
+	if info.Content != "" {
+		db = db.Where("content LIKE ?", "%"+info.Content+"%")
 	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
 func (s *QAService) GetAllEnabledSignature(userUUID uuid.UUID) (list []promotion.QASignature, err error) {
-	err = global.GVA_DB.Where("uuid = ?", userUUID).Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	err = global.GVA_DB.Where("(uuid = ? OR uuid = ?) AND status = 1", userUUID, promotion.SuperAdminUUID).Order("id desc").Find(&list).Error
 	return
 }
 
@@ -339,21 +348,24 @@ func (s *QAService) FindTag(id uint) (promotion.QATag, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetTagList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QATag, total int64, err error) {
+func (s *QAService) GetTagList(info promotion.QATagSearch, userUUID uuid.UUID) (list []promotion.QATag, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QATag{})
 	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+		db = db.Where("(uuid = ? OR uuid = ?)", userUUID, promotion.SuperAdminUUID)
+	}
+	if info.Name != "" {
+		db = db.Where("name LIKE ?", "%"+info.Name+"%")
 	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("sort desc,id desc").Find(&list).Error
+	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
 	return
 }
 func (s *QAService) GetAllEnabledTag(userUUID uuid.UUID) (list []promotion.QATag, err error) {
-	err = global.GVA_DB.Where("uuid = ?", userUUID).Where("status = 1").Order("sort desc,id desc").Find(&list).Error
+	err = global.GVA_DB.Where("(uuid = ? OR uuid = ?) AND status = 1", userUUID, promotion.SuperAdminUUID).Order("id desc").Find(&list).Error
 	return
 }

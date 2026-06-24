@@ -2,8 +2,11 @@ package promotion
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/google/uuid"
 )
+
+const SuperAdminUUID = "4f53b2a2-e6cd-40df-b3f9-50f0ef9a297b"
 
 type QAQuestion struct {
 	global.GVA_MODEL
@@ -137,4 +140,24 @@ type QAQuestionSearch struct {
 	PageSize int    `json:"pageSize" form:"pageSize"`
 	RegionID *uint  `json:"regionId" form:"regionId"`
 	Title    string `json:"title" form:"title"`
+}
+
+type QAAvatarNicknameSearch struct {
+	request.PageInfo
+	Nickname string `json:"nickname" form:"nickname"`
+}
+
+type QATitleSearch struct {
+	request.PageInfo
+	Name string `json:"name" form:"name"`
+}
+
+type QASignatureSearch struct {
+	request.PageInfo
+	Content string `json:"content" form:"content"`
+}
+
+type QATagSearch struct {
+	request.PageInfo
+	Name string `json:"name" form:"name"`
 }
