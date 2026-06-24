@@ -46,6 +46,10 @@
       />
     </div>
 
+    <div v-if="validUntilInfo" class="flex items-center ml-4 text-sm whitespace-nowrap" :class="{ 'text-red-500 font-bold': validUntilUrgent }">
+      有效期至：{{ validUntilInfo.date }}（剩余{{ validUntilInfo.days }}天）
+      <el-tag v-if="validUntilUrgent" type="danger" size="small" class="ml-1">请续期</el-tag>
+    </div>
     <div class="ml-2 flex items-center">
       <tools />
       <el-dropdown>
@@ -129,6 +133,20 @@
       window.location.reload()
     }
   }
+
+  const validUntilInfo = computed(() => {
+    const ts = userStore.userInfo.validUntil
+    if (!ts) return null
+    const now = Math.floor(Date.now() / 1000)
+    const days = Math.ceil((ts - now) / 86400)
+    const date = new Date(ts * 1000)
+    const fmt = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    return { days, date: fmt }
+  })
+
+  const validUntilUrgent = computed(() => {
+    return validUntilInfo.value && validUntilInfo.value.days <= 10
+  })
 </script>
 
 <style scoped lang="scss"></style>

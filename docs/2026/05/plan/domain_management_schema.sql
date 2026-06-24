@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `promotion_domain` (
   `cname_target` VARCHAR(255) NULL COMMENT 'CNAME 解析目标（例如: bhpl.zoukawwo.cn.w.kunlunss.com）',
   `status` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：1-启用 2-停用',
   `https_status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'HTTPS 状态：0-未开启 1-已开启 2-申请中 3-失败',
+  `https_enable_time` INT(11) NULL COMMENT 'HTTPS开启时间戳（Unix时间戳，用于90天倒计时）',
   `cert_mode` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '证书模式：0-平台申请 1-自有证书 2-复用证书',
   `remark` VARCHAR(255) NULL COMMENT '备注信息',
   `created_by` BIGINT UNSIGNED NULL COMMENT '创建人ID',

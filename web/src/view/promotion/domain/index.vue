@@ -23,6 +23,11 @@
             {{ (httpsOptions.find(o => o.value === row.httpsStatus) || {}).label || row.httpsStatus }}
           </template>
         </el-table-column>
+        <el-table-column label="HTTPS倒计时" width="120">
+          <template #default="{ row }">
+            {{ formatCountdown(row) }}
+          </template>
+        </el-table-column>
         <el-table-column label="证书模式" width="120">
           <template #default="{ row }">
             {{ (certModeOptions.find(o => o.value === row.certMode) || {}).label || row.certMode }}
@@ -88,11 +93,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPromotionDomainList, createPromotionDomain, updatePromotionDomain, deletePromotionDomain } from '@/api/promotion'
 import { useAppStore } from '@/pinia/modules/app'
 const appStore = useAppStore()
+
+const HTTPS_DAYS = 90
+
+const calcRemainingDays = (enableTime) => {
+  if (!enableTime) return null
+  const end = (enableTime + HTTPS_DAYS * 86400) * 1000
+  const remaining = Math.ceil((end - Date.now()) / 86400000)
+  return remaining > 0 ? remaining : 0
+}
+
+const formatCountdown = (row) => {
+  if (row.httpsStatus !== 1 || !row.httpsEnableTime) return '-'
+  const days = calcRemainingDays(row.httpsEnableTime)
+  return days !== null ? days + '天' : '-'
+}
 
 const tableData = ref([])
 const page = ref(1)
@@ -135,12 +155,12 @@ const handleCurrentChange = (val) => {
 }
 
 const drawer = ref(false)
-const form = ref({ ID: 0, domain: '', cnameTarget: '', status: 1, httpsStatus: 0, certMode: 0, remark: '' })
+const form = ref({ ID: 0, domain: '', cnameTarget: '', status: 1, httpsStatus: 0, httpsEnableTime: null, certMode: 0, remark: '' })
 const openForm = (row) => {
   if (row) {
     form.value = { ...row }
   } else {
-    form.value = { ID: 0, domain: '', cnameTarget: '', status: 1, httpsStatus: 0, certMode: 0, remark: '' }
+    form.value = { ID: 0, domain: '', cnameTarget: '', status: 1, httpsStatus: 0, httpsEnableTime: null, certMode: 0, remark: '' }
   }
   drawer.value = true
 }
