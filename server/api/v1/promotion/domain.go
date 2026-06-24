@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type DomainApi struct{}
@@ -18,10 +19,10 @@ func (a *DomainApi) CreatePromotionDomain(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	//domainWithoutHTTP := strings.TrimPrefix(e.Domain, "http://")
-	//domainWithoutHTTP = strings.TrimPrefix(domainWithoutHTTP, "https://")
-	//e.CnameTarget = domainWithoutHTTP + "." + global.GVA_CONFIG.Conf.LdyDomain
-	e.CnameTarget = global.GVA_CONFIG.Conf.LdyDomain
+	domainWithoutHTTP := strings.TrimPrefix(e.Domain, "http://")
+	domainWithoutHTTP = strings.TrimPrefix(domainWithoutHTTP, "https://")
+	e.CnameTarget = domainWithoutHTTP + "." + global.GVA_CONFIG.Conf.CnameDomain
+	//e.CnameTarget = global.GVA_CONFIG.Conf.LdyDomain
 	e.UUID = utils.GetUserUuid(c)
 	if err := domainService.CreatePromotionDomain(e); err != nil {
 		global.GVA_LOG.Error("create failed", zap.Error(err))
@@ -61,10 +62,10 @@ func (a *DomainApi) UpdatePromotionDomain(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	//domainWithoutHTTP := strings.TrimPrefix(e.Domain, "http://")
-	//domainWithoutHTTP = strings.TrimPrefix(domainWithoutHTTP, "https://")
-	//e.CnameTarget = domainWithoutHTTP + "." + global.GVA_CONFIG.Conf.LdyDomain
-	e.CnameTarget = global.GVA_CONFIG.Conf.LdyDomain
+	domainWithoutHTTP := strings.TrimPrefix(e.Domain, "http://")
+	domainWithoutHTTP = strings.TrimPrefix(domainWithoutHTTP, "https://")
+	e.CnameTarget = domainWithoutHTTP + "." + global.GVA_CONFIG.Conf.CnameDomain
+	//e.CnameTarget = global.GVA_CONFIG.Conf.LdyDomain
 	e.UUID = utils.GetUserUuid(c)
 	oneData, _ := domainService.GetPromotionDomain(e.ID, e.UUID)
 	if oneData.ID <= 0 {
