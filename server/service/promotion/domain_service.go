@@ -1,6 +1,8 @@
 package promotion
 
 import (
+	"time"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
@@ -30,6 +32,18 @@ func (s *DomainService) GetPromotionDomain(id uint, userUUID uuid.UUID) (promoti
 }
 
 func (s *DomainService) UpdatePromotionDomain(e *promotion.PromotionDomain) error {
+	var old promotion.PromotionDomain
+	if err := global.GVA_DB.Where("id = ?", e.ID).First(&old).Error; err != nil {
+		return err
+	}
+	if e.HttpsStatus == 1 && (old.HttpsStatus != 1 || old.HttpsEnableTime == nil) {
+		now := time.Now().Unix()
+		e.HttpsEnableTime = &now
+	} else if e.HttpsStatus != 1 {
+		e.HttpsEnableTime = nil
+	} else {
+		e.HttpsEnableTime = old.HttpsEnableTime
+	}
 	return global.GVA_DB.Save(e).Error
 }
 

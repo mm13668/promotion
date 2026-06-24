@@ -13,9 +13,10 @@ type PromotionDomain struct {
 	Domain      string    `json:"domain" gorm:"type:varchar(255);index:idk_domain_domain"`
 	CnameTarget string    `json:"cnameTarget" gorm:"type:varchar(255)"`
 	Status      uint8     `json:"status" gorm:"index:idx_domain_status"`
-	HttpsStatus uint8     `json:"httpsStatus" gorm:"index:idx_domain_https"`
-	CertMode    uint8     `json:"certMode"`
-	Remark      string    `json:"remark" gorm:"type:varchar(255)"`
+	HttpsStatus     uint8     `json:"httpsStatus" gorm:"index:idx_domain_https"`
+	HttpsEnableTime *int64    `json:"httpsEnableTime" gorm:"default:null;comment:HTTPS开启时间戳"`
+	CertMode        uint8     `json:"certMode"`
+	Remark          string    `json:"remark" gorm:"type:varchar(255)"`
 	CreatedBy   *uint     `json:"createdBy"`
 	UpdatedBy   *uint     `json:"updatedBy"`
 }
