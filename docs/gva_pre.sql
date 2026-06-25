@@ -1454,6 +1454,7 @@ INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `dele
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (10, '2026-03-22 18:47:59', '2026-05-10 11:51:03', '2026-05-10 19:51:03', 'template-09', 1, '');
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (11, '2026-03-22 18:47:59', '2026-03-22 18:47:59', NULL, 'template-01', 2, '');
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (12, '2026-03-22 18:47:59', '2026-03-22 18:47:59', NULL, 'template-02', 2, '');
+INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (32, NOW(), NOW(), NULL, 'template-05', 2, '');
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (13, '2026-03-22 18:47:59', '2026-03-22 18:47:59', NULL, 'wechat-copy-1', 3, '');
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (14, '2026-03-22 18:47:59', '2026-03-22 18:47:59', NULL, 'wechat-copy-2', 3, '');
 INSERT INTO `promotion_template_widget` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `type`, `preview_image`) VALUES (15, '2026-03-22 18:47:59', '2026-05-10 11:50:59', '2026-05-10 19:50:59', 'wechat-copy-3', 3, '');
