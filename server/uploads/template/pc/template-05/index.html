@@ -26,13 +26,13 @@
                     <span class="tb-header-sub">全球旅游攻略分享</span>
                 </div>
                 <nav class="tb-nav">
-                    <a href="{{if .HomepageURL}}{{.HomepageURL}}{{else}}javascript:;{{end}}" class="tb-nav-item" target="_blank">首页</a>
+                    <a href="javascript:;" class="tb-nav-item" target="_blank">首页</a>
                     <a href="javascript:;" class="tb-nav-item tb-nav-active">看帖</a>
                     <a href="javascript:;" class="tb-nav-item">精华</a>
                     <a href="javascript:;" class="tb-nav-item">图片</a>
                     <a href="javascript:;" class="tb-nav-item">视频</a>
                     <a href="javascript:;" class="tb-nav-item">小组</a>
-                    <a href="{{if .AboutURL}}{{.AboutURL}}{{else}}javascript:;{{end}}" class="tb-nav-item" target="_blank">咨询</a>
+                    <a href="javascript:;" class="tb-nav-item" target="_blank">咨询</a>
                 </nav>
                 <div class="tb-header-right">
                     <div class="tb-user-icon" onclick="showLoginModal()">
@@ -53,7 +53,6 @@
                     <div class="tb-forum-logo tb-forum-logo-text">旅</div>
                     {{end}}
                     <div class="tb-forum-info">
-                        <h2 class="tb-forum-name">{{if .CompanyName}}{{.CompanyName}}{{else}}旅游吧{{end}}</h2>
                         <p class="tb-forum-desc">本吧热度：<strong>{{.QuestionLookCount}}</strong> | 帖子：<strong>{{.QuestionLookCount}}</strong> | 关注：<strong>{{.QuestionFollowCount}}</strong></p>
                     </div>
                     <button class="tb-forum-btn" onclick="showLoginModal()">关注本吧</button>
