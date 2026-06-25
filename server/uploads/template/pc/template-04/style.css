@@ -1,4 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
+img { width: 100%; height: auto; }
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
     background: #f0f2f5;
@@ -528,7 +529,7 @@ body {
 .ldy-btn-primary { background: linear-gradient(135deg, #2ecc71, #27ae60) !important; color: #fff !important; border: none !important; }
 .ldy-btn-primary:hover { box-shadow: 0 2px 8px rgba(46,204,113,0.3); transform: translateY(-1px) !important; }
 
-.ql-editor-content img { max-width: 100%; height: auto; }
+.ql-editor-content img { width: 100%; height: auto; }
 .ldy-wx-link { color: #07c160; font-weight: 600; cursor: pointer; text-decoration: underline; }
 .ldy-wx-link:hover { color: #06ad56; }
 

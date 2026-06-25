@@ -2,7 +2,7 @@
 body { font-family: "Microsoft YaHei", "宋体", Arial, sans-serif; background: #f0f8f5; color: #333; line-height: 1.6; font-size: 14px; }
 a { color: #333; text-decoration: none; }
 a:hover { color: #1abc9c; }
-img { max-width: 100%; height: auto; }
+img { width: 100%; height: auto; }
 
 .wrap { max-width: 1200px; margin: 0 auto; padding: 0 10px; }
 
@@ -30,7 +30,7 @@ img { max-width: 100%; height: auto; }
 .dateView { font-size: 12px; color: #999; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
 .content-body { font-size: 15px; line-height: 1.8; color: #333; }
 .content-body p { margin-bottom: 10px; }
-.content-body img { max-width: 100%; height: auto; margin: 10px 0; border-radius: 2px; }
+.content-body img { width: 100%; height: auto; margin: 10px 0; border-radius: 2px; }
 
 .box-title { font-size: 16px; font-weight: bold; color: #2c3e50; padding: 12px 15px; border-bottom: 2px solid #1abc9c; margin-bottom: 0; }
 
@@ -43,7 +43,7 @@ img { max-width: 100%; height: auto; }
 .title-badge { display: inline-block; padding: 1px 6px; background: #1abc9c; color: #fff; border-radius: 2px; font-size: 11px; margin-left: 5px; }
 .answer-time { display: block; font-size: 12px; color: #999; margin-top: 2px; }
 .answer-content { font-size: 14px; line-height: 1.7; color: #555; padding-left: 46px; }
-.answer-content img { max-width: 100%; height: auto; }
+.answer-content img { width: 100%; height: auto; }
 
 .reply-list { margin-top: 10px; padding-left: 46px; background: #f0f8f5; border-radius: 4px; padding: 10px; }
 .reply-item { padding: 8px 0; border-bottom: 1px solid #e8f5f0; }

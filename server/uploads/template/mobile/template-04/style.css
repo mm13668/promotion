@@ -1,4 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
+img { width: 100%; height: auto; }
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
     background: #f0f2f5;
@@ -387,7 +388,7 @@ body {
 .ldy-modal-actions button:active { transform: scale(0.96); }
 .ldy-btn-primary { background: linear-gradient(135deg, #2ecc71, #27ae60) !important; color: #fff !important; border: none !important; }
 
-.ql-editor-content img { max-width: 100%; height: auto; }
+.ql-editor-content img { width: 100%; height: auto; }
 .ldy-wx-link { color: #07c160; font-weight: 600; cursor: pointer; text-decoration: underline; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

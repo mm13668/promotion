@@ -1,4 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
+img { width: 100%; height: auto; }
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
     background: #f5f6f8;
@@ -528,7 +529,7 @@ body {
 .tb-btn-primary { background: linear-gradient(135deg, #4e6ef2, #6a8af7) !important; color: #fff !important; border: none !important; }
 .tb-btn-primary:hover { box-shadow: 0 2px 8px rgba(78,110,242,0.3) !important; }
 
-.ql-editor-content img { max-width: 100%; height: auto; }
+.ql-editor-content img { width: 100%; height: auto; }
 .tb-wx-link { color: #4e6ef2; font-weight: 600; cursor: pointer; text-decoration: underline; }
 .tb-wx-link:hover { color: #3b5de7; }
 

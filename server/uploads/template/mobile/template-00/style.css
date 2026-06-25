@@ -3,6 +3,10 @@
     padding: 0;
     box-sizing: border-box;
 }
+img {
+    width: 100%;
+    height: auto;
+}
 html, body {
     width: 100%;
     max-width: 100%;
@@ -17,6 +21,6 @@ html, body {
 .ql-editor-content img,
 .ql-editor-content video,
 .ql-editor-content table {
-    max-width: 100%;
+    width: 100%;
     height: auto;
 }
