@@ -97,7 +97,11 @@ type PageGenerator struct{}
 
 // LoadTemplate 加载模板
 func (g *PageGenerator) LoadTemplate(templatePath string, data TemplateData) (string, error) {
-	tpl, err := template.ParseFiles(filepath.Join(global.GVA_CONFIG.Local.TemplateBasePath, templatePath, "index.html"))
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int { return a + b },
+	}
+	tpl := template.New("index.html").Funcs(funcMap)
+	tpl, err := tpl.ParseFiles(filepath.Join(global.GVA_CONFIG.Local.TemplateBasePath, templatePath, "index.html"))
 	if err != nil {
 		return "", err
 	}

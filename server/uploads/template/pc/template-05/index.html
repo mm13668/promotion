@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{if .SeoTitle}}{{.SeoTitle}}{{else}}{{.QuestionTitle}}{{end}}</title>
+    {{if .SeoKeywords}}
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    {{end}}
+    {{if .SeoDescription}}
+    <meta name="description" content="{{.SeoDescription}}">
+    {{end}}
+</head>
+<body>
+<div class="page-wrap">
+    <header class="tb-header">
+        <div class="tb-wrap">
+            <div class="tb-header-inner">
+                <div class="tb-header-left">
+                    {{if .LogoURL}}
+                    <img src="/api/{{.LogoURL}}" alt="" class="tb-logo" onerror="this.style.display='none'">
+                    {{else}}
+                    <span class="tb-logo-text">旅游吧</span>
+                    {{end}}
+                    <span class="tb-header-divider"></span>
+                    <span class="tb-header-sub">全球旅游攻略分享</span>
+                </div>
+                <nav class="tb-nav">
+                    <a href="{{if .HomepageURL}}{{.HomepageURL}}{{else}}javascript:;{{end}}" class="tb-nav-item" target="_blank">首页</a>
+                    <a href="javascript:;" class="tb-nav-item tb-nav-active">看帖</a>
+                    <a href="javascript:;" class="tb-nav-item">精华</a>
+                    <a href="javascript:;" class="tb-nav-item">图片</a>
+                    <a href="javascript:;" class="tb-nav-item">视频</a>
+                    <a href="javascript:;" class="tb-nav-item">小组</a>
+                    <a href="{{if .AboutURL}}{{.AboutURL}}{{else}}javascript:;{{end}}" class="tb-nav-item" target="_blank">咨询</a>
+                </nav>
+                <div class="tb-header-right">
+                    <div class="tb-user-icon" onclick="showLoginModal()">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="tb-wrap">
+        <div class="tb-main-layout">
+            <div class="tb-main-left">
+                <div class="tb-forum-header">
+                    {{if .LogoURL}}
+                    <img src="/api/{{.LogoURL}}" alt="" class="tb-forum-logo" onerror="this.style.display='none'">
+                    {{else}}
+                    <div class="tb-forum-logo tb-forum-logo-text">旅</div>
+                    {{end}}
+                    <div class="tb-forum-info">
+                        <h2 class="tb-forum-name">{{if .CompanyName}}{{.CompanyName}}{{else}}旅游吧{{end}}</h2>
+                        <p class="tb-forum-desc">本吧热度：<strong>{{.QuestionLookCount}}</strong> | 帖子：<strong>{{.QuestionLookCount}}</strong> | 关注：<strong>{{.QuestionFollowCount}}</strong></p>
+                    </div>
+                    <button class="tb-forum-btn" onclick="showLoginModal()">关注本吧</button>
+                </div>
+
+                <div class="tb-thread">
+                    <h1 class="tb-thread-title">{{.QuestionTitle}}</h1>
+                    {{if .QuestionTags}}
+                    <div class="tb-tags">
+                        {{range .QuestionTags}}
+                        <span class="tb-tag">{{.}}</span>
+                        {{end}}
+                    </div>
+                    {{end}}
+                    <div class="tb-thread-meta">
+                        <div class="tb-thread-author">
+                            {{if .QuestionAvatar}}
+                            <img src="/api/{{.QuestionAvatar}}" alt="" class="tb-avatar-sm" onerror="this.style.display='none'">
+                            {{end}}
+                            <span class="tb-author-name">{{.QuestionNickname}}</span>
+                            {{if .QuestionTitleName}}
+                            <span class="tb-badge">{{.QuestionTitleName}}</span>
+                            {{end}}
+                        </div>
+                        <div class="tb-thread-info">
+                            <span>发布于 {{.QuestionTimeAt}}</span>
+                            <span>{{.QuestionLookCount}} 浏览</span>
+                        </div>
+                    </div>
+
+                    <div class="tb-content ql-editor-content">{{.QuestionContent}}</div>
+
+                    <div class="tb-thread-actions">
+                        <button class="tb-act-btn" onclick="addCount(this)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                            <span>点赞 {{.QuestionLikeCount}}</span>
+                        </button>
+                        <button class="tb-act-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l-3-3h6l-3 3z"/><path d="M5 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                            <span>收藏 {{.QuestionFavoriteCount}}</span>
+                        </button>
+                        <button class="tb-act-btn" onclick="showLoginModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span>回复</span>
+                        </button>
+                        <button class="tb-act-btn" onclick="copyWechatGlobal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+                            <span>复制微信</span>
+                        </button>
+                    </div>
+                </div>
+
+                {{if .Answers}}
+                <div class="tb-section-header">
+                    <div class="tb-section-title">
+                        <span class="tb-section-line"></span>
+                        <span>全部回复</span>
+                        <span class="tb-section-count">{{len .Answers}}条回复</span>
+                    </div>
+                    <div class="tb-sort-bar">
+                        <span class="tb-sort-active">按时间</span>
+                        <span>按热度</span>
+                    </div>
+                </div>
+                <div class="tb-reply-list">
+                    {{range $i, $a := .Answers}}
+                    <div class="tb-reply-card" id="answer-{{.ID}}">
+                        <div class="tb-reply-side">
+                            <div class="tb-reply-floor">#{{add $i 1}}</div>
+                            {{if .AvatarUrl}}
+                            <img src="/api/{{.AvatarUrl}}" alt="" class="tb-avatar" onerror="this.style.display='none'">
+                            {{else}}
+                            <div class="tb-avatar tb-avatar-placeholder"></div>
+                            {{end}}
+                            <div class="tb-reply-side-name">{{.Nickname}}</div>
+                            {{if .Level}}
+                            <div class="tb-level-badge">LV.{{.Level}}</div>
+                            {{end}}
+                        </div>
+                        <div class="tb-reply-main">
+                            <div class="tb-reply-user">
+                                <div class="tb-reply-user-info">
+                                    <strong>{{.Nickname}}</strong>
+                                    {{if .TitleName}}
+                                    <span class="tb-badge tb-badge-orange">{{.TitleName}}</span>
+                                    {{end}}
+                                    {{if eq $i 0}}
+                                    <span class="tb-badge tb-badge-blue">楼主</span>
+                                    {{end}}
+                                </div>
+                                <div class="tb-reply-time">{{.TimeText}}</div>
+                            </div>
+                            <div class="tb-reply-content ql-editor-content">{{.Content}}</div>
+                            <div class="tb-reply-actions">
+                                <button class="tb-r-act" onclick="addCount(this)">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+                                    <span>{{.LikeCount}}</span>
+                                </button>
+                                <button class="tb-r-act">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l-3-3h6l-3 3z"/><path d="M5 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                                    <span>{{.FavoriteCount}}</span>
+                                </button>
+                                <button class="tb-r-act" onclick="showReplyInput(this)">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    <span>回复</span>
+                                </button>
+                            </div>
+
+                            <div class="tb-reply-wrap" style="display:none;">
+                                <textarea class="tb-reply-textarea" rows="3" placeholder="我也说一句..."></textarea>
+                                <button class="tb-reply-submit" onclick="publishReply(this)">发表</button>
+                            </div>
+
+                            {{if .Replies}}
+                            <div class="tb-sub-reply-list">
+                                {{range .Replies}}
+                                <div class="tb-sub-reply-item">
+                                    <div class="tb-sub-reply-user">
+                                        {{if .AvatarUrl}}
+                                        <img src="/api/{{.AvatarUrl}}" alt="" class="tb-avatar-xxs" onerror="this.style.display='none'">
+                                        {{end}}
+                                        <strong>{{.Nickname}}</strong>
+                                        {{if .TitleName}}
+                                        <span class="tb-badge tb-badge-sm">{{.TitleName}}</span>
+                                        {{end}}
+                                    </div>
+                                    <div class="tb-sub-reply-content ql-editor-content">{{.Content}}</div>
+                                </div>
+                                {{end}}
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+
+            <div class="tb-main-right">
+                <div class="tb-side-card">
+                    <div class="tb-side-header">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4e6ef2" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>用户信息</span>
+                    </div>
+                    <div class="tb-side-user">
+                        {{if .QuestionAvatar}}
+                        <img src="/api/{{.QuestionAvatar}}" alt="" class="tb-side-avatar" onerror="this.style.display='none'">
+                        {{else}}
+                        <div class="tb-side-avatar tb-side-avatar-placeholder"></div>
+                        {{end}}
+                        <div class="tb-side-username">{{.QuestionNickname}}</div>
+                        {{if .QuestionTitleName}}
+                        <div class="tb-side-badge">{{.QuestionTitleName}}</div>
+                        {{end}}
+                        <div class="tb-side-stats">
+                            <div class="tb-side-stat">
+                                <span class="tb-side-num">{{.QuestionLikeCount}}</span>
+                                <span class="tb-side-label">获赞</span>
+                            </div>
+                            <div class="tb-side-stat">
+                                <span class="tb-side-num">{{.QuestionFollowCount}}</span>
+                                <span class="tb-side-label">粉丝</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{if .Answers}}
+                <div class="tb-side-card">
+                    <div class="tb-side-header">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><path d="M12 20l-3-3h6l-3 3z"/><path d="M5 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                        <span>热评榜</span>
+                    </div>
+                    <div class="tb-rank-list">
+                        {{range $i, $a := .Answers}}
+                        <a href="#answer-{{.ID}}" class="tb-rank-item">
+                            <div class="tb-rank-num {{if eq $i 0}}tb-rank-gold{{else if eq $i 1}}tb-rank-silver{{else if eq $i 2}}tb-rank-bronze{{end}}">{{add $i 1}}</div>
+                            <div class="tb-rank-user">
+                                {{if .AvatarUrl}}
+                                <img src="/api/{{.AvatarUrl}}" alt="" class="tb-rank-avatar" onerror="this.style.display='none'">
+                                {{end}}
+                                <div class="tb-rank-name">{{.Nickname}}</div>
+                            </div>
+                            <div class="tb-rank-like">{{.LikeCount}} 赞</div>
+                        </a>
+                        {{end}}
+                    </div>
+                </div>
+                {{end}}
+
+                <div id="plugin-copy"></div>
+                <div id="plugin-qrcode"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="tb-footer">
+        <div class="tb-wrap">
+            {{if .CompanyName}}<p>{{.CompanyName}}</p>{{end}}
+            <p>© {{.Year}} 版权所有{{if .IcpRecordNo}} | <a href="https://beian.miit.gov.cn" target="_blank">{{.IcpRecordNo}}</a>{{end}}</p>
+            {{if .Show12301Phone}}
+            <p class="tb-hotline">全国文化市场举报电话：12318 | 旅游投诉热线：12301</p>
+            {{end}}
+        </div>
+    </footer>
+
+    <div class="tb-modal hidden" id="loginModal">
+        <div class="tb-modal-overlay" onclick="closeLoginModal()"></div>
+        <div class="tb-modal-panel">
+            <div class="tb-modal-header">
+                <strong>登录/注册</strong>
+                <button class="tb-modal-close" onclick="closeLoginModal()">✖</button>
+            </div>
+            <div class="tb-modal-body">
+                <input id="loginPhone" type="text" placeholder="请输入手机号" class="tb-input">
+                <input id="loginPwd" type="password" placeholder="请输入密码" class="tb-input">
+                <div class="tb-modal-actions">
+                    <button onclick="handleRegister()" class="tb-btn tb-btn-default">注册</button>
+                    <button onclick="handleLogin()" class="tb-btn tb-btn-primary">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.LINK_ID = "{{.LinkID}}";
+
+(function() {
+    var serviceList = [];
+    try {
+        var serviceListStr = `{{.ServiceListJSON}}` || "[]";
+        window.serviceListJSON = serviceListStr;
+        serviceList = JSON.parse(serviceListStr);
+    } catch(e) { serviceList = []; }
+
+    var currentService = { nickname: "", wechat: "", mobile: "", gender: "" };
+
+    if (Array.isArray(serviceList) && serviceList.length > 0) {
+        serviceList = serviceList.filter(function(i) { return i && i.wechat; });
+        if (serviceList.length > 0) {
+            var saved = localStorage.getItem('promotion_service_' + window.location.pathname);
+            if (saved) {
+                try {
+                    var p = JSON.parse(saved);
+                    if (p && p.wechat) { currentService = p; }
+                    else { currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                        localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService)); }
+                } catch(e) {
+                    currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                    localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+                }
+            } else {
+                currentService = serviceList[Math.floor(Math.random() * serviceList.length)];
+                localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(currentService));
+            }
+        }
+    }
+
+    window.currentService = currentService;
+    window.wechat = currentService.wechat;
+    window.phone = currentService.mobile;
+
+    window.copyWechatGlobal = function(wechat) {
+        var text = wechat || window.currentService?.wechat || window.wechat;
+        var reported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+        var doReport = function() {
+            if (window.LANDING_VISIT_ID && !reported) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), servicePhone: window.currentService?.mobile || '', serviceNickname: window.currentService?.nickname || '' })
+                }).then(function() { localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true'); }).catch(function() { localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true'); });
+            }
+        };
+        var fallback = function(t) {
+            var inp = document.createElement('input'); inp.value = t; document.body.appendChild(inp); inp.select();
+            document.execCommand('copy'); document.body.removeChild(inp);
+            alert('复制成功，快去添加好友吧！'); doReport();
+        };
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() { alert('复制成功，快去添加好友吧！'); doReport(); }).catch(function() { fallback(text); });
+        } else { fallback(text); }
+    };
+
+    window.addCount = function(el) {
+        var m = el.textContent.match(/\d+/);
+        if (m) { var c = parseInt(m[0]) || 0; el.textContent = el.textContent.replace(/\d+/, c + 1); }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var els = document.querySelectorAll('.ql-editor-content');
+        els.forEach(function(el) {
+            var h = el.innerHTML;
+            var d = currentService.wechat;
+            if (currentService.nickname) d = currentService.nickname + '（微信：' + currentService.wechat + '）';
+            h = h.replace(/##昵称加号码##/g, '<span class="tb-wx-link" onclick="copyWechatGlobal()">' + d + '</span>');
+            h = h.replace(/##昵称##/g, '<span>' + (currentService.nickname || currentService.wechat) + '</span>');
+            h = h.replace(/##号码##/g, '<span class="tb-wx-link" onclick="copyWechatGlobal()">' + (currentService.mobile || currentService.wechat) + '</span>');
+            h = h.replace(/##ta##/g, currentService.gender === '女' ? '她' : '他');
+            el.innerHTML = h;
+        });
+        document.querySelectorAll('.nickname').forEach(function(el) { el.textContent = currentService.nickname || currentService.wechat; });
+        document.querySelectorAll('.phone').forEach(function(el) { el.textContent = currentService.mobile; });
+        document.querySelectorAll('.wechat').forEach(function(el) { el.textContent = currentService.wechat; });
+
+        var sid = localStorage.getItem('landing_visit_id_' + window.location.pathname);
+        if (sid) {
+            window.LANDING_VISIT_ID = sid;
+            setInterval(function() {
+                if (window.LANDING_VISIT_ID) fetch('/api/promotion/landingVisit/reportDuration', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                });
+            }, 30000);
+        } else {
+            fetch('/api/promotion/landingVisit/init', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ referer: document.referrer, userAgent: navigator.userAgent, linkId: Number(window.LINK_ID), refererUrl: window.location.href })
+            }).then(function(r) { return r.json(); }).then(function(r) {
+                if (r.code === 0 && r.data) {
+                    window.LANDING_VISIT_ID = r.data;
+                    localStorage.setItem('landing_visit_id_' + window.location.pathname, r.data);
+                    setInterval(function() {
+                        if (window.LANDING_VISIT_ID) fetch('/api/promotion/landingVisit/reportDuration', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: Number(window.LANDING_VISIT_ID), addDuration: 30 })
+                        });
+                    }, 30000);
+                }
+            });
+        }
+    });
+})();
+</script>
+</body>
+</html>
