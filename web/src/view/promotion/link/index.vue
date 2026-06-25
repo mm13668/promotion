@@ -369,16 +369,16 @@
     <el-dialog v-model="linkDialogVisible" title="推广链接" width="600px">
       <el-form label-width="100px">
         <el-form-item label="移动端链接">
-          <el-input v-model="currentLink.mobileUrl" readonly>
+          <el-input :value="formatLinkUrl(currentLink.mobileUrl)" readonly>
             <template #append>
-              <el-button @click="copyLink(currentLink.mobileUrl)">复制</el-button>
+              <el-button @click="copyLink(formatLinkUrl(currentLink.mobileUrl))">复制</el-button>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="PC端链接">
-          <el-input v-model="currentLink.pcUrl" readonly>
+          <el-input :value="formatLinkUrl(currentLink.pcUrl)" readonly>
             <template #append>
-              <el-button @click="copyLink(currentLink.pcUrl)">复制</el-button>
+              <el-button @click="copyLink(formatLinkUrl(currentLink.pcUrl))">复制</el-button>
             </template>
           </el-input>
         </el-form-item>
@@ -788,6 +788,12 @@ const openOcpc = (row) => {
     ocpcMinDuration: row.ocpcMinDuration || 30
   }
   ocpcDialogVisible.value = true
+}
+
+// 格式化链接，自动拼接 https://
+const formatLinkUrl = (url) => {
+  if (!url) return ''
+  return url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
 }
 
 // 复制链接
