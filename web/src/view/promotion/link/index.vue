@@ -55,7 +55,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="客服成员数" width="100">
+        <el-table-column label="客服" width="100">
           <template #default="{ row }">
             <el-button type="primary" link @click="openServiceDialog(row)">
               {{ row.serviceOnlineCount || 0 }}/{{ row.serviceCount || 0 }}

@@ -4,11 +4,12 @@
     <div class="top-bar">
       <div class="top-bar-inner">
         <div class="flex items-center gap-4">
-          <span class="text-sm font-medium text-gray-600 whitespace-nowrap">选择问题：</span>
-          <el-select v-model="selectedQuestionId" filterable clearable placeholder="请选择要编辑的问题" style="width: 400px" @change="onQuestionSelect">
+          <span class="text-sm font-medium text-gray-600 whitespace-nowrap">选择页面：</span>
+          <el-select v-model="selectedQuestionId" filterable clearable placeholder="请选择要编辑的页面" style="width: 400px" @change="onQuestionSelect">
             <el-option v-for="item in questionOptions" :key="item.ID" :label="item.title" :value="item.ID" />
           </el-select>
-          <el-button type="primary" @click="showQuestionSelector = true" icon="search">浏览问题列表</el-button>
+          <el-button type="primary" @click="showQuestionSelector = true" icon="search">浏览页面列表</el-button>
+          <el-button type="success" @click="openCreateQuestion" icon="plus">新增页面</el-button>
         </div>
         <div class="flex items-center gap-2" v-if="questionDetail.ID">
           <el-tag type="info">{{ (questionDetail.answers || []).length }} 回答</el-tag>
@@ -78,7 +79,7 @@
         <div class="preview-body flex items-center justify-center text-gray-400" v-else>
           <div class="text-center">
             <el-icon :size="48"><ChatLineSquare /></el-icon>
-            <p class="mt-4">请从上方选择一个问题进行编辑</p>
+            <p class="mt-4">请从上方选择一个页面进行编辑</p>
           </div>
         </div>
       </div>
@@ -90,7 +91,7 @@
         </div>
         <div class="edit-body" v-if="questionDetail.ID">
           <el-tabs v-model="activeTab" type="border-card">
-            <el-tab-pane label="问题编辑" name="question">
+            <el-tab-pane label="页面编辑" name="question">
               <div class="edit-form-scroll">
                 <el-form label-position="top" :model="questionForm" size="small">
                   <el-form-item label="所属分类">
@@ -155,7 +156,7 @@
                     <RichEdit v-model="questionForm.content" :height="300" />
                   </el-form-item>
                   <el-form-item>
-                    <el-button type="primary" @click="submitQuestion">保存问题</el-button>
+                    <el-button type="primary" @click="submitQuestion">保存页面</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -247,14 +248,14 @@
         <div class="edit-body flex items-center justify-center text-gray-400" v-else>
           <div class="text-center">
             <el-icon :size="48"><EditPen /></el-icon>
-            <p class="mt-4">请先选择一个问题进行编辑</p>
+            <p class="mt-4">请先选择一个页面进行编辑</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 问题选择对话框 -->
-    <el-dialog v-model="showQuestionSelector" title="选择问题" width="800px">
+    <!-- 页面选择对话框 -->
+    <el-dialog v-model="showQuestionSelector" title="选择页面" width="800px">
       <div class="mb-4">
         <el-form :inline="true" :model="search">
           <el-form-item label="所属分类">
@@ -284,6 +285,77 @@
       <el-pagination class="mt-4" small background layout="total, prev, pager, next"
         :current-page="searchPage" :page-size="searchPageSize" :total="searchTotal"
         @current-change="(v) => { searchPage = v; loadQuestionList() }" />
+    </el-dialog>
+
+    <!-- 新增页面对话框 -->
+    <el-dialog v-model="showCreateQuestion" title="新增页面" width="650px" @close="resetCreateForm">
+      <el-form label-position="top" :model="createForm" size="small">
+        <el-form-item label="所属分类">
+          <el-select v-model="createForm.regionId" filterable clearable placeholder="请选择所属分类">
+            <el-option v-for="r in regionOptions" :key="r.ID" :label="r.name" :value="r.ID" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="提问标题" required>
+          <el-input v-model="createForm.title" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="提问时间">
+          <el-input v-model="createForm.timeAt" placeholder="例如：2天前,10分钟前,刚刚" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="createForm.remark" placeholder="仅在后台显示" />
+        </el-form-item>
+        <el-form-item label="选择头像昵称（可选）">
+          <el-select clearable filterable placeholder="选择已有头像昵称" style="width: 100%" @change="onCreateSelectAvatarNickname">
+            <el-option v-for="item in avatarNicknameOptions" :key="item.ID" :label="item.nickname" :value="item" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="提问昵称">
+          <el-input v-model="createForm.nickname" placeholder="可手动输入" />
+        </el-form-item>
+        <el-form-item label="头像">
+          <div class="flex items-center gap-3">
+            <UploadImage v-model="createForm.avatarUrl" @on-success="(url) => createForm.avatarUrl = url"/>
+            <img v-if="createForm.avatarUrl" :src="`${getBaseUrl()}/${createForm.avatarUrl}`" class="h-14 w-14 object-contain border rounded flex-shrink-0" />
+          </div>
+        </el-form-item>
+        <el-form-item label="称号">
+          <el-select v-model="createForm.titleName" clearable filterable allow-create placeholder="选填称号" style="width: 100%">
+            <el-option v-for="item in titleOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="个性签名">
+          <el-select v-model="createForm.signature" clearable filterable allow-create placeholder="选填" style="width: 100%">
+            <el-option v-for="item in signatureOptions" :key="item.ID" :label="item.content" :value="item.content" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="关注人数">
+          <el-input-number v-model="createForm.followCount" :min="0" />
+        </el-form-item>
+        <el-form-item label="浏览人数">
+          <el-input-number v-model="createForm.lookCount" :min="0" />
+        </el-form-item>
+        <el-form-item label="收藏人数">
+          <el-input-number v-model="createForm.favoriteCount" :min="0" />
+        </el-form-item>
+        <el-form-item label="点赞人数">
+          <el-input-number v-model="createForm.likeCount" :min="0" />
+        </el-form-item>
+        <el-form-item label="标签">
+          <el-select v-model="createForm.label" clearable filterable multiple allow-create placeholder="选填标签" style="width: 100%">
+            <el-option v-for="item in tagOptions" :key="item.ID" :label="item.name" :value="item.name" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="createForm.sort" :min="0" />
+        </el-form-item>
+        <el-form-item label="内容（客服昵称号码使用统一 ##昵称加号码## 代替，仅昵称使用统一 ##昵称## 代替，客服号码使用统一 ##号码## 代替；根据客服性别替换成他或她，使用统一 ##ta## 代替）" required>
+          <RichEdit v-model="createForm.content" :height="300" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showCreateQuestion = false">取消</el-button>
+        <el-button type="primary" @click="submitCreateQuestion" :loading="createLoading">创建</el-button>
+      </template>
     </el-dialog>
 
     <!-- 回答编辑对话框 -->
@@ -437,6 +509,7 @@ import UploadImage from "@/components/upload/image.vue"
 import {
   getQAQuestionList,
   getQAQuestionDetail,
+  createQAQuestion,
   updateQAQuestion,
   getQAAnswerList,
   createQAAnswer,
@@ -460,7 +533,7 @@ import draggable from 'vuedraggable'
 const loading = ref(false)
 const activeTab = ref('question')
 
-// 问题选择
+// 页面选择
 const selectedQuestionId = ref(null)
 const showQuestionSelector = ref(false)
 const search = ref({ regionId: null, title: '' })
@@ -477,11 +550,16 @@ const titleOptions = ref([])
 const signatureOptions = ref([])
 const tagOptions = ref([])
 
-// 问题详情（预览数据）
+// 页面详情（预览数据）
 const questionDetail = ref({ ID: 0, title: '', label: [], content: '', nickname: '', avatarUrl: '', titleName: '', timeAt: '', answers: [] })
 
-// 问题编辑表单
+// 页面编辑表单
 const questionForm = ref({ ID: 0, regionId: null, title: '', content: '', timeAt: '', remark: '', sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] })
+
+// 新增页面
+const showCreateQuestion = ref(false)
+const createLoading = ref(false)
+const createForm = ref({ ID: 0, regionId: null, title: '', content: '', timeAt: '', remark: '', sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] })
 
 // 评论管理
 const answerList = ref([])
@@ -523,7 +601,7 @@ const loadBasicOptions = async () => {
 }
 loadBasicOptions()
 
-// 加载问题列表（用于选项）
+// 加载页面列表（用于选项）
 const loadQuestionList = async () => {
   const params = { page: searchPage.value, pageSize: searchPageSize.value }
   if (search.value.regionId) params.regionId = search.value.regionId
@@ -535,7 +613,7 @@ const loadQuestionList = async () => {
   }
 }
 
-// 加载所有问题（用于下拉框）
+// 加载所有页面（用于下拉框）
 const loadQuestionOptions = async () => {
   const res = await getQAQuestionList({ page: 1, pageSize: 10000 })
   if (res.code === 0) {
@@ -544,7 +622,7 @@ const loadQuestionOptions = async () => {
 }
 loadQuestionOptions()
 
-// 选择问题
+// 选择页面
 const onQuestionSelect = async (id) => {
   if (!id) return
   await selectQuestion(id)
@@ -562,7 +640,7 @@ const onTableRowClick = (row) => {
   selectQuestion(row.ID)
 }
 
-// 加载问题详情
+// 加载页面详情
 const loadQuestionDetail = async () => {
   if (!selectedQuestionId.value) return
   loading.value = true
@@ -601,7 +679,44 @@ const refreshPreview = () => {
   loadQuestionDetail()
 }
 
-// 保存问题
+// 新增页面
+const openCreateQuestion = () => {
+  createForm.value = { ID: 0, regionId: null, title: '', content: '', timeAt: '', remark: '', sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] }
+  showCreateQuestion.value = true
+}
+
+const resetCreateForm = () => {
+  createForm.value = { ID: 0, regionId: null, title: '', content: '', timeAt: '', remark: '', sort: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', followCount: 0, lookCount: 0, favoriteCount: 0, likeCount: 0, label: [] }
+}
+
+const onCreateSelectAvatarNickname = (item) => {
+  if (item) {
+    createForm.value.nickname = item.nickname
+    createForm.value.avatarUrl = item.avatarUrl
+  }
+}
+
+const submitCreateQuestion = async () => {
+  if (!createForm.value.title || !createForm.value.content) {
+    ElMessage.error('请填写标题与内容')
+    return
+  }
+  createLoading.value = true
+  try {
+    const res = await createQAQuestion(createForm.value)
+    if (res.code === 0) {
+      ElMessage.success('创建成功')
+      showCreateQuestion.value = false
+      await loadQuestionOptions()
+      selectedQuestionId.value = res.data.ID
+      await selectQuestion(res.data.ID)
+    }
+  } finally {
+    createLoading.value = false
+  }
+}
+
+// 保存页面
 const submitQuestion = async () => {
   if (!questionForm.value.title || !questionForm.value.content) {
     ElMessage.error('请填写标题与内容')
