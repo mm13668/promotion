@@ -64,6 +64,7 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="sort" label="排序" width="80" />
         <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
 <!--        <el-table-column prop="reply_count" label="回复数" width="100" />-->
         <el-table-column fixed="right" label="操作" width="280">
@@ -99,6 +100,7 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="sort" label="排序" width="80" />
         <el-table-column prop="content" label="内容" min-width="200" show-overflow-tooltip />
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="{ row }">
@@ -235,6 +237,9 @@
         <el-form-item label="收藏">
           <el-input-number v-model="answerForm.favoriteCount" placeholder="必填" />
         </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="answerForm.sort" placeholder="排序值（越大越靠前）" />
+        </el-form-item>
         <el-form-item label="时间">
           <el-input v-model="answerForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
         </el-form-item>
@@ -300,6 +305,9 @@
         </el-form-item>
         <el-form-item label="收藏">
           <el-input-number v-model="replyForm.favoriteCount" placeholder="必填" />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="replyForm.sort" placeholder="排序值（越大越靠前）" />
         </el-form-item>
         <el-form-item label="时间">
           <el-input v-model="replyForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
@@ -491,9 +499,9 @@ const removeAnswer = async (row) => {
 }
 
 const drawerAnswerForm = ref(false)
-const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 })
+const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1, likeCount: 0 })
 const openAnswerForm = (row) => {
-  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, likeCount: 0 }
+  answerForm.value = row ? { ...row } : { ID: 0, questionId: currentQuestion.value.ID, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1, likeCount: 0 }
   drawerAnswerForm.value = true
 }
 const submitAnswer = async () => {
@@ -531,9 +539,9 @@ const removeReply = async (row) => {
 }
 
 const drawerReplyForm = ref(false)
-const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 })
+const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1, status: 1, likeCount: 0 })
 const openReplyForm = (row) => {
-  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, timeText: '', skill: '', auditStatus: 0, status: 1, likeCount: 0 }
+  replyForm.value = row ? { ...row } : { ID: 0, answerId: currentAnswer.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1, status: 1, likeCount: 0 }
   drawerReplyForm.value = true
 }
 const submitReply = async () => {

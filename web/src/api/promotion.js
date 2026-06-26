@@ -233,6 +233,8 @@ export const createQAReply = (data) => service({ url: '/promotion/createQAReply'
 export const updateQAReply = (data) => service({ url: '/promotion/updateQAReply', method: 'put', data })
 export const deleteQAReply = (data) => service({ url: '/promotion/deleteQAReply', method: 'delete', data })
 export const getQAReplyList = (params) => service({ url: '/promotion/getQAReplyList', method: 'get', params })
+export const batchUpdateAnswerSort = (data) => service({ url: '/promotion/batchUpdateAnswerSort', method: 'post', data })
+export const batchUpdateReplySort = (data) => service({ url: '/promotion/batchUpdateReplySort', method: 'post', data })
 
 export const createAdPlatform = (data) => service({ url: '/promotion/createAdPlatform', method: 'post', data })
 export const updateAdPlatform = (data) => service({ url: '/promotion/updateAdPlatform', method: 'put', data })

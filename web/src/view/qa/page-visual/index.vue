@@ -67,6 +67,8 @@
                   <img v-if="reply.avatarUrl" :src="`${getBaseUrl()}/${reply.avatarUrl}`" class="w-6 h-6 rounded-full object-cover">
                   <span class="text-green-600 font-medium text-xs">{{ reply.nickname }}</span>
                   <span v-if="reply.titleName" class="px-1 py-0.5 bg-red-500 text-white text-xs rounded">{{ reply.titleName }}</span>
+                  <span v-if="reply.level" class="px-1 py-0.5 bg-orange-100 text-orange-600 text-xs rounded">Lv.{{ reply.level }}</span>
+                  <span class="text-xs text-gray-400 ml-1">{{ reply.timeText }}</span>
                 </div>
                 <div class="ql-editor-content text-gray-600 text-xs leading-relaxed ml-8" v-html="reply.content"></div>
               </div>
@@ -161,31 +163,40 @@
 
             <el-tab-pane label="评论管理" name="answer">
               <div class="edit-form-scroll">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex justify-between items-center mb-2">
                   <span class="text-sm text-gray-500">共 {{ answerList.length }} 条评论</span>
-                  <el-button type="primary" size="small" icon="plus" @click="openAnswerForm()">新增回答</el-button>
-                </div>
-                <div v-for="answer in answerList" :key="answer.ID" class="answer-card mb-3 p-4 border rounded">
-                  <div class="flex items-start justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                      <el-tag>{{ answer.nickname || '匿名' }}</el-tag>
-                      <el-tag v-if="answer.level" type="warning" size="small">Lv.{{ answer.level }}</el-tag>
-                      <el-tag :type="answer.auditStatus === 1 ? 'success' : 'info'" size="small">
-                        {{ answer.auditStatus === 1 ? '已审核' : '未审核' }}
-                      </el-tag>
-                    </div>
-                    <div class="flex gap-1">
-                      <el-button size="small" type="primary" link @click="openAnswerForm(answer)">编辑</el-button>
-                      <el-button size="small" type="primary" link @click="selectAnswerForReply(answer)">回复管理</el-button>
-                      <el-button size="small" type="danger" link @click="removeAnswer(answer)">删除</el-button>
-                    </div>
-                  </div>
-                  <div class="ql-editor-content text-sm text-gray-600 line-clamp-3 mb-2" v-html="answer.content"></div>
-                  <div class="text-xs text-gray-400">
-                    <span>{{ answer.timeText }}</span>
-                    <span v-if="answer.replyCount !== undefined" class="ml-3">{{ answer.replyCount }} 回复</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-orange-400">拖拽手柄可排序</span>
+                    <el-button type="primary" size="small" icon="plus" @click="openAnswerForm()">新增回答</el-button>
                   </div>
                 </div>
+                <draggable v-model="answerList" group="answer" handle=".drag-handle" item-key="ID" class="space-y-3" @end="onAnswerDragEnd">
+                  <template #item="{ element: answer }">
+                    <div class="answer-card mb-3 p-4 border rounded">
+                      <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                          <span class="drag-handle cursor-grab text-gray-500 hover:text-blue-500 text-lg leading-none select-none px-1 py-1 rounded hover:bg-blue-50" title="拖拽排序">⠿</span>
+                          <el-tag>{{ answer.nickname || '匿名' }}</el-tag>
+                          <el-tag v-if="answer.level" type="warning" size="small">Lv.{{ answer.level }}</el-tag>
+                          <el-tag :type="answer.auditStatus === 1 ? 'success' : 'info'" size="small">
+                            {{ answer.auditStatus === 1 ? '已审核' : '未审核' }}
+                          </el-tag>
+                          <el-tag type="primary" size="small">排序: {{ answer.sort ?? 0 }}</el-tag>
+                        </div>
+                        <div class="flex gap-1">
+                          <el-button size="small" type="primary" link @click="openAnswerForm(answer)">编辑</el-button>
+                          <el-button size="small" type="primary" link @click="selectAnswerForReply(answer)">回复管理</el-button>
+                          <el-button size="small" type="danger" link @click="removeAnswer(answer)">删除</el-button>
+                        </div>
+                      </div>
+                      <div class="ql-editor-content text-sm text-gray-600 line-clamp-3 mb-2" v-html="answer.content"></div>
+                      <div class="text-xs text-gray-400">
+                        <span>{{ answer.timeText }}</span>
+                        <span v-if="answer.replyCount !== undefined" class="ml-3">{{ answer.replyCount }} 回复</span>
+                      </div>
+                    </div>
+                  </template>
+                </draggable>
                 <div v-if="answerList.length === 0" class="text-center text-gray-400 py-8">暂无评论</div>
               </div>
             </el-tab-pane>
@@ -193,28 +204,37 @@
             <el-tab-pane label="回复管理" name="reply">
               <div class="edit-form-scroll">
                 <div v-if="selectedAnswerForReply">
-                  <div class="flex justify-between items-center mb-4">
+                  <div class="flex justify-between items-center mb-2">
                     <span class="text-sm text-gray-500">
                       回复管理 - 回答ID：{{ selectedAnswerForReply.ID }}（{{ selectedAnswerForReply.nickname }}）
                     </span>
-                    <el-button type="primary" size="small" icon="plus" @click="openReplyForm()">新增回复</el-button>
-                  </div>
-                  <div v-for="reply in replyList" :key="reply.ID" class="reply-card mb-2 p-3 bg-yellow-50 rounded">
-                    <div class="flex items-start justify-between mb-1">
-                      <div class="flex items-center gap-2">
-                        <el-tag size="small">{{ reply.nickname || '匿名' }}</el-tag>
-                        <el-tag :type="reply.auditStatus === 1 ? 'success' : 'info'" size="small">
-                          {{ reply.auditStatus === 1 ? '已审核' : '未审核' }}
-                        </el-tag>
-                      </div>
-                      <div class="flex gap-1">
-                        <el-button size="small" type="primary" link @click="openReplyForm(reply)">编辑</el-button>
-                        <el-button size="small" type="danger" link @click="removeReply(reply)">删除</el-button>
-                      </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs text-orange-400">拖拽手柄可排序</span>
+                      <el-button type="primary" size="small" icon="plus" @click="openReplyForm()">新增回复</el-button>
                     </div>
-                    <div class="ql-editor-content text-sm text-gray-600 line-clamp-2" v-html="reply.content"></div>
-                    <div class="text-xs text-gray-400 mt-1">{{ reply.timeText }}</div>
                   </div>
+                  <draggable v-model="replyList" group="reply" handle=".drag-handle" item-key="ID" class="space-y-2" @end="onReplyDragEnd">
+                    <template #item="{ element: reply }">
+                      <div class="reply-card mb-2 p-3 bg-yellow-50 rounded">
+                        <div class="flex items-start justify-between mb-1">
+                          <div class="flex items-center gap-2">
+                            <span class="drag-handle cursor-grab text-gray-500 hover:text-blue-500 text-base leading-none select-none px-1 py-1 rounded hover:bg-blue-50" title="拖拽排序">⠿</span>
+                            <el-tag size="small">{{ reply.nickname || '匿名' }}</el-tag>
+                            <el-tag :type="reply.auditStatus === 1 ? 'success' : 'info'" size="small">
+                              {{ reply.auditStatus === 1 ? '已审核' : '未审核' }}
+                            </el-tag>
+                            <el-tag type="primary" size="small">排序: {{ reply.sort ?? 0 }}</el-tag>
+                          </div>
+                          <div class="flex gap-1">
+                            <el-button size="small" type="primary" link @click="openReplyForm(reply)">编辑</el-button>
+                            <el-button size="small" type="danger" link @click="removeReply(reply)">删除</el-button>
+                          </div>
+                        </div>
+                        <div class="ql-editor-content text-sm text-gray-600 line-clamp-2" v-html="reply.content"></div>
+                        <div class="text-xs text-gray-400 mt-1">{{ reply.timeText }}</div>
+                      </div>
+                    </template>
+                  </draggable>
                   <div v-if="replyList.length === 0" class="text-center text-gray-400 py-8">暂无回复</div>
                 </div>
                 <div v-else class="text-center text-gray-400 py-8">
@@ -316,9 +336,18 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="时间">
-          <el-input v-model="answerForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
-        </el-form-item>
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="排序">
+              <el-input-number v-model="answerForm.sort" :min="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="时间">
+              <el-input v-model="answerForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="擅长">
           <el-input v-model="answerForm.skill" placeholder="例如：行程规划，私人定制" />
         </el-form-item>
@@ -369,9 +398,18 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="时间">
-          <el-input v-model="replyForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
-        </el-form-item>
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="排序">
+              <el-input-number v-model="replyForm.sort" :min="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="时间">
+              <el-input v-model="replyForm.timeText" placeholder="例如：2天前,10分钟前,刚刚" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="审核状态">
           <el-radio-group v-model="replyForm.auditStatus">
             <el-radio :label="1">已审核</el-radio>
@@ -408,6 +446,8 @@ import {
   createQAReply,
   updateQAReply,
   deleteQAReply,
+  batchUpdateAnswerSort,
+  batchUpdateReplySort,
   getRegionCategoryList,
   getAllEnabledQAAvatarNickname,
   getAllEnabledQATitle,
@@ -415,6 +455,7 @@ import {
   getAllEnabledQATag
 } from '@/api/promotion'
 import { getBaseUrl } from '@/utils/format.js'
+import draggable from 'vuedraggable'
 
 const loading = ref(false)
 const activeTab = ref('question')
@@ -451,11 +492,11 @@ const replyList = ref([])
 
 // 回答编辑
 const showAnswerForm = ref(false)
-const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, timeText: '', skill: '', auditStatus: 0 })
+const answerForm = ref({ ID: 0, questionId: 0, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 })
 
 // 回复编辑
 const showReplyForm = ref(false)
-const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, timeText: '', skill: '', auditStatus: 0 })
+const replyForm = ref({ ID: 0, answerId: 0, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 })
 
 const totalReplies = computed(() => {
   let count = 0
@@ -595,8 +636,34 @@ const loadAnswerList = async () => {
 const openAnswerForm = (row) => {
   answerForm.value = row
     ? { ...row }
-    : { ID: 0, questionId: selectedQuestionId.value, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, timeText: '', skill: '', auditStatus: 0 }
+    : { ID: 0, questionId: selectedQuestionId.value, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 }
   showAnswerForm.value = true
+}
+
+const onAnswerDragEnd = async () => {
+  const items = answerList.value.map((item, index) => ({
+    id: item.ID,
+    sort: (answerList.value.length - index) * 10
+  }))
+  const res = await batchUpdateAnswerSort(items)
+  if (res.code === 0) {
+    ElMessage.success('排序更新成功')
+    await loadAnswerList()
+    await loadQuestionDetail()
+  }
+}
+
+const onReplyDragEnd = async () => {
+  const items = replyList.value.map((item, index) => ({
+    id: item.ID,
+    sort: (replyList.value.length - index) * 10
+  }))
+  const res = await batchUpdateReplySort(items)
+  if (res.code === 0) {
+    ElMessage.success('排序更新成功')
+    await loadReplyList()
+    await loadQuestionDetail()
+  }
 }
 
 const submitAnswer = async () => {
@@ -646,7 +713,7 @@ const loadReplyList = async () => {
 const openReplyForm = (row) => {
   replyForm.value = row
     ? { ...row }
-    : { ID: 0, answerId: selectedAnswerForReply.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, timeText: '', skill: '', auditStatus: 0 }
+    : { ID: 0, answerId: selectedAnswerForReply.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 }
   showReplyForm.value = true
 }
 
