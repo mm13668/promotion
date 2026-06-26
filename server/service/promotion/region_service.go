@@ -29,7 +29,7 @@ func (s *RegionService) GetRegionCategory(id uint, userUUID uuid.UUID) (promotio
 }
 
 func (s *RegionService) UpdateRegionCategory(e *promotion.RegionCategory) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *RegionService) FindRegionCategory(id uint, userUUID uuid.UUID) (promotion.RegionCategory, error) {
@@ -75,7 +75,7 @@ func (s *GroupService) GetPromotionGroup(id uint, userUUID uuid.UUID) (promotion
 }
 
 func (s *GroupService) UpdatePromotionGroup(e *promotion.PromotionGroup) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *GroupService) FindPromotionGroup(id uint, userUUID uuid.UUID) (promotion.PromotionGroup, error) {
@@ -112,7 +112,7 @@ func (s *MemberService) DeleteGroupMember(e promotion.GroupMember) error {
 }
 
 func (s *MemberService) UpdateGroupMember(e *promotion.GroupMember) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *MemberService) FindGroupMember(id uint, userUUID uuid.UUID) (promotion.GroupMember, error) {

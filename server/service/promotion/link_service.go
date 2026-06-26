@@ -37,7 +37,7 @@ func (s *LinkService) DeletePromotionLink(e promotion.PromotionLink) error {
 }
 
 func (s *LinkService) UpdatePromotionLink(e *promotion.PromotionLink) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *LinkService) GetPromotionLink(id uint, userUUID uuid.UUID) (promotion.PromotionLink, error) {
@@ -116,7 +116,7 @@ func (s *LinkService) UpsertBasic(e *promotion.PromotionLinkBasic) error {
 	tx := global.GVA_DB.Where("link_id = ?", e.LinkID).First(&exist)
 	if tx.Error == nil {
 		e.ID = exist.ID
-		return global.GVA_DB.Save(e).Error
+		return global.GVA_DB.Model(e).Updates(e).Error
 	}
 	return global.GVA_DB.Create(e).Error
 }
@@ -132,7 +132,7 @@ func (s *LinkService) UpsertCompany(e *promotion.PromotionLinkCompany) error {
 	tx := global.GVA_DB.Where("link_id = ?", e.LinkID).First(&exist)
 	if tx.Error == nil {
 		e.ID = exist.ID
-		return global.GVA_DB.Save(e).Error
+		return global.GVA_DB.Model(e).Updates(e).Error
 	}
 	return global.GVA_DB.Create(e).Error
 }
@@ -148,7 +148,7 @@ func (s *LinkService) UpsertCode(e *promotion.PromotionLinkCode) error {
 	tx := global.GVA_DB.Where("link_id = ?", e.LinkID).First(&exist)
 	if tx.Error == nil {
 		e.ID = exist.ID
-		return global.GVA_DB.Save(e).Error
+		return global.GVA_DB.Model(e).Updates(e).Error
 	}
 	return global.GVA_DB.Create(e).Error
 }
@@ -164,7 +164,7 @@ func (s *LinkService) UpsertTheme(e *promotion.PromotionLinkTheme) error {
 	tx := global.GVA_DB.Where("link_id = ?", e.LinkID).First(&exist)
 	if tx.Error == nil {
 		e.ID = exist.ID
-		return global.GVA_DB.Save(e).Error
+		return global.GVA_DB.Model(e).Updates(e).Error
 	}
 	return global.GVA_DB.Create(e).Error
 }
@@ -180,7 +180,7 @@ func (s *LinkService) UpsertComment(e *promotion.PromotionLinkComment) error {
 	tx := global.GVA_DB.Where("link_id = ?", e.LinkID).First(&exist)
 	if tx.Error == nil {
 		e.ID = exist.ID
-		return global.GVA_DB.Save(e).Error
+		return global.GVA_DB.Model(e).Updates(e).Error
 	}
 	return global.GVA_DB.Create(e).Error
 }
@@ -201,7 +201,7 @@ func (s *LinkService) DeleteTemplateWidget(e promotion.PromotionTemplateWidget) 
 }
 
 func (s *LinkService) UpdateTemplateWidget(e *promotion.PromotionTemplateWidget) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *LinkService) FindTemplateWidget(id uint) (promotion.PromotionTemplateWidget, error) {

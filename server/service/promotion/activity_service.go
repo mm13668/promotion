@@ -12,7 +12,7 @@ func (s *ActivityService) CreateMarket(e promotion.ActivityMarket) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *ActivityService) UpdateMarket(e *promotion.ActivityMarket) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *ActivityService) DeleteMarket(e promotion.ActivityMarket) error {
 	return global.GVA_DB.Delete(&e).Error
@@ -33,7 +33,7 @@ func (s *ActivityService) CreatePackage(e promotion.ActivityPackage) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *ActivityService) UpdatePackage(e *promotion.ActivityPackage) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *ActivityService) DeletePackage(e promotion.ActivityPackage) error {
 	return global.GVA_DB.Delete(&e).Error
@@ -54,7 +54,7 @@ func (s *ActivityService) CreateActivity(e promotion.ActivityData) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *ActivityService) UpdateActivity(e *promotion.ActivityData) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *ActivityService) DeleteActivity(e promotion.ActivityData) error {
 	return global.GVA_DB.Delete(&e).Error

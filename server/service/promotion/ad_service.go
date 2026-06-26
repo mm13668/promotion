@@ -15,7 +15,7 @@ func (s *AdService) CreatePlatform(e promotion.AdPlatform) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *AdService) UpdatePlatform(e *promotion.AdPlatform) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *AdService) DeletePlatform(e promotion.AdPlatform) error {
 	return global.GVA_DB.Delete(&e).Error
@@ -54,7 +54,7 @@ func (s *AdService) CreateCampaign(e promotion.AdCampaign) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *AdService) UpdateCampaign(e *promotion.AdCampaign) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *AdService) DeleteCampaign(e promotion.AdCampaign) error {
 	return global.GVA_DB.Delete(&e).Error
@@ -100,7 +100,7 @@ func (s *AdService) CreateKeyword(e promotion.AdKeyword) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *AdService) UpdateKeyword(e *promotion.AdKeyword) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *AdService) DeleteKeyword(e promotion.AdKeyword) error {
 	return global.GVA_DB.Delete(&e).Error

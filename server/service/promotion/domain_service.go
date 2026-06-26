@@ -44,7 +44,7 @@ func (s *DomainService) UpdatePromotionDomain(e *promotion.PromotionDomain) erro
 	} else {
 		e.HttpsEnableTime = old.HttpsEnableTime
 	}
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *DomainService) FindPromotionDomain(id uint) (promotion.PromotionDomain, error) {

@@ -13,7 +13,7 @@ func (s *QAService) CreateQuestion(e promotion.QAQuestion) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateQuestion(e *promotion.QAQuestion) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *QAService) GetQuestion(id uint, userUUID uuid.UUID) (promotion.QAQuestion, error) {
@@ -98,7 +98,7 @@ func (s *QAService) CreateAnswer(e promotion.QAAnswer) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateAnswer(e *promotion.QAAnswer) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *QAService) GetAnswer(id uint, userUUID uuid.UUID) (promotion.QAAnswer, error) {
 	var data promotion.QAAnswer
@@ -151,7 +151,7 @@ func (s *QAService) CreateReply(e promotion.QAReply) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateReply(e *promotion.QAReply) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 
 func (s *QAService) GetReply(id uint, userUUID uuid.UUID) (promotion.QAReply, error) {
@@ -191,7 +191,7 @@ func (s *QAService) CreateAvatarNickname(e promotion.QAAvatarNickname) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateAvatarNickname(e *promotion.QAAvatarNickname) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *QAService) GetAvatarNickname(id uint, userUUID uuid.UUID) (promotion.QAAvatarNickname, error) {
 	var data promotion.QAAvatarNickname
@@ -237,7 +237,7 @@ func (s *QAService) CreateTitle(e promotion.QATitle) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateTitle(e *promotion.QATitle) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *QAService) GetTitle(id uint, userUUID uuid.UUID) (promotion.QATitle, error) {
 	var data promotion.QATitle
@@ -283,7 +283,7 @@ func (s *QAService) CreateSignature(e promotion.QASignature) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateSignature(e *promotion.QASignature) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *QAService) GetSignature(id uint, userUUID uuid.UUID) (promotion.QASignature, error) {
 	var data promotion.QASignature
@@ -329,7 +329,7 @@ func (s *QAService) CreateTag(e promotion.QATag) error {
 	return global.GVA_DB.Create(&e).Error
 }
 func (s *QAService) UpdateTag(e *promotion.QATag) error {
-	return global.GVA_DB.Save(e).Error
+	return global.GVA_DB.Model(e).Updates(e).Error
 }
 func (s *QAService) GetTag(id uint, userUUID uuid.UUID) (promotion.QATag, error) {
 	var data promotion.QATag
