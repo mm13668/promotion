@@ -41,6 +41,11 @@ const routes = [
     component: () => import('@/view/qa/question/answer-preview.vue'),
     meta: { title: '回答预览' }
   },
+  {
+    path: '/qa/page-visual',
+    component: () => import('@/view/qa/page-visual/index.vue'),
+    meta: { title: '页面可视化管理' }
+  },
 ]
 
 const router = createRouter({
