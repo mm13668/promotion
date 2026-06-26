@@ -53,7 +53,8 @@
                         <div class="answer-meta">
                             <span class="answer-nickname">{{.Nickname}}</span>
                             {{if .TitleName}}<span class="title-badge">{{.TitleName}}</span>{{end}}
-                            {{if .TimeText}}<span class="answer-time">{{.TimeText}}</span>{{end}}
+                            {{if .Level}}<span class="level-badge">LV.{{.Level}}</span>{{end}}
+                            {{if .TimeText}}<span class="answer-time">发布于 {{.TimeText}}</span>{{end}}
                         </div>
                     </div>
                     <div class="answer-content">{{.Content}}</div>
@@ -65,6 +66,8 @@
                                 {{if .AvatarUrl}}<img src="/api/{{.AvatarUrl}}" class="avatar-sm" alt="" onerror="this.style.display='none'">{{end}}
                                 <span class="reply-nickname">{{.Nickname}}</span>
                                 {{if .TitleName}}<span class="title-badge-sm">{{.TitleName}}</span>{{end}}
+                                {{if .Level}}<span class="level-badge-sm">LV.{{.Level}}</span>{{end}}
+                                <span class="time-text-sm">{{.TimeText}}</span>
                             </div>
                             <div class="reply-content">{{.Content}}</div>
                         </div>
@@ -102,7 +105,7 @@
                 <ul class="side-list">
                     {{range .Answers}}
                     <li>
-                        <span>{{.TimeText}}</span>
+                        <span>发布于 {{.TimeText}}</span>
                         <a href="#answer-{{.ID}}">{{.Nickname}}的回答</a>
                     </li>
                     {{end}}

@@ -179,21 +179,49 @@ func (a *QAApi) DeleteAnswer(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetAnswerList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.AnswerSearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetAnswerList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetAnswerList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
+}
+
+func (a *QAApi) BatchUpdateAnswerSort(c *gin.Context) {
+	var items []promotion.SortItem
+	if err := c.ShouldBindJSON(&items); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := qaService.BatchUpdateAnswerSort(items); err != nil {
+		global.GVA_LOG.Error("batch update answer sort failed", zap.Error(err))
+		response.FailWithMessage("更新排序失败", c)
+		return
+	}
+	response.OkWithMessage("更新排序成功", c)
+}
+
+func (a *QAApi) BatchUpdateReplySort(c *gin.Context) {
+	var items []promotion.SortItem
+	if err := c.ShouldBindJSON(&items); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := qaService.BatchUpdateReplySort(items); err != nil {
+		global.GVA_LOG.Error("batch update reply sort failed", zap.Error(err))
+		response.FailWithMessage("更新排序失败", c)
+		return
+	}
+	response.OkWithMessage("更新排序成功", c)
 }
 
 func (a *QAApi) GetAnswerDetail(c *gin.Context) {
@@ -270,21 +298,21 @@ func (a *QAApi) DeleteReply(c *gin.Context) {
 	response.OkWithMessage("删除成功", c)
 }
 func (a *QAApi) GetReplyList(c *gin.Context) {
-	var pageInfo request.PageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+	var search promotion.ReplySearch
+	if err := c.ShouldBindQuery(&search); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+	if err := utils.Verify(search.PageInfo, utils.PageInfoVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := qaService.GetReplyList(pageInfo, utils.GetUserUuid(c))
+	list, total, err := qaService.GetReplyList(search, utils.GetUserUuid(c))
 	if err != nil {
 		response.FailWithMessage("获取失败", c)
 		return
 	}
-	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: pageInfo.Page, PageSize: pageInfo.PageSize}, "获取成功", c)
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: search.Page, PageSize: search.PageSize}, "获取成功", c)
 }
 
 // 头像昵称管理

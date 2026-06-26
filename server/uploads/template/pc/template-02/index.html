@@ -97,7 +97,7 @@
                                         {{end}}
                                     </div>
                             {{if .TimeText}}
-                            <div class="time">{{.TimeText}}</div>
+                            <div class="time">发布于 {{.TimeText}}</div>
                             {{end}}
                         </div>
                     </div>
@@ -135,6 +135,7 @@
                                             {{if .Level}}
                                             <span class="level-badge">LV.{{.Level}}</span>
                                             {{end}}
+                                            <span class="time-text">{{.TimeText}}</span>
                                         </div>
                                     </div>
                                 </div>

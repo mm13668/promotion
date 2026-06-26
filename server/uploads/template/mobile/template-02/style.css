@@ -159,6 +159,10 @@ body {
     color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
 }
+.time-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
 
 /* 问题内容 */
 .question-content {

@@ -75,7 +75,7 @@
                                         <span class="px-2 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
                                         {{end}}
                                     </div>
-                                    <div class="text-sm text-gray-500 mt-1">{{.TimeText}}</div>
+                                    <div class="text-sm text-gray-500 mt-1">发布于 {{.TimeText}}</div>
                                 </div>
                             </div>
                             <div class="ql-editor-content mb-4 text-gray-700 leading-relaxed">{{.Content}}</div>
@@ -107,6 +107,7 @@
                                      {{if .Level}}
                                      <span class="px-1 py-0.5 bg-purple-100 text-purple-600 rounded text-xs">LV.{{.Level}}</span>
                                      {{end}}
+                                     <span class="text-sm text-gray-400 ml-1">{{.TimeText}}</span>
                                  </div>
                                  <div class="ql-editor-content text-gray-700 leading-relaxed">{{.Content}}</div>
                                  <!-- 回复统计 -->

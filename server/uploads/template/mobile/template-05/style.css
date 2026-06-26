@@ -224,6 +224,7 @@ body {
     border-radius: 8px;
 }
 .tb-reply-time { font-size: 11px; color: #b0b3b8; margin-top: 2px; }
+.tb-time-text { font-size: 11px; color: #b0b3b8; }
 .tb-lz-tag {
     padding: 1px 8px;
     background: #eef1ff;

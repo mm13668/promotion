@@ -268,18 +268,18 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			return err
 		}
 
-		// 2. 查询回答列表
+		// 2. 查询回答列表（按排序值从大到小）
 		var qaAnswers []promotion.QAAnswer
-		if err := global.GVA_DB.Where("question_id = ? AND audit_status = 1", *link.QuestionID).Find(&qaAnswers).Error; err != nil {
+		if err := global.GVA_DB.Where("question_id = ? AND audit_status = 1", *link.QuestionID).Order("sort desc, id asc").Find(&qaAnswers).Error; err != nil {
 			return err
 		}
 
 		// 3. 组装回答和回复
 		answers := make([]Answer, 0, len(qaAnswers))
 		for _, qaAnswer := range qaAnswers {
-			// 查询每个回答的回复
+			// 查询每个回答的回复（按排序值从大到小）
 			var qaReplies []promotion.QAReply
-			if err := global.GVA_DB.Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Find(&qaReplies).Error; err != nil {
+			if err := global.GVA_DB.Where("answer_id = ? AND audit_status = 1", qaAnswer.ID).Order("sort desc, id asc").Find(&qaReplies).Error; err != nil {
 				return err
 			}
 
@@ -305,12 +305,16 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 			}
 
 			// 组装回答
+			var answerLevel int
+			if qaAnswer.Level != nil {
+				answerLevel = int(*qaAnswer.Level)
+			}
 			answers = append(answers, Answer{
 				ID:            qaAnswer.ID,
 				AvatarUrl:     qaAnswer.AvatarURL,
 				Nickname:      qaAnswer.Nickname,
 				TitleName:     qaAnswer.TitleName,
-				Level:         int(*qaAnswer.Level),
+				Level:         answerLevel,
 				TimeText:      qaAnswer.TimeText,
 				Content:       template.HTML(qaAnswer.Content),
 				FollowCount:   int(qaAnswer.FollowCount),

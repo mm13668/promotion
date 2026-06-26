@@ -167,7 +167,9 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 			processedReplies = append(processedReplies, Reply{
 				AvatarUrl:     reply.AvatarUrl,
 				Nickname:      reply.Nickname,
+				TitleName:     reply.TitleName,
 				Content:       template.HTML(reply.Content),
+				TimeText:      reply.TimeText,
 				FollowCount:   reply.FollowCount,
 				FavoriteCount: reply.FavoriteCount,
 				LikeCount:     reply.LikeCount,
@@ -182,6 +184,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 			ID:            ans.ID,
 			AvatarUrl:     ans.AvatarUrl,
 			Nickname:      ans.Nickname,
+			TitleName:     ans.TitleName,
 			TimeText:      ans.TimeText,
 			Content:       template.HTML(ans.Content),
 			FollowCount:   ans.FollowCount,

@@ -181,6 +181,7 @@ body {
 .ldy-user-name { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ldy-user-name strong { font-size: 15px; color: #2980b9; }
 .ldy-user-time { font-size: 12px; color: #aaa; margin-top: 2px; }
+.ldy-time-text { font-size: 12px; color: #aaa; }
 
 .ldy-badge {
     display: inline-block;

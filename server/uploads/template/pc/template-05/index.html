@@ -143,7 +143,7 @@
                                     <span class="tb-badge tb-badge-blue">楼主</span>
                                     {{end}}
                                 </div>
-                                <div class="tb-reply-time">{{.TimeText}}</div>
+                                <div class="tb-reply-time">发布于 {{.TimeText}}</div>
                             </div>
                             <div class="tb-reply-content ql-editor-content">{{.Content}}</div>
                             <div class="tb-reply-actions">
@@ -174,12 +174,16 @@
                                         {{if .AvatarUrl}}
                                         <img src="/api/{{.AvatarUrl}}" alt="" class="tb-avatar-xxs" onerror="this.style.display='none'">
                                         {{end}}
-                                        <strong>{{.Nickname}}</strong>
-                                        {{if .TitleName}}
-                                        <span class="tb-badge tb-badge-sm">{{.TitleName}}</span>
-                                        {{end}}
-                                    </div>
-                                    <div class="tb-sub-reply-content ql-editor-content">{{.Content}}</div>
+                                <strong>{{.Nickname}}</strong>
+                                {{if .TitleName}}
+                                <span class="tb-badge tb-badge-sm">{{.TitleName}}</span>
+                                {{end}}
+                                {{if .Level}}
+                                <span class="tb-badge tb-badge-sm">LV.{{.Level}}</span>
+                                {{end}}
+                                <span class="tb-time-text">{{.TimeText}}</span>
+                            </div>
+                            <div class="tb-sub-reply-content ql-editor-content">{{.Content}}</div>
                                 </div>
                                 {{end}}
                             </div>

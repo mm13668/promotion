@@ -144,12 +144,16 @@
                                     {{if .AvatarUrl}}
                                     <img src="/api/{{.AvatarUrl}}" alt="" class="ldy-avatar-xs" onerror="this.style.display='none'">
                                     {{end}}
-                                    <strong>{{.Nickname}}</strong>
-                                    {{if .TitleName}}
-                                    <span class="ldy-badge ldy-badge-green">{{.TitleName}}</span>
-                                    {{end}}
-                                </div>
-                                <div class="ldy-reply-content ql-editor-content">{{.Content}}</div>
+                            <strong>{{.Nickname}}</strong>
+                            {{if .TitleName}}
+                            <span class="ldy-badge ldy-badge-green">{{.TitleName}}</span>
+                            {{end}}
+                            {{if .Level}}
+                            <span class="ldy-badge ldy-badge-orange">LV.{{.Level}}</span>
+                            {{end}}
+                            <span class="ldy-time-text">{{.TimeText}}</span>
+                        </div>
+                        <div class="ldy-reply-content ql-editor-content">{{.Content}}</div>
                             </div>
                             {{end}}
                         </div>

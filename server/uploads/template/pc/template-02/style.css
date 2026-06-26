@@ -169,6 +169,10 @@ body {
     color: #666;
     font-size: 14px;
 }
+.time-text {
+    color: #666;
+    font-size: 14px;
+}
 
 /* 问题内容 */
 .question-content {

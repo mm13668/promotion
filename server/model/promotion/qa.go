@@ -53,6 +53,7 @@ type QAAnswer struct {
 	Skill         string    `json:"skill" gorm:"type:varchar(255)"`
 	AuditStatus   uint8     `json:"auditStatus" gorm:"default:0"`
 	ReplyCount    uint      `json:"replyCount"`
+	Sort          int       `json:"sort" gorm:"default:0;index:idx_answer_sort"`
 	CreatedBy     *uint     `json:"createdBy"`
 	UpdatedBy     *uint     `json:"updatedBy"`
 }
@@ -78,6 +79,7 @@ type QAReply struct {
 	TimeText      string    `json:"timeText" gorm:"type:varchar(50)"`
 	Skill         string    `json:"skill" gorm:"type:varchar(255)"`
 	AuditStatus   uint8     `json:"auditStatus" gorm:"default:0"`
+	Sort          int       `json:"sort" gorm:"default:0;index:idx_reply_sort"`
 	CreatedBy     *uint     `json:"createdBy"`
 	UpdatedBy     *uint     `json:"updatedBy"`
 }
@@ -133,6 +135,21 @@ type QATag struct {
 
 func (QATag) TableName() string {
 	return "qa_tag"
+}
+
+type SortItem struct {
+	ID   uint `json:"id"`
+	Sort int  `json:"sort"`
+}
+
+type AnswerSearch struct {
+	request.PageInfo
+	QuestionID *uint `json:"questionId" form:"questionId"`
+}
+
+type ReplySearch struct {
+	request.PageInfo
+	AnswerID *uint `json:"answerId" form:"answerId"`
 }
 
 type QAQuestionSearch struct {

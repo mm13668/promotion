@@ -121,7 +121,7 @@
                                 <span class="tb-level">LV.{{.Level}}</span>
                                 {{end}}
                             </div>
-                            <div class="tb-reply-time">{{.TimeText}}</div>
+                            <div class="tb-reply-time">发布于 {{.TimeText}}</div>
                         </div>
                         {{if eq $i 0}}
                         <span class="tb-lz-tag">楼主</span>
@@ -160,6 +160,10 @@
                                 {{if .TitleName}}
                                 <span class="tb-badge tb-badge-sm">{{.TitleName}}</span>
                                 {{end}}
+                                {{if .Level}}
+                                <span class="tb-badge tb-badge-sm">LV.{{.Level}}</span>
+                                {{end}}
+                                <span class="tb-time-text">{{.TimeText}}</span>
                             </div>
                             <div class="tb-sub-reply-content">{{.Content}}</div>
                         </div>

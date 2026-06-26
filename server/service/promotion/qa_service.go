@@ -2,7 +2,6 @@ package promotion
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	"github.com/google/uuid"
 )
@@ -54,7 +53,7 @@ func (s *QAService) GetQuestionDetail(id uint) (QAQuestionDetail, error) {
 	}
 	// 查询回答列表
 	var answers []promotion.QAAnswer
-	err = global.GVA_DB.Where("question_id = ?", id).Order("id asc").Find(&answers).Error
+	err = global.GVA_DB.Where("question_id = ?", id).Order("sort desc, id asc").Find(&answers).Error
 	if err != nil {
 		return detail, err
 	}
@@ -63,7 +62,7 @@ func (s *QAService) GetQuestionDetail(id uint) (QAQuestionDetail, error) {
 	for i, answer := range answers {
 		detail.Answers[i].QAAnswer = answer
 		var replies []promotion.QAReply
-		err = global.GVA_DB.Where("answer_id = ?", answer.ID).Order("id asc").Find(&replies).Error
+		err = global.GVA_DB.Where("answer_id = ?", answer.ID).Order("sort desc, id asc").Find(&replies).Error
 		if err != nil {
 			return detail, err
 		}
@@ -124,7 +123,7 @@ func (s *QAService) GetAnswerDetail(id uint) (QAAnswerWithReply, error) {
 		return detail, err
 	}
 	var replies []promotion.QAReply
-	err = global.GVA_DB.Where("answer_id = ?", id).Order("id asc").Find(&replies).Error
+	err = global.GVA_DB.Where("answer_id = ?", id).Order("sort desc, id asc").Find(&replies).Error
 	if err != nil {
 		return detail, err
 	}
@@ -132,18 +131,22 @@ func (s *QAService) GetAnswerDetail(id uint) (QAAnswerWithReply, error) {
 	return detail, nil
 }
 
-func (s *QAService) GetAnswerList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QAAnswer, total int64, err error) {
+func (s *QAService) GetAnswerList(info promotion.AnswerSearch, userUUID uuid.UUID) (list []promotion.QAAnswer, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QAAnswer{})
 	if userUUID != uuid.Nil {
-		db = db.Where("uuid = ?", userUUID)
+		db = db.Where("qa_answer.uuid = ?", userUUID)
+	}
+	if info.QuestionID != nil {
+		db = db.Where("qa_answer.question_id = ?", *info.QuestionID)
 	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
+	err = db.Select("qa_answer.*, (SELECT COUNT(*) FROM qa_reply WHERE qa_reply.answer_id = qa_answer.id AND qa_reply.deleted_at IS NULL) as reply_count").
+		Limit(limit).Offset(offset).Order("sort desc, id asc").Find(&list).Error
 	return
 }
 
@@ -171,18 +174,39 @@ func (s *QAService) FindReply(id uint) (promotion.QAReply, error) {
 	err := global.GVA_DB.Where("id = ?", id).First(&data).Error
 	return data, err
 }
-func (s *QAService) GetReplyList(info request.PageInfo, userUUID uuid.UUID) (list []promotion.QAReply, total int64, err error) {
+func (s *QAService) BatchUpdateAnswerSort(items []promotion.SortItem) error {
+	for _, item := range items {
+		if err := global.GVA_DB.Model(&promotion.QAAnswer{}).Where("id = ?", item.ID).Update("sort", item.Sort).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *QAService) BatchUpdateReplySort(items []promotion.SortItem) error {
+	for _, item := range items {
+		if err := global.GVA_DB.Model(&promotion.QAReply{}).Where("id = ?", item.ID).Update("sort", item.Sort).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *QAService) GetReplyList(info promotion.ReplySearch, userUUID uuid.UUID) (list []promotion.QAReply, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&promotion.QAReply{})
 	if userUUID != uuid.Nil {
 		db = db.Where("uuid = ?", userUUID)
 	}
+	if info.AnswerID != nil {
+		db = db.Where("answer_id = ?", *info.AnswerID)
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Order("id desc").Find(&list).Error
+	err = db.Limit(limit).Offset(offset).Order("sort desc, id asc").Find(&list).Error
 	return
 }
 

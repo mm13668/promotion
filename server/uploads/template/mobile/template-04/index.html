@@ -103,7 +103,7 @@
                             <span class="ldy-badge ldy-badge-level">LV.{{.Level}}</span>
                             {{end}}
                         </div>
-                        <div class="ldy-user-time">{{.TimeText}}</div>
+                        <div class="ldy-user-time">发布于 {{.TimeText}}</div>
                     </div>
                 </div>
                 <div class="ldy-answer-content ql-editor-content">{{.Content}}</div>
@@ -136,6 +136,10 @@
                             {{if .TitleName}}
                             <span class="ldy-badge ldy-badge-green">{{.TitleName}}</span>
                             {{end}}
+                            {{if .Level}}
+                            <span class="ldy-badge ldy-badge-orange">LV.{{.Level}}</span>
+                            {{end}}
+                            <span class="ldy-time-text">{{.TimeText}}</span>
                         </div>
                         <div class="ldy-reply-content ql-editor-content">{{.Content}}</div>
                     </div>
