@@ -78,6 +78,7 @@ func autoOcpcCallback(db *gorm.DB) {
 			Secret:         link.OcpcSecret,
 			LogidUrl:       visit.RefererUrl,
 			ClickId:        callback.ExtractClickId(visit.RefererUrl, provider.Name()),
+			CallbackUrl:    callback.ExtractQQCallbackURL(visit.Referer),
 			ConversionType: int(link.OcpcConversionType),
 		}
 

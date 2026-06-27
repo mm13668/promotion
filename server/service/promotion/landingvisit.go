@@ -130,6 +130,7 @@ func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
 		Secret:         link.OcpcSecret,
 		LogidUrl:       visit.RefererUrl,
 		ClickId:        callback.ExtractClickId(visit.RefererUrl, provider.Name()),
+		CallbackUrl:    callback.ExtractQQCallbackURL(visit.Referer),
 		ConversionType: int(link.OcpcConversionType),
 	}
 

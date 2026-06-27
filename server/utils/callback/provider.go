@@ -9,8 +9,9 @@ import (
 type ConversionRequest struct {
 	Token          string // 广告平台token
 	Secret         string // 广告平台Secret(用于签名)
-	LogidUrl       string // 点击URL(含bd_vid参数)
+	LogidUrl       string // 访问落地页URL(含bd_vid等参数)
 	ClickId        string // 广告点击ID(如巨量引擎的clickid)
+	CallbackUrl    string // 广告平台回调URL(如广点通的__CALLBACK__解码后的地址)
 	ConversionType int    // 转化类型编号
 	ConversionTime int64  // 转化发生时间(unix时间戳,0表示不传)
 }
@@ -28,6 +29,12 @@ func ExtractClickId(rawUrl string, providerName string) string {
 	switch providerName {
 	case QihuProviderName:
 		return u.Query().Get("qhclickid")
+	case QQGDTName:
+		clickID := u.Query().Get("qz_gdt")
+		if clickID == "" {
+			clickID = u.Query().Get("gdt_vid")
+		}
+		return clickID
 	default:
 		return u.Query().Get("clickid")
 	}
