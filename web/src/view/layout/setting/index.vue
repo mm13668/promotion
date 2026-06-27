@@ -76,8 +76,8 @@
 
   const tabs = [
     { key: 'appearance', label: '外观' },
-    { key: 'layout', label: '布局' },
-    { key: 'general', label: '通用' }
+    { key: 'layout', label: '布局' }
+    // { key: 'general', label: '通用' }
   ]
 
   const width = computed(() => {
