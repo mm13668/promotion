@@ -76,6 +76,7 @@ func autoOcpcCallback(db *gorm.DB) {
 
 		req := &callback.ConversionRequest{
 			Token:          provider.GetToken(link.OcpcKey),
+			Secret:         link.OcpcSecret,
 			LogidUrl:       visit.RefererUrl,
 			ClickId:        extractClickId(visit.RefererUrl),
 			ConversionType: int(link.OcpcConversionType),
@@ -100,7 +101,8 @@ func autoOcpcCallback(db *gorm.DB) {
 	}
 }
 
-// extractClickId 从URL中提取clickid参数
+// extractClickId 从URL中提取广告点击ID参数
+// 优先提取 qhclickid(360), 降级到 clickid(百度/巨量引擎)
 func extractClickId(rawUrl string) string {
 	if rawUrl == "" {
 		return ""
@@ -109,7 +111,11 @@ func extractClickId(rawUrl string) string {
 	if err != nil {
 		return ""
 	}
-	return u.Query().Get("clickid")
+	q := u.Query()
+	if id := q.Get("qhclickid"); id != "" {
+		return id
+	}
+	return q.Get("clickid")
 }
 
 func Timer() {

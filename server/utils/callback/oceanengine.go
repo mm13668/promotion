@@ -60,9 +60,12 @@ type oceanEngineUploadResponse struct {
 
 // conversionTypeMap 转化类型编号到巨量引擎事件名的映射
 var conversionTypeMap = map[int]string{
-	3:  "form",            // 表单提交成功
-	35: "wechat",          // 微信复制按钮点击
-	49: "active_register", // 注册激活后登录
+	3:  "form",              // 表单提交成功
+	35: "wechat",            // 微信复制按钮点击
+	49: "active_register",   // 注册激活后登录
+	30: "phone",             // 电话拨打
+	19: "consult_effective", // 有效咨询
+	27: "other",             // 其他
 }
 
 func (p *OceanEngineProvider) UploadConversion(ctx context.Context, req *ConversionRequest) error {

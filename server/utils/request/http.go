@@ -48,7 +48,9 @@ func HttpRequest(
 	}
 
 	if data != nil {
-		req.Header.Set("Content-Type", "application/json")
+		if req.Header.Get("Content-Type") == "" {
+			req.Header.Set("Content-Type", "application/json")
+		}
 	}
 
 	// 发送请求

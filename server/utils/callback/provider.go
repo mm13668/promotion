@@ -5,6 +5,7 @@ import "context"
 // ConversionRequest OCPC转化回传请求
 type ConversionRequest struct {
 	Token          string // 广告平台token
+	Secret         string // 广告平台Secret(用于签名)
 	LogidUrl       string // 点击URL(含bd_vid参数)
 	ClickId        string // 广告点击ID(如巨量引擎的clickid)
 	ConversionType int    // 转化类型编号
