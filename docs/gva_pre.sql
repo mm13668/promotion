@@ -1217,7 +1217,7 @@ CREATE TABLE `promotion_link` (
   `pc_url` varchar(255) DEFAULT NULL COMMENT 'PC端推广链接',
   `ocpc_key` varchar(128) DEFAULT NULL COMMENT 'OCPC Key',
   `ocpc_secret` varchar(128) DEFAULT NULL COMMENT 'OCPC Secret',
-  `ocpc_conversion_type` tinyint unsigned DEFAULT NULL COMMENT 'OCPC转化类型 1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义',
+  `ocpc_conversion_type` tinyint unsigned DEFAULT NULL COMMENT 'OCPC转化类型 3 表单提交成功 35 微信复制按钮点击 49注册激活后登录',
   `ocpc_callback_type` tinyint unsigned DEFAULT NULL COMMENT 'OCPC回传方式 1=手动回传 2=自动回传',
   `https_enabled` tinyint(1) DEFAULT NULL,
   `sort` bigint DEFAULT NULL,

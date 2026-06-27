@@ -25,7 +25,7 @@ type PromotionLink struct {
 	RandomCode         string                `json:"randomCode" gorm:"type:varchar(32);uniqueIndex:uk_random_code;comment:随机编号，用于静态页面路径"`
 	OcpcKey            string                `json:"ocpcKey" gorm:"type:varchar(128);comment:OCPC Key"`
 	OcpcSecret         string                `json:"ocpcSecret" gorm:"type:varchar(128);comment:OCPC Secret"`
-	OcpcConversionType uint8                 `json:"ocpcConversionType" gorm:"comment:OCPC转化类型 1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义"`
+	OcpcConversionType uint8                 `json:"ocpcConversionType" gorm:"comment:OCPC转化类型 3 表单提交成功 35 微信复制按钮点击 49注册激活后登录"`
 	OcpcCallbackType   uint8                 `json:"ocpcCallbackType" gorm:"comment:OCPC回传方式 1=手动回传 2=自动回传"`
 	OcpcMinDuration    int                   `json:"ocpcMinDuration" gorm:"default:30;comment:自动回传最小浏览时长(秒)"`
 	HttpsEnabled       bool                  `json:"httpsEnabled"`

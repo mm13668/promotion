@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `promotion_link` (
    `pc_url` VARCHAR(255) NULL COMMENT 'PC端推广链接',
    `ocpc_key` VARCHAR(128) NULL COMMENT 'OCPC Key',
    `ocpc_secret` VARCHAR(128) NULL COMMENT 'OCPC Secret',
-   `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义',
+   `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：3 表单提交成功 35 微信复制按钮点击 49注册激活后登录',
    `ocpc_callback_type` TINYINT UNSIGNED NULL COMMENT 'OCPC回传方式：1=手动回传 2=自动回传',
   `https_enabled` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否开启HTTPS：0-否 1-是',
   `sort` INT NOT NULL DEFAULT 0 COMMENT '排序值（越大越靠前）',
@@ -157,5 +157,5 @@ ADD COLUMN `mobile_url` VARCHAR(255) NULL COMMENT '移动端推广链接' AFTER 
 ADD COLUMN `pc_url` VARCHAR(255) NULL COMMENT 'PC端推广链接' AFTER `mobile_url`,
 ADD COLUMN `ocpc_key` VARCHAR(128) NULL COMMENT 'OCPC Key' AFTER `pc_url`,
 ADD COLUMN `ocpc_secret` VARCHAR(128) NULL COMMENT 'OCPC Secret' AFTER `ocpc_key`,
-ADD COLUMN `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：1=表单提交 2=有效电话拨打 3=一句话咨询 4=订单 5=注册 6=创建角色 7=自定义' AFTER `ocpc_secret`,
+ADD COLUMN `ocpc_conversion_type` TINYINT UNSIGNED NULL COMMENT 'OCPC转化类型：3 表单提交成功 35 微信复制按钮点击 49注册激活后登录' AFTER `ocpc_secret`,
 ADD COLUMN `ocpc_callback_type` TINYINT UNSIGNED NULL COMMENT 'OCPC回传方式：1=手动回传 2=自动回传' AFTER `ocpc_conversion_type`;
