@@ -120,6 +120,67 @@
 
 <script>
 (function() {
+    // 复制微信
+    window.copyWechat = function() {
+        var wechat = window.currentService?.wechat || '';
+        var copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+
+        function doReport() {
+            if (window.LANDING_VISIT_ID && !copyReported) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: Number(window.LANDING_VISIT_ID),
+                        servicePhone: window.currentService?.mobile || '',
+                        serviceNickname: window.currentService?.nickname || ''
+                    })
+                }).then(function() {
+                    localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                }).catch(function() {
+                    localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                });
+            }
+        }
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(wechat).then(function() {
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                doReport();
+            }).catch(function() {
+                var input = document.createElement('input');
+                input.value = wechat;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                if (window.showCopySuccessPopup) {
+                    window.showCopySuccessPopup();
+                } else {
+                    alert('微信复制成功！');
+                }
+                doReport();
+            });
+        } else {
+            var input = document.createElement('input');
+            input.value = wechat;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            if (window.showCopySuccessPopup) {
+                window.showCopySuccessPopup();
+            } else {
+                alert('微信复制成功！');
+            }
+            doReport();
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         var currentService = window.currentService;
 

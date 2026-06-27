@@ -232,6 +232,29 @@
     window.copyWechatBottom = function() {
         // 多重容错取微信账号
         const wechat = window.currentService?.wechat || window.wechat;
+        // 先检查本地是否已有复制记录
+        const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+
+        function reportCopyEvent() {
+            if (window.LANDING_VISIT_ID && !copyReported) {
+                fetch('/api/promotion/landingVisit/reportCopy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: Number(window.LANDING_VISIT_ID),
+                        servicePhone: window.currentService?.mobile || '',
+                        serviceNickname: window.currentService?.nickname || ''
+                    })
+                }).then(function() {
+                    localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                }).catch(function() {
+                    localStorage.setItem('landing_copy_reported_' + window.location.pathname, 'true');
+                });
+            }
+        }
+
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
                 // 调用复制插件的弹窗方法
@@ -240,6 +263,7 @@
                 } else {
                     alert('微信复制成功！');
                 }
+                reportCopyEvent();
             }).catch(function() {
                 // 降级处理
                 const input = document.createElement('input');
@@ -253,6 +277,7 @@
                 } else {
                     alert('微信复制成功！');
                 }
+                reportCopyEvent();
             });
         } else {
             // 降级处理
@@ -267,6 +292,7 @@
             } else {
                 alert('微信复制成功！');
             }
+            reportCopyEvent();
         }
     }
 })();
