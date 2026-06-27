@@ -167,6 +167,7 @@
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-sm text-gray-500">共 {{ answerList.length }} 条评论</span>
                   <div class="flex items-center gap-2">
+                    <span class="text-xs text-orange-400">点击卡片预览定位</span>
                     <span class="text-xs text-orange-400">拖拽手柄可排序</span>
                     <el-button type="primary" size="small" icon="plus" @click="openAnswerForm()">新增回答</el-button>
                   </div>
@@ -210,8 +211,9 @@
                       回复管理 - 回答ID：{{ selectedAnswerForReply.ID }}（{{ selectedAnswerForReply.nickname }}）
                     </span>
                     <div class="flex items-center gap-2">
-                      <span class="text-xs text-orange-400">拖拽手柄可排序</span>
-                      <el-button type="primary" size="small" icon="plus" @click="openReplyForm()">新增回复</el-button>
+                    <span class="text-xs text-orange-400">点击卡片预览定位</span>
+                    <span class="text-xs text-orange-400">拖拽手柄可排序</span>
+                    <el-button type="primary" size="small" icon="plus" @click="openReplyForm()">新增回复</el-button>
                     </div>
                   </div>
                   <draggable v-model="replyList" group="reply" handle=".drag-handle" item-key="ID" class="space-y-2" @end="onReplyDragEnd">
