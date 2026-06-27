@@ -3,7 +3,6 @@ package initialize
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"github.com/flipped-aurora/gin-vue-admin/server/task"
 
 	"github.com/robfig/cron/v3"
@@ -78,7 +77,7 @@ func autoOcpcCallback(db *gorm.DB) {
 			Token:          provider.GetToken(link.OcpcKey),
 			Secret:         link.OcpcSecret,
 			LogidUrl:       visit.RefererUrl,
-			ClickId:        extractClickId(visit.RefererUrl),
+			ClickId:        callback.ExtractClickId(visit.RefererUrl, provider.Name()),
 			ConversionType: int(link.OcpcConversionType),
 		}
 
@@ -99,23 +98,6 @@ func autoOcpcCallback(db *gorm.DB) {
 		// 每次回传后短暂休眠，避免触发API限流
 		time.Sleep(200 * time.Millisecond)
 	}
-}
-
-// extractClickId 从URL中提取广告点击ID参数
-// 优先提取 qhclickid(360), 降级到 clickid(百度/巨量引擎)
-func extractClickId(rawUrl string) string {
-	if rawUrl == "" {
-		return ""
-	}
-	u, err := url.Parse(rawUrl)
-	if err != nil {
-		return ""
-	}
-	q := u.Query()
-	if id := q.Get("qhclickid"); id != "" {
-		return id
-	}
-	return q.Get("clickid")
 }
 
 func Timer() {

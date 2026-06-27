@@ -1,6 +1,9 @@
 package callback
 
-import "context"
+import (
+	"context"
+	"net/url"
+)
 
 // ConversionRequest OCPC转化回传请求
 type ConversionRequest struct {
@@ -10,6 +13,24 @@ type ConversionRequest struct {
 	ClickId        string // 广告点击ID(如巨量引擎的clickid)
 	ConversionType int    // 转化类型编号
 	ConversionTime int64  // 转化发生时间(unix时间戳,0表示不传)
+}
+
+// ExtractClickId 从URL中提取广告点击ID参数
+// 根据平台名称提取对应的点击ID参数
+func ExtractClickId(rawUrl string, providerName string) string {
+	if rawUrl == "" {
+		return ""
+	}
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return ""
+	}
+	switch providerName {
+	case QihuProviderName:
+		return u.Query().Get("qhclickid")
+	default:
+		return u.Query().Get("clickid")
+	}
 }
 
 // CallbackProvider OCPC回传提供者接口

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	qihuProviderName = "360_ocpc"
+	QihuProviderName = "360_ocpc"
 	qihuApiUrl       = "https://convert.dop.360.cn/uploadWebConvert"
 )
 
@@ -37,7 +37,7 @@ func NewQihuProvider() *QihuProvider {
 }
 
 func (p *QihuProvider) Name() string {
-	return qihuProviderName
+	return QihuProviderName
 }
 
 func (p *QihuProvider) GetToken(ocpcKey string) string {
