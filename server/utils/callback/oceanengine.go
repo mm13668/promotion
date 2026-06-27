@@ -10,8 +10,11 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/utils/request"
 )
 
-const (
+var (
 	oceanEngineApiUrl = "https://analytics.oceanengine.com/api/v2/conversion"
+)
+
+const (
 	// 与 ad_platform.platform_key 的值保持一致
 	oceanEngineName = "oceanengine"
 )
@@ -44,9 +47,9 @@ type oceanEngineAd struct {
 
 // oceanEngineUploadRequest 巨量引擎回传请求体
 type oceanEngineUploadRequest struct {
-	EventType string            `json:"event_type"`
+	EventType string             `json:"event_type"`
 	Context   oceanEngineContext `json:"context"`
-	Timestamp int64             `json:"timestamp"`
+	Timestamp int64              `json:"timestamp"`
 }
 
 // oceanEngineUploadResponse 巨量引擎回传响应
@@ -57,9 +60,9 @@ type oceanEngineUploadResponse struct {
 
 // conversionTypeMap 转化类型编号到巨量引擎事件名的映射
 var conversionTypeMap = map[int]string{
-	3:  "form",             // 表单提交成功
-	35: "wechat",           // 微信复制按钮点击
-	49: "active_register",  // 注册激活后登录
+	3:  "form",            // 表单提交成功
+	35: "wechat",          // 微信复制按钮点击
+	49: "active_register", // 注册激活后登录
 }
 
 func (p *OceanEngineProvider) UploadConversion(ctx context.Context, req *ConversionRequest) error {
