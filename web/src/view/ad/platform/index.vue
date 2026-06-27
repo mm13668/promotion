@@ -21,7 +21,8 @@
       <el-table :data="tableData" row-key="ID" style="width:100%">
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="platformKey" label="标识" width="160" />
-        <el-table-column prop="name" label="名称" min-width="180" />
+        <el-table-column prop="name" label="名称" min-width="140" />
+        <el-table-column prop="remark" label="备注" min-width="180" show-overflow-tooltip />
         <el-table-column label="状态" width="120">
           <template #default="{ row }">
             {{ (statusOptions.find(o => o.value === row.status) || {}).label || row.status }}
@@ -60,6 +61,9 @@
             <el-option v-for="o in statusOptions" :key="o.value" :label="o.label" :value="o.value" />
           </el-select>
         </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="form.remark" type="textarea" :rows="3" />
+        </el-form-item>
       </el-form>
     </el-drawer>
   </div>
@@ -90,8 +94,8 @@ const handleSizeChange = (v) => { pageSize.value = v; getTableData() }
 const handleCurrentChange = (v) => { page.value = v; getTableData() }
 
 const drawer = ref(false)
-const form = ref({ ID: 0, platformKey: '', name: '', status: 1 })
-const openForm = (row) => { form.value = row ? { ...row } : { ID: 0, platformKey: '', name: '', status: 1 }; drawer.value = true }
+const form = ref({ ID: 0, platformKey: '', name: '', status: 1, remark: '' })
+const openForm = (row) => { form.value = row ? { ...row } : { ID: 0, platformKey: '', name: '', status: 1, remark: '' }; drawer.value = true }
 const submit = async () => {
   if (!form.value.platformKey || !form.value.name) { ElMessage.error('请填写标识与名称'); return }
   let res = form.value.ID ? await updateAdPlatform(form.value) : await createAdPlatform(form.value)
