@@ -18,6 +18,9 @@ https://event-manager.oceanengine.com/docs/8650/all_events
 form 表单提交
 wechat 微信复制
 active_register 注册
+phone 电话拨打
+consult_effective 有效咨询
+other 其他
 
 
 

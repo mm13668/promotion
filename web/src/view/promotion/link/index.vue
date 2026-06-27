@@ -405,8 +405,11 @@
         <el-form-item label="转化类型">
           <el-select v-model="ocpcForm.ocpcConversionType" placeholder="请选择转化类型">
             <el-option label="微信复制按钮点击" :value="35" />
-            <el-option label="表单提交成功" :value="3" />
+            <el-option label="表单提交成功(线索转化)" :value="3" />
             <el-option label="注册激活后登录（注册转化）" :value="49" />
+            <el-option label="客户自定义类型" :value="27" />
+            <el-option label="有效咨询" :value="19" />
+            <el-option label="电话拨通" :value="30" />
           </el-select>
         </el-form-item>
         <el-form-item label="回传方式">
