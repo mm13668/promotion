@@ -47,7 +47,7 @@
             <div class="ql-editor-content text-gray-700 leading-relaxed" v-html="questionDetail.content"></div>
           </div>
           <div class="space-y-3">
-            <div v-for="answer in questionDetail.answers" :key="answer.ID" class="bg-white p-5 shadow-sm rounded">
+            <div v-for="answer in questionDetail.answers" :key="answer.ID" :data-answer-id="answer.ID" class="bg-white p-5 shadow-sm rounded">
               <div class="flex items-center mb-3">
                 <img v-if="answer.avatarUrl" :src="`${getBaseUrl()}/${answer.avatarUrl}`" class="w-9 h-9 rounded-full mr-3 object-cover">
                 <div class="flex-1">
@@ -63,7 +63,7 @@
                 </div>
               </div>
               <div class="ql-editor-content text-gray-700 text-sm leading-relaxed mb-3" v-html="answer.content"></div>
-              <div v-for="reply in answer.replies" :key="reply.ID" class="bg-yellow-50 p-3 rounded mb-2 ml-6">
+              <div v-for="reply in answer.replies" :key="reply.ID" :data-reply-id="reply.ID" class="bg-yellow-50 p-3 rounded mb-2 ml-6">
                 <div class="flex items-center gap-2 mb-1">
                   <img v-if="reply.avatarUrl" :src="`${getBaseUrl()}/${reply.avatarUrl}`" class="w-6 h-6 rounded-full object-cover">
                   <span class="text-green-600 font-medium text-xs">{{ reply.nickname }}</span>
@@ -173,7 +173,7 @@
                 </div>
                 <draggable v-model="answerList" group="answer" handle=".drag-handle" item-key="ID" class="space-y-3" @end="onAnswerDragEnd">
                   <template #item="{ element: answer }">
-                    <div class="answer-card mb-3 p-4 border rounded">
+                    <div class="answer-card mb-3 p-4 border rounded" @click="scrollToElement(`[data-answer-id=&quot;${answer.ID}&quot;]`)">
                       <div class="flex items-start justify-between mb-2">
                         <div class="flex items-center gap-2">
                           <span class="drag-handle cursor-grab text-gray-500 hover:text-blue-500 text-lg leading-none select-none px-1 py-1 rounded hover:bg-blue-50" title="拖拽排序">⠿</span>
@@ -216,7 +216,7 @@
                   </div>
                   <draggable v-model="replyList" group="reply" handle=".drag-handle" item-key="ID" class="space-y-2" @end="onReplyDragEnd">
                     <template #item="{ element: reply }">
-                      <div class="reply-card mb-2 p-3 bg-yellow-50 rounded">
+                      <div class="reply-card mb-2 p-3 bg-yellow-50 rounded" @click="scrollToElement(`[data-reply-id=&quot;${reply.ID}&quot;]`)">
                         <div class="flex items-start justify-between mb-1">
                           <div class="flex items-center gap-2">
                             <span class="drag-handle cursor-grab text-gray-500 hover:text-blue-500 text-base leading-none select-none px-1 py-1 rounded hover:bg-blue-50" title="拖拽排序">⠿</span>
@@ -501,7 +501,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ChatLineSquare, EditPen } from '@element-plus/icons-vue'
 import RichEdit from '@/components/richtext/rich-edit.vue'
@@ -583,6 +583,17 @@ const totalReplies = computed(() => {
   }
   return count
 })
+
+const scrollToElement = (selector) => {
+  nextTick(() => {
+    const previewEl = document.querySelector('.preview-body')
+    if (!previewEl) return
+    const el = previewEl.querySelector(selector)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  })
+}
 
 // 加载基础数据
 const loadBasicOptions = async () => {
@@ -752,6 +763,9 @@ const openAnswerForm = (row) => {
   answerForm.value = row
     ? { ...row }
     : { ID: 0, questionId: selectedQuestionId.value, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 }
+  if (row) {
+    scrollToElement(`[data-answer-id="${row.ID}"]`)
+  }
   showAnswerForm.value = true
 }
 
@@ -813,6 +827,7 @@ const selectAnswerForReply = async (answer) => {
   selectedAnswerForReply.value = answer
   activeTab.value = 'reply'
   await loadReplyList()
+  scrollToElement(`[data-answer-id="${answer.ID}"]`)
 }
 
 // 加载回复列表
@@ -829,6 +844,9 @@ const openReplyForm = (row) => {
   replyForm.value = row
     ? { ...row }
     : { ID: 0, answerId: selectedAnswerForReply.value.ID, parentId: null, nickname: '', avatarUrl: '', titleName: '', signature: '', level: null, content: '', followCount: 0, favoriteCount: 0, likeCount: 0, sort: 0, timeText: '', skill: '', auditStatus: 1 }
+  if (row) {
+    scrollToElement(`[data-reply-id="${row.ID}"]`)
+  }
   showReplyForm.value = true
 }
 
