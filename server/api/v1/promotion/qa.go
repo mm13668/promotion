@@ -121,6 +121,23 @@ func (a *QAApi) GetQuestionDetail(c *gin.Context) {
 	response.OkWithDetailed(detail, "获取成功", c)
 }
 
+func (a *QAApi) CopyQuestion(c *gin.Context) {
+	var req struct {
+		ID uint `json:"id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	newQuestion, err := qaService.CopyQuestion(req.ID)
+	if err != nil {
+		global.GVA_LOG.Error("复制页面失败", zap.Error(err))
+		response.FailWithMessage("复制失败", c)
+		return
+	}
+	response.OkWithDetailed(newQuestion, "复制成功", c)
+}
+
 func (a *QAApi) CreateAnswer(c *gin.Context) {
 	var e promotion.QAAnswer
 	if err := c.ShouldBindJSON(&e); err != nil {

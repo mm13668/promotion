@@ -44,6 +44,7 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 		group.DELETE("deleteQAQuestion", promoApi.QAApi.DeleteQuestion)
 		group.GET("getQAQuestionList", promoApi.QAApi.GetQuestionList)
 		group.GET("getQAQuestionDetail/:id", promoApi.QAApi.GetQuestionDetail)
+		group.POST("copyQAQuestion", promoApi.QAApi.CopyQuestion)
 		group.POST("createQAAnswer", promoApi.QAApi.CreateAnswer)
 		group.PUT("updateQAAnswer", promoApi.QAApi.UpdateAnswer)
 		group.DELETE("deleteQAAnswer", promoApi.QAApi.DeleteAnswer)

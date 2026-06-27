@@ -393,3 +393,113 @@ func (s *QAService) GetAllEnabledTag(userUUID uuid.UUID) (list []promotion.QATag
 	err = global.GVA_DB.Where("(uuid = ? OR uuid = ?) AND status = 1", userUUID, promotion.SuperAdminUUID).Order("id desc").Find(&list).Error
 	return
 }
+
+func (s *QAService) CopyQuestion(id uint) (promotion.QAQuestion, error) {
+	tx := global.GVA_DB.Begin()
+
+	var orig promotion.QAQuestion
+	if err := tx.Where("id = ?", id).First(&orig).Error; err != nil {
+		tx.Rollback()
+		return orig, err
+	}
+
+	newQuestion := promotion.QAQuestion{
+		UUID:          orig.UUID,
+		RegionID:      orig.RegionID,
+		Title:         orig.Title + " (副本)",
+		Content:       orig.Content,
+		TimeAt:        orig.TimeAt,
+		Remark:        orig.Remark,
+		Nickname:      orig.Nickname,
+		AvatarURL:     orig.AvatarURL,
+		TitleName:     orig.TitleName,
+		Signature:     orig.Signature,
+		FollowCount:   orig.FollowCount,
+		LookCount:     orig.LookCount,
+		FavoriteCount: orig.FavoriteCount,
+		LikeCount:     orig.LikeCount,
+		Label:         orig.Label,
+		Sort:          orig.Sort,
+		AnswerCount:   orig.AnswerCount,
+		Status:        orig.Status,
+	}
+	if err := tx.Create(&newQuestion).Error; err != nil {
+		tx.Rollback()
+		return newQuestion, err
+	}
+
+	var origAnswers []promotion.QAAnswer
+	if err := tx.Where("question_id = ?", id).Order("id asc").Find(&origAnswers).Error; err != nil {
+		tx.Rollback()
+		return newQuestion, err
+	}
+
+	answerIDMap := map[uint]uint{}
+	for _, origAnswer := range origAnswers {
+		newAnswer := promotion.QAAnswer{
+			UUID:          origAnswer.UUID,
+			QuestionID:    newQuestion.ID,
+			Nickname:      origAnswer.Nickname,
+			AvatarURL:     origAnswer.AvatarURL,
+			TitleName:     origAnswer.TitleName,
+			Signature:     origAnswer.Signature,
+			Level:         origAnswer.Level,
+			Content:       origAnswer.Content,
+			FollowCount:   origAnswer.FollowCount,
+			FavoriteCount: origAnswer.FavoriteCount,
+			LikeCount:     origAnswer.LikeCount,
+			TimeText:      origAnswer.TimeText,
+			Skill:         origAnswer.Skill,
+			AuditStatus:   origAnswer.AuditStatus,
+			Sort:          origAnswer.Sort,
+		}
+		if err := tx.Create(&newAnswer).Error; err != nil {
+			tx.Rollback()
+			return newQuestion, err
+		}
+		answerIDMap[origAnswer.ID] = newAnswer.ID
+	}
+
+	var origReplies []promotion.QAReply
+	var answerIDs []uint
+	for origID := range answerIDMap {
+		answerIDs = append(answerIDs, origID)
+	}
+	if len(answerIDs) > 0 {
+		if err := tx.Where("answer_id IN ?", answerIDs).Order("id asc").Find(&origReplies).Error; err != nil {
+			tx.Rollback()
+			return newQuestion, err
+		}
+	}
+
+	for _, origReply := range origReplies {
+		newAnswerID := answerIDMap[origReply.AnswerID]
+		newReply := promotion.QAReply{
+			UUID:          origReply.UUID,
+			AnswerID:      newAnswerID,
+			ParentID:      origReply.ParentID,
+			Nickname:      origReply.Nickname,
+			AvatarURL:     origReply.AvatarURL,
+			TitleName:     origReply.TitleName,
+			Signature:     origReply.Signature,
+			Level:         origReply.Level,
+			Content:       origReply.Content,
+			FollowCount:   origReply.FollowCount,
+			FavoriteCount: origReply.FavoriteCount,
+			LikeCount:     origReply.LikeCount,
+			TimeText:      origReply.TimeText,
+			Skill:         origReply.Skill,
+			AuditStatus:   origReply.AuditStatus,
+			Sort:          origReply.Sort,
+		}
+		if err := tx.Create(&newReply).Error; err != nil {
+			tx.Rollback()
+			return newQuestion, err
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return newQuestion, err
+	}
+	return newQuestion, nil
+}
