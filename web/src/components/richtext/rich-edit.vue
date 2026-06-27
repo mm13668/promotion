@@ -34,6 +34,7 @@ import {
   ImageCaption,
   ImageStyle,
   ImageToolbar,
+  FileRepository,
   Table,
   TableToolbar,
   HorizontalLine,
@@ -44,6 +45,7 @@ import {
   GeneralHtmlSupport
 } from 'ckeditor5'
 import { useUserStore } from '@/pinia/modules/user'
+import { getBaseUrl } from '@/utils/format.js'
 
 import 'ckeditor5/ckeditor5.css'
 
@@ -97,6 +99,7 @@ const editorConfig = {
     ImageCaption,
     ImageStyle,
     ImageToolbar,
+    FileRepository,
     Table,
     TableToolbar,
     HorizontalLine,
@@ -143,12 +146,6 @@ const editorConfig = {
       types: ['jpeg', 'png', 'gif', 'bmp', 'webp']
     }
   },
-  simpleUpload: {
-    uploadUrl: basePath + '/fileUploadAndDownload/upload?noSave=1',
-    headers: {
-      'x-token': userStore.token
-    }
-  },
   table: {
     contentToolbar: [
       'tableColumn',
@@ -188,6 +185,39 @@ const editorConfig = {
 
 const onReady = (editorRef) => {
   ckeditorInstance = editorRef
+  editorRef.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    const uploadUrl = basePath + '/fileUploadAndDownload/upload?noSave=1'
+    return {
+      upload: () => {
+        return loader.file.then(file => {
+          return new Promise((resolve, reject) => {
+            const formData = new FormData()
+            formData.append('file', file)
+            const xhr = new XMLHttpRequest()
+            xhr.open('POST', uploadUrl)
+            xhr.setRequestHeader('x-token', userStore.token)
+            xhr.onload = () => {
+              try {
+                const res = JSON.parse(xhr.responseText)
+                const fileUrl = res.data.file.url || res.data.file.Url
+                if (res.code === 0 && res.data && res.data.file && fileUrl) {
+                  const fullUrl = getBaseUrl() + '/' + fileUrl
+                  resolve({ default: fullUrl })
+                } else {
+                  reject(new Error(res.msg || '图片上传失败'))
+                }
+              } catch (e) {
+                reject(new Error('解析上传响应失败'))
+              }
+            }
+            xhr.onerror = () => reject(new Error('网络错误，图片上传失败'))
+            xhr.send(formData)
+          })
+        })
+      },
+      abort: () => {}
+    }
+  }
 }
 
 onBeforeUnmount(() => {

@@ -44,7 +44,7 @@
             </div>
           </div>
           <div class="bg-white p-6 shadow-sm mb-4 rounded">
-            <div class="ql-editor-content text-gray-700 leading-relaxed" v-html="questionDetail.content"></div>
+            <div class="ql-editor-content text-gray-700 leading-relaxed" v-html="activeTab === 'question' ? questionForm.content : questionDetail.content"></div>
           </div>
           <div class="space-y-3">
             <div v-for="answer in questionDetail.answers" :key="answer.ID" :data-answer-id="answer.ID" class="bg-white p-5 shadow-sm rounded">
@@ -1007,5 +1007,118 @@ const removeReply = async (row) => {
 .preview-body :deep(.ql-editor-content img) {
   max-width: 100%;
   height: auto;
+}
+
+.preview-body :deep(.ql-editor-content .text-tiny) {
+  font-size: 0.7em;
+}
+
+.preview-body :deep(.ql-editor-content .text-small) {
+  font-size: 0.85em;
+}
+
+.preview-body :deep(.ql-editor-content .text-big) {
+  font-size: 1.4em;
+}
+
+.preview-body :deep(.ql-editor-content .text-huge) {
+  font-size: 1.8em;
+}
+
+.preview-body :deep(.ql-editor-content h1) {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+
+.preview-body :deep(.ql-editor-content h2) {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.75em 0;
+}
+
+.preview-body :deep(.ql-editor-content h3) {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+
+.preview-body :deep(.ql-editor-content h4) {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.12em 0;
+}
+
+.preview-body :deep(.ql-editor-content h5) {
+  font-size: 0.83em;
+  font-weight: bold;
+  margin: 1.5em 0;
+}
+
+.preview-body :deep(.ql-editor-content h6) {
+  font-size: 0.75em;
+  font-weight: bold;
+  margin: 1.67em 0;
+}
+
+.preview-body :deep(.ql-editor-content p) {
+  margin: 1em 0;
+}
+
+.preview-body :deep(.ql-editor-content blockquote) {
+  border-left: 4px solid #ddd;
+  padding-left: 16px;
+  margin-left: 0;
+  color: #666;
+}
+
+.preview-body :deep(.ql-editor-content ul),
+.preview-body :deep(.ql-editor-content ol) {
+  padding-left: 2em;
+  margin: 1em 0;
+}
+
+.preview-body :deep(.ql-editor-content pre) {
+  background: #f5f5f5;
+  padding: 12px 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+}
+
+.preview-body :deep(.ql-editor-content code) {
+  background: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.preview-body :deep(.ql-editor-content table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.preview-body :deep(.ql-editor-content table td),
+.preview-body :deep(.ql-editor-content table th) {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+}
+
+.preview-body :deep(.ql-editor-content table th) {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.preview-body :deep(.ql-editor-content a) {
+  color: #409eff;
+  text-decoration: underline;
+}
+
+.preview-body :deep(.ql-editor-content hr) {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1.5em 0;
 }
 </style>
