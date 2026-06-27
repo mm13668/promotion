@@ -3,6 +3,7 @@ package initialize
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"github.com/flipped-aurora/gin-vue-admin/server/task"
 
 	"github.com/robfig/cron/v3"
@@ -76,6 +77,7 @@ func autoOcpcCallback(db *gorm.DB) {
 		req := &callback.ConversionRequest{
 			Token:          provider.GetToken(link.OcpcKey),
 			LogidUrl:       visit.RefererUrl,
+			ClickId:        extractClickId(visit.RefererUrl),
 			ConversionType: int(link.OcpcConversionType),
 		}
 
@@ -96,6 +98,18 @@ func autoOcpcCallback(db *gorm.DB) {
 		// 每次回传后短暂休眠，避免触发API限流
 		time.Sleep(200 * time.Millisecond)
 	}
+}
+
+// extractClickId 从URL中提取clickid参数
+func extractClickId(rawUrl string) string {
+	if rawUrl == "" {
+		return ""
+	}
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return ""
+	}
+	return u.Query().Get("clickid")
 }
 
 func Timer() {

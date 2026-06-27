@@ -45,8 +45,9 @@ func (f *CallbackFactory) GetProvider(name string) (CallbackProvider, error) {
 func GetDefaultFactory() *CallbackFactory {
 	defaultFactoryOnce.Do(func() {
 		defaultFactory = NewCallbackFactory()
-		// 默认注册百度OCPC
+		// 默认注册百度OCPC和巨量引擎（其余通过各文件 init 自注册）
 		defaultFactory.Register(NewBaiduProvider())
+		defaultFactory.Register(NewOceanEngineProvider())
 	})
 	return defaultFactory
 }

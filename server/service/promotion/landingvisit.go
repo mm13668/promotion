@@ -3,6 +3,8 @@ package promotion
 import (
 	"context"
 	"fmt"
+	"net/url"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils/callback"
@@ -127,6 +129,7 @@ func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
 	req := &callback.ConversionRequest{
 		Token:          provider.GetToken(link.OcpcKey),
 		LogidUrl:       visit.RefererUrl,
+		ClickId:        extractClickId(visit.RefererUrl),
 		ConversionType: int(link.OcpcConversionType),
 	}
 
@@ -208,4 +211,16 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 	}
 	err = db.Order("created_at desc").Limit(limit).Offset(offset).Find(&list).Error
 	return
+}
+
+// extractClickId 从URL中提取clickid参数
+func extractClickId(rawUrl string) string {
+	if rawUrl == "" {
+		return ""
+	}
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return ""
+	}
+	return u.Query().Get("clickid")
 }
