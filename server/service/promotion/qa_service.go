@@ -26,7 +26,28 @@ func (s *QAService) GetQuestion(id uint, userUUID uuid.UUID) (promotion.QAQuesti
 }
 
 func (s *QAService) DeleteQuestion(e promotion.QAQuestion) error {
-	return global.GVA_DB.Delete(&e).Error
+	tx := global.GVA_DB.Begin()
+
+	var answerIDs []uint
+	if err := tx.Model(&promotion.QAAnswer{}).Where("question_id = ?", e.ID).Pluck("id", &answerIDs).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if len(answerIDs) > 0 {
+		if err := tx.Where("answer_id IN ?", answerIDs).Delete(&promotion.QAReply{}).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+		if err := tx.Where("id IN ?", answerIDs).Delete(&promotion.QAAnswer{}).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	if err := tx.Delete(&e).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
 func (s *QAService) FindQuestion(id uint) (promotion.QAQuestion, error) {
 	var data promotion.QAQuestion
@@ -109,7 +130,17 @@ func (s *QAService) GetAnswer(id uint, userUUID uuid.UUID) (promotion.QAAnswer, 
 	return data, err
 }
 func (s *QAService) DeleteAnswer(e promotion.QAAnswer) error {
-	return global.GVA_DB.Delete(&e).Error
+	tx := global.GVA_DB.Begin()
+
+	if err := tx.Where("answer_id = ?", e.ID).Delete(&promotion.QAReply{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Delete(&e).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
 func (s *QAService) FindAnswer(id uint) (promotion.QAAnswer, error) {
 	var data promotion.QAAnswer
