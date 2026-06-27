@@ -12,6 +12,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@ckeditor/ckeditor5-vue": "^8.1.1",
     "@element-plus/icons-vue": "^2.3.1",
     "@form-create/designer": "^3.2.6",
     "@form-create/element-ui": "^3.2.10",
@@ -27,6 +28,7 @@
     "ace-builds": "^1.36.4",
     "axios": "1.8.2",
     "chokidar": "^4.0.0",
+    "ckeditor5": "^48.2.0",
     "core-js": "^3.38.1",
     "echarts": "5.5.1",
     "element-plus": "^2.10.2",

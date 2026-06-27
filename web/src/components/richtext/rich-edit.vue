@@ -1,131 +1,204 @@
 <template>
   <div class="w-full border border-solid border-gray-100 z-10">
-    <div class="flex items-center justify-end bg-gray-50 border-b border-gray-200">
-      <div class="px-2">
-        <el-button size="small" @click="toggleMode">
-          {{ showCode ? '可视化' : '代码' }}
-        </el-button>
-      </div>
-    </div>
-    <div v-show="!showCode" class="w-full">
-      <Toolbar
-        :editor="editorRef"
-        :default-config="toolbarConfig"
-        mode="default"
-      />
-      <Editor
-        v-model="valueHtml"
-        class="overflow-y-hidden"
-        :style="{ height: height + 'px' }"
-        :default-config="editorConfig"
-        mode="default"
-        @onCreated="handleCreated"
-        @onChange="change"
-      />
-    </div>
-    <div v-if="showCode" class="w-full" :style="{ height: height + 'px' }">
-      <v-ace-editor
-        v-model:value="codeContent"
-        lang="html"
-        theme="github_dark"
-        style="width:100%;height:100%"
-        :options="{ showPrintMargin: false, fontSize: 13, wrap: true }"
-      />
-    </div>
+    <ckeditor
+      v-if="editor"
+      v-model="data"
+      :editor="editor"
+      :config="editorConfig"
+      @ready="onReady"
+    />
   </div>
 </template>
 
 <script setup>
-  import '@wangeditor/editor/dist/css/style.css'
+import { ref, computed, onBeforeUnmount } from 'vue'
+import { Ckeditor } from '@ckeditor/ckeditor5-vue'
+import {
+  ClassicEditor,
+  Essentials,
+  Paragraph,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Heading,
+  FontSize,
+  FontColor,
+  FontBackgroundColor,
+  Alignment,
+  List,
+  Indent,
+  Link,
+  Image,
+  ImageUpload,
+  ImageCaption,
+  ImageStyle,
+  ImageToolbar,
+  Table,
+  TableToolbar,
+  HorizontalLine,
+  Undo,
+  SourceEditing,
+  CodeBlock,
+  FindAndReplace,
+  GeneralHtmlSupport
+} from 'ckeditor5'
+import { useUserStore } from '@/pinia/modules/user'
 
-  const basePath = import.meta.env.VITE_BASE_API
+import 'ckeditor5/ckeditor5.css'
 
-  import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
-  import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-  import { VAceEditor } from 'vue3-ace-editor'
-  import 'ace-builds/src-noconflict/mode-html'
-  import 'ace-builds/src-noconflict/theme-github_dark'
+const basePath = import.meta.env.VITE_BASE_API
 
-  import { ElMessage } from 'element-plus'
-  import { getUrl } from '@/utils/image'
-  import { useUserStore } from '@/pinia/modules/user'
+const emits = defineEmits(['change', 'update:modelValue'])
+const userStore = useUserStore()
 
-  const emits = defineEmits(['change', 'update:modelValue'])
-
-  const change = (editor) => {
-    emits('change', editor)
-    emits('update:modelValue', valueHtml.value)
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
+  height: {
+    type: Number,
+    default: 300
   }
+})
 
-  const userStore = useUserStore()
-  const props = defineProps({
-    modelValue: {
-      type: String,
-      default: ''
-    },
-    height: {
-      type: Number,
-      default: 300
+const editor = ClassicEditor
+let ckeditorInstance = null
+
+const data = computed({
+  get: () => props.modelValue || '',
+  set: (val) => {
+    emits('update:modelValue', val)
+    emits('change', val)
+  }
+})
+
+const editorConfig = {
+  licenseKey: 'GPL',
+  height: props.height,
+  plugins: [
+    Essentials,
+    Paragraph,
+    Bold,
+    Italic,
+    Underline,
+    Strikethrough,
+    Heading,
+    FontSize,
+    FontColor,
+    FontBackgroundColor,
+    Alignment,
+    List,
+    Indent,
+    Link,
+    Image,
+    ImageUpload,
+    ImageCaption,
+    ImageStyle,
+    ImageToolbar,
+    Table,
+    TableToolbar,
+    HorizontalLine,
+    Undo,
+    SourceEditing,
+    CodeBlock,
+    FindAndReplace,
+    GeneralHtmlSupport
+  ],
+  toolbar: [
+    'heading',
+    '|',
+    'bold',
+    'italic',
+    'underline',
+    'strikethrough',
+    '|',
+    'fontSize',
+    'fontColor',
+    'fontBackgroundColor',
+    '|',
+    'alignment',
+    '|',
+    'bulletedList',
+    'numberedList',
+    'outdent',
+    'indent',
+    '|',
+    'link',
+    'uploadImage',
+    'insertTable',
+    'horizontalLine',
+    '|',
+    'undo',
+    'redo',
+    '|',
+    'sourceEditing',
+    'codeBlock',
+    '|',
+    'findAndReplace'
+  ],
+  image: {
+    upload: {
+      types: ['jpeg', 'png', 'gif', 'bmp', 'webp']
     }
-  })
-
-  const editorRef = shallowRef()
-  const valueHtml = ref('')
-  const showCode = ref(false)
-  const codeContent = ref('')
-
-  const toolbarConfig = {}
-  const editorConfig = {
-    placeholder: '请输入内容...',
-    MENU_CONF: {}
-  }
-  editorConfig.MENU_CONF['uploadImage'] = {
-    fieldName: 'file',
-    server: basePath + '/fileUploadAndDownload/upload?noSave=1',
+  },
+  simpleUpload: {
+    uploadUrl: basePath + '/fileUploadAndDownload/upload?noSave=1',
     headers: {
-      'x-token': userStore.token,
-    },
-    customInsert(res, insertFn) {
-      if (res.code === 0) {
-        const urlPath = getUrl(res.data.file.url)
-        insertFn(urlPath, res.data.file.name)
-        return
+      'x-token': userStore.token
+    }
+  },
+  table: {
+    contentToolbar: [
+      'tableColumn',
+      'tableRow',
+      'mergeTableCells',
+      'tableProperties',
+      'tableCellProperties'
+    ]
+  },
+  codeBlock: {
+    languages: [
+      { language: 'plaintext', label: 'Plain text' },
+      { language: 'html', label: 'HTML' },
+      { language: 'css', label: 'CSS' },
+      { language: 'javascript', label: 'JavaScript' },
+      { language: 'go', label: 'Go' },
+      { language: 'python', label: 'Python' }
+    ]
+  },
+  htmlSupport: {
+    allow: [
+      {
+        name: 'img',
+        attributes: {
+          src: true,
+          alt: true,
+          width: true,
+          height: true,
+          style: true,
+          class: true
+        }
       }
-      ElMessage.error(res.msg)
-    }
+    ]
+  },
+  language: 'zh-hans'
+}
+
+const onReady = (editorRef) => {
+  ckeditorInstance = editorRef
+}
+
+onBeforeUnmount(() => {
+  if (ckeditorInstance) {
+    ckeditorInstance = null
   }
-
-  onBeforeUnmount(() => {
-    const editor = editorRef.value
-    if (editor == null) return
-    editor.destroy()
-  })
-
-  const handleCreated = (editor) => {
-    editorRef.value = editor
-    valueHtml.value = props.modelValue
-  }
-
-  watch(
-    () => props.modelValue,
-    (val) => {
-      if (valueHtml.value === val) return
-      valueHtml.value = val
-    }
-  )
-
-  const toggleMode = () => {
-    if (showCode.value) {
-      valueHtml.value = codeContent.value
-      emits('update:modelValue', codeContent.value)
-      showCode.value = false
-    } else {
-      codeContent.value = valueHtml.value
-      showCode.value = true
-    }
-  }
+})
 </script>
 
 <style scoped lang="scss">
-
+:deep(.ck-editor__editable) {
+  min-height: v-bind(height + 'px');
+}
 </style>
