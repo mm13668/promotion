@@ -291,6 +291,7 @@ export const deleteQATag = (data) => service({ url: '/promotion/deleteQATag', me
 export const getQATagList = (params) => service({ url: '/promotion/getQATagList', method: 'get', params })
 export const getAllEnabledQATag = (params) => service({ url: '/promotion/getAllEnabledQATag', method: 'get', params })
 export const getQAQuestionDetail = (id) => service({ url: `/promotion/getQAQuestionDetail/${id}`, method: 'get' })
+export const copyQAQuestion = (data) => service({ url: '/promotion/copyQAQuestion', method: 'post', data })
 
 // 推广链接发布
 export const publishPromotionLink = (data) => {

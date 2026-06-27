@@ -28,11 +28,12 @@
         <el-table-column prop="sort" label="排序" width="100" />
 <!--        <el-table-column prop="answer_count" label="回答数" width="100" />-->
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column fixed="right" label="操作" width="280">
+        <el-table-column fixed="right" label="操作" width="330">
           <template #default="{ row }">
             <el-button size="small" type="primary" link @click="openAnswerPanel(row)">评论管理</el-button>
             <el-button size="small" type="primary" link @click="openForm(row)">编辑</el-button>
             <el-button size="small" type="success" link @click="openPreview(row)">预览</el-button>
+            <el-button size="small" type="warning" link @click="copyQuestion(row)">复制</el-button>
             <el-button size="small" type="primary" link @click="remove(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -46,10 +47,10 @@
     <el-drawer v-model="drawerAnswer" size="800" :show-close="false">
       <template #header>
         <div class="flex justify-between items-center">
-          <span class="text-lg">评论管理 - 问题：{{ currentQuestion?.title }}</span>
+          <span class="text-lg">评论管理 - 页面：{{ currentQuestion?.title }}</span>
           <div>
             <el-button @click="drawerAnswer=false">关闭</el-button>
-            <el-button type="primary" @click="openAnswerForm()">新增回答</el-button>
+            <el-button type="primary" @click="openAnswerForm()">新增评论</el-button>
           </div>
         </div>
       </template>
@@ -82,7 +83,7 @@
     <el-drawer v-model="drawerReply" size="800" :show-close="false">
       <template #header>
         <div class="flex justify-between items-center">
-          <span class="text-lg">回复管理 - 回答ID：{{ currentAnswer?.ID }}</span>
+          <span class="text-lg">回复管理 - 评论ID：{{ currentAnswer?.ID }}</span>
           <div>
             <el-button @click="drawerReply=false">关闭</el-button>
             <el-button type="primary" @click="openReplyForm()">新增回复</el-button>
@@ -115,7 +116,7 @@
     <el-drawer v-model="drawer" :size="appStore.drawerSize" :show-close="false">
       <template #header>
         <div class="flex justify-between items-center">
-          <span class="text-lg">{{ form.ID ? '编辑' : '新增' }}问题</span>
+          <span class="text-lg">{{ form.ID ? '编辑' : '新增' }}页面</span>
           <div>
             <el-button @click="drawer=false">取消</el-button>
             <el-button type="primary" @click="submit">确定</el-button>
@@ -193,7 +194,7 @@
     <el-drawer v-model="drawerAnswerForm" size="700" :show-close="false">
       <template #header>
         <div class="flex justify-between items-center">
-          <span class="text-lg">{{ answerForm.ID ? '编辑' : '新增' }}回答</span>
+          <span class="text-lg">{{ answerForm.ID ? '编辑' : '新增' }}评论</span>
           <div>
             <el-button @click="drawerAnswerForm=false">取消</el-button>
             <el-button type="primary" @click="submitAnswer">确定</el-button>
@@ -341,6 +342,7 @@ import {
   createQAQuestion,
   updateQAQuestion,
   deleteQAQuestion,
+  copyQAQuestion,
   getQAAnswerList,
   createQAAnswer,
   updateQAAnswer,
@@ -431,6 +433,21 @@ const remove = async (row) => {
   if (res.code === 0) { ElMessage.success('删除成功'); getTableData() }
 }
 
+const copyQuestion = async (row) => {
+  try {
+    await ElMessageBox.confirm('确认复制该页面吗？将复制页面及其所有评论和回复。', '提示', { type: 'warning' })
+    const res = await copyQAQuestion({ id: row.ID })
+    if (res.code === 0) {
+      ElMessage.success('复制成功')
+      getTableData()
+    } else {
+      ElMessage.error(res.msg || '复制失败')
+    }
+  } catch (e) {
+    // 用户取消
+  }
+}
+
 const openPreview = (row) => {
   const routeUrl = router.resolve({
     path: `/qa/question/preview/${row.ID}`,
@@ -493,7 +510,7 @@ const updateAnswerStatus = async (row) => {
   }
 }
 const removeAnswer = async (row) => {
-  await ElMessageBox.confirm('确认删除该回答？', '提示')
+  await ElMessageBox.confirm('确认删除该评论？', '提示')
   const res = await deleteQAAnswer({ ID: row.ID })
   if (res.code === 0) { ElMessage.success('删除成功'); loadAnswerList(); getTableData() }
 }
@@ -505,7 +522,7 @@ const openAnswerForm = (row) => {
   drawerAnswerForm.value = true
 }
 const submitAnswer = async () => {
-  if (!answerForm.value.content) { ElMessage.error('请填写回答内容'); return }
+  if (!answerForm.value.content) { ElMessage.error('请填写评论内容'); return }
   let res = answerForm.value.ID ? await updateQAAnswer(answerForm.value) : await createQAAnswer(answerForm.value)
   if (res.code === 0) { ElMessage.success('保存成功'); drawerAnswerForm.value = false; loadAnswerList(); getTableData() }
 }
