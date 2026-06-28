@@ -8,6 +8,7 @@ type RouterGroup struct {
 	LandingMessageRouter
 	LandingVisitRouter
 	ContactMessageRouter
+	NewsRouter
 }
 
 var (

@@ -86,6 +86,10 @@ export default ({ mode }) => {
           changeOrigin: true,
           rewrite: (path) =>
             path.replace(new RegExp("^/plugin"), '')
+        },
+        "/news": {
+          target: `${process.env.VITE_BASE_PATH}:${process.env.VITE_SERVER_PORT}/`,
+          changeOrigin: true
         }
       }
     },

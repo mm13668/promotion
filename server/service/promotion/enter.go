@@ -13,4 +13,6 @@ type ServiceGroup struct {
 	LandingPhoneService
 	LandingVisitService
 	ContactMessageService
+	NewsService
+	NewsCategoryService
 }

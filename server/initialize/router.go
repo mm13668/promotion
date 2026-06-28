@@ -119,6 +119,44 @@ func Routers() *gin.Engine {
 		c.Status(http.StatusOK)
 		_, _ = io.Copy(c.Writer, file)
 	})
+	// 静态文件服务：news目录
+	Router.GET("/news/*filepath", func(c *gin.Context) {
+		fp := c.Param("filepath")
+		fullPath := path.Join("uploads/news", fp)
+		fileInfo, err := os.Stat(fullPath)
+		if err != nil || fileInfo.IsDir() {
+			fullPath = path.Join(fullPath, "index.html")
+			fileInfo, err = os.Stat(fullPath)
+			if err != nil || fileInfo.IsDir() {
+				c.Status(http.StatusNotFound)
+				return
+			}
+		}
+		file, err := os.Open(fullPath)
+		if err != nil {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		defer file.Close()
+		contentType := "text/html"
+		switch path.Ext(fullPath) {
+		case ".css":
+			contentType = "text/css"
+		case ".js":
+			contentType = "application/javascript"
+		case ".png":
+			contentType = "image/png"
+		case ".jpg", ".jpeg":
+			contentType = "image/jpeg"
+		case ".gif":
+			contentType = "image/gif"
+		}
+		c.Header("Content-Type", contentType)
+		c.Header("Cache-Control", "public, max-age=3600")
+		c.Status(http.StatusOK)
+		_, _ = io.Copy(c.Writer, file)
+	})
+
 	// 跨域，如需跨域可以打开下面的注释
 	Router.Use(middleware.Cors()) // 直接放行全部跨域请求
 	// Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求

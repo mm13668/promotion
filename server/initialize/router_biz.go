@@ -17,6 +17,7 @@ func initBizRouter(routers ...*gin.RouterGroup) {
 
 	holder(publicGroup, privateGroup)
 	router.RouterGroupApp.Promotion.InitRegionRouter(privateGroup)
+	router.RouterGroupApp.Promotion.InitNewsRouter(privateGroup)
 }
 
 func initBizPublicRouter(routers ...*gin.RouterGroup) {

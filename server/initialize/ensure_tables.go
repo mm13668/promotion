@@ -4,6 +4,7 @@ import (
 	"context"
 	adapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
+	promotionModel "github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	sysModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/announcement/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
@@ -107,6 +108,9 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		example.ExaAttachmentCategory{},
 
 		model.Info{},
+
+		promotionModel.News{},
+		promotionModel.NewsCategory{},
 	}
 	yes := true
 	for _, t := range tables {

@@ -13,15 +13,19 @@ type ApiGroup struct {
 	ActivityApi
 	LandingVisitApi
 	ContactMessageApi
+	NewsApi
+	NewsCategoryApi
 }
 
 var (
-	regionService   = service.ServiceGroupApp.PromotionServiceGroup.RegionService
-	groupService    = service.ServiceGroupApp.PromotionServiceGroup.GroupService
-	memberService   = service.ServiceGroupApp.PromotionServiceGroup.MemberService
-	domainService   = service.ServiceGroupApp.PromotionServiceGroup.DomainService
-	linkService     = service.ServiceGroupApp.PromotionServiceGroup.LinkService
-	qaService       = service.ServiceGroupApp.PromotionServiceGroup.QAService
-	adService       = service.ServiceGroupApp.PromotionServiceGroup.AdService
-	activityService = service.ServiceGroupApp.PromotionServiceGroup.ActivityService
+	regionService      = service.ServiceGroupApp.PromotionServiceGroup.RegionService
+	groupService       = service.ServiceGroupApp.PromotionServiceGroup.GroupService
+	memberService      = service.ServiceGroupApp.PromotionServiceGroup.MemberService
+	domainService      = service.ServiceGroupApp.PromotionServiceGroup.DomainService
+	linkService        = service.ServiceGroupApp.PromotionServiceGroup.LinkService
+	qaService          = service.ServiceGroupApp.PromotionServiceGroup.QAService
+	adService          = service.ServiceGroupApp.PromotionServiceGroup.AdService
+	activityService    = service.ServiceGroupApp.PromotionServiceGroup.ActivityService
+	newsService        = service.ServiceGroupApp.PromotionServiceGroup.NewsService
+	newsCategoryService = service.ServiceGroupApp.PromotionServiceGroup.NewsCategoryService
 )

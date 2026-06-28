@@ -79,6 +79,7 @@
   "/src/view/superAdmin/menu/components/components-cascader.vue": "ComponentsCascader",
   "/src/view/superAdmin/menu/icon.vue": "Icon",
   "/src/view/superAdmin/menu/menu.vue": "Menus",
+  "/src/view/superAdmin/news/index.vue": "Index",
   "/src/view/superAdmin/operation/sysOperationRecord.vue": "SysOperationRecord",
   "/src/view/superAdmin/params/sysParams.vue": "SysParams",
   "/src/view/superAdmin/user/user.vue": "User",

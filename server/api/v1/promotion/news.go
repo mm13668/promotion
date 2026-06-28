@@ -1,0 +1,107 @@
+package promotion
+
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+)
+
+type NewsApi struct{}
+
+func (a *NewsApi) CreateNews(c *gin.Context) {
+	var e promotion.News
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := newsService.CreateNews(e); err != nil {
+		global.GVA_LOG.Error("创建新闻失败", zap.Error(err))
+		response.FailWithMessage("创建失败", c)
+		return
+	}
+	response.OkWithMessage("创建成功", c)
+}
+
+func (a *NewsApi) DeleteNews(c *gin.Context) {
+	var e promotion.News
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := newsService.DeleteNews(e); err != nil {
+		global.GVA_LOG.Error("删除新闻失败", zap.Error(err))
+		response.FailWithMessage("删除失败", c)
+		return
+	}
+	response.OkWithMessage("删除成功", c)
+}
+
+func (a *NewsApi) UpdateNews(c *gin.Context) {
+	var e promotion.News
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := newsService.UpdateNews(&e); err != nil {
+		global.GVA_LOG.Error("更新新闻失败", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+		return
+	}
+	response.OkWithMessage("更新成功", c)
+}
+
+func (a *NewsApi) FindNews(c *gin.Context) {
+	var e request.GetById
+	if err := c.ShouldBindQuery(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	data, err := newsService.FindNewsWithCategory(uint(e.ID))
+	if err != nil {
+		global.GVA_LOG.Error("查询新闻失败", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"data": data}, "获取成功", c)
+}
+
+func (a *NewsApi) GetNewsList(c *gin.Context) {
+	var pageInfo promotion.NewsSearch
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	list, total, err := newsService.GetNewsList(pageInfo)
+	if err != nil {
+		global.GVA_LOG.Error("查询新闻列表失败", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    total,
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+	}, "获取成功", c)
+}
+
+// PublishNews 发布新闻，生成静态HTML页面
+func (a *NewsApi) PublishNews(c *gin.Context) {
+	var e request.GetById
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	publishedPath, err := newsService.PublishNews(uint(e.ID))
+	if err != nil {
+		global.GVA_LOG.Error("发布新闻失败", zap.Error(err))
+		response.FailWithMessage("发布失败："+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"publishedPath": publishedPath}, "发布成功", c)
+}
+
+
