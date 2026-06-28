@@ -138,6 +138,10 @@ func (r *RegionRouter) InitRegionRouter(Router *gin.RouterGroup) {
 
 		// 落地页留言与登录信息
 		group.GET("landingMessage/list", promoApi.GetLandingMessageList)
+		group.PUT("landingMessage/updateProcessed", promoApi.UpdateLandingMessageProcessed)
+		group.PUT("landingMessage/batchUpdateProcessed", promoApi.BatchUpdateLandingMessageProcessed)
+		group.PUT("landingMessage/markAllProcessed", promoApi.MarkAllLandingMessageProcessed)
+		group.GET("landingMessage/unprocessedCount", promoApi.GetUnprocessedMessageCount)
 		group.GET("landingPhone/list", promoApi.GetLandingPhoneList)
 	}
 }

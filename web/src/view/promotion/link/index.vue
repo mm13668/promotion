@@ -91,7 +91,9 @@
             <el-tooltip content="请先设置好「基本设置」和「资质公司」两个选项，才能发布更新" placement="top">
               <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
             </el-tooltip>
-            <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
+            <el-badge :value="unprocessedMsgMap[row.ID] || 0" :hidden="!unprocessedMsgMap[row.ID]" class="mr-2">
+              <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
+            </el-badge>
             <el-button type="primary" link @click="remove(row)">删除</el-button>
             <!--            <el-button type="primary" link @click="openCode(row)">代码设置</el-button>-->
             <!--            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>-->
@@ -440,7 +442,7 @@
      </el-dialog>
 
      <!-- 留言信息弹窗 -->
-     <el-dialog v-model="messageDialogVisible" title="留言信息" width="900px">
+     <el-dialog v-model="messageDialogVisible" title="留言信息" width="1000px" @open="getMessageList">
        <el-form :inline="true" :model="messageSearch" class="mb-4">
          <el-form-item label="IP">
            <el-input v-model="messageSearch.ip" placeholder="请输入IP" />
@@ -451,18 +453,40 @@
          <el-form-item label="时间范围">
            <el-date-picker v-model="messageSearch.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
          </el-form-item>
+         <el-form-item label="是否已处理">
+           <el-select v-model="messageSearch.processed" clearable placeholder="全部" style="width:120px">
+             <el-option label="未处理" :value="0" />
+             <el-option label="已处理" :value="1" />
+           </el-select>
+         </el-form-item>
          <el-form-item>
            <el-button type="primary" @click="getMessageList">查询</el-button>
            <el-button @click="resetMessageSearch">重置</el-button>
          </el-form-item>
        </el-form>
-       <el-table :data="messageList" style="width:100%">
-<!--         <el-table-column prop="name" label="姓名" width="100" />-->
+       <div class="mb-2">
+         <el-button type="primary" :disabled="!messageSelectedIds.length" @click="batchMarkProcessed(true)">批量标为已处理</el-button>
+         <el-button type="warning" :disabled="!messageSelectedIds.length" @click="batchMarkProcessed(false)">批量标为未处理</el-button>
+         <el-button type="success" @click="markAllProcessed">全部标记已处理</el-button>
+         <span class="ml-4 text-gray-500">未处理：{{ messageUnprocessedTotal }}</span>
+       </div>
+       <el-table :data="messageList" style="width:100%" @selection-change="handleMessageSelectionChange">
+         <el-table-column type="selection" width="55" />
          <el-table-column prop="phone" label="手机号" width="130" />
          <el-table-column prop="content" label="留言内容" show-overflow-tooltip />
          <el-table-column prop="userAgent" label="设备信息" show-overflow-tooltip />
          <el-table-column prop="ip" label="IP" />
-         <el-table-column prop="CreatedAt" label="提交时间" />
+         <el-table-column prop="CreatedAt" label="提交时间" width="180" />
+         <el-table-column label="已处理" width="100" align="center">
+           <template #default="{ row }">
+             <el-switch
+               v-model="row.processed"
+               active-text="是"
+               inactive-text="否"
+               @change="handleMessageProcessedChange(row)"
+             />
+           </template>
+         </el-table-column>
        </el-table>
        <el-pagination
          class="mt-4"
@@ -566,7 +590,9 @@ import {
   getAdPlatformList, getQAQuestionList, getTemplateWidgetList,
   publishPromotionLink, updatePromotionLinkOcpc,
   getLandingMessageList, getLandingPhoneList,
-  getLinkGroupMembers, updateGroupMemberStatus
+  getLinkGroupMembers, updateGroupMemberStatus,
+  updateLandingMessageProcessed, batchUpdateLandingMessageProcessed,
+  markAllLandingMessageProcessed, getUnprocessedMessageCount
 } from '@/api/promotion'
 import { getBaseUrl } from '@/utils/format'
 import { useAppStore } from '@/pinia/modules/app'
@@ -578,6 +604,7 @@ const tableData = ref([])
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
+const unprocessedMsgMap = ref({})
 const platformOptions = ref([])
 const regionOptions = ref([])
 const groupOptions = ref([])
@@ -596,7 +623,23 @@ const getTableData = async () => {
     total.value = res.data.total
     page.value = res.data.page
     pageSize.value = res.data.pageSize
+    loadUnprocessedCounts()
   }
+}
+
+const loadUnprocessedCounts = async () => {
+  const map = {}
+  await Promise.all(tableData.value.map(async (row) => {
+    try {
+      const res = await getUnprocessedMessageCount({ linkId: row.ID })
+      if (res.code === 0) {
+        map[row.ID] = res.data
+      }
+    } catch (e) {
+      // ignore
+    }
+  }))
+  unprocessedMsgMap.value = map
 }
 getTableData()
 const loadBasicOptions = async () => {
@@ -639,6 +682,7 @@ const onSubmit = async () => {
     total.value = res.data.total
     page.value = res.data.page
     pageSize.value = res.data.pageSize
+    loadUnprocessedCounts()
   }
 }
 const onReset = () => { search.value = { platformId: null, regionId: null, groupId: null, domainId: null }; onSubmit() }
@@ -770,6 +814,8 @@ const messageList = ref([])
 const messagePage = ref(1)
 const messagePageSize = ref(10)
 const messageTotal = ref(0)
+const messageSelectedIds = ref([])
+const messageUnprocessedTotal = ref(0)
 
 // 登录信息相关
 const phoneDialogVisible = ref(false)
@@ -857,9 +903,10 @@ const submitComment = async () => {
 // 打开留言信息弹窗
 const openMessage = (row) => {
   currentLinkId.value = row.ID
-  messageSearch.value = { ip: '', phone: '', dateRange: [] }
+  messageSearch.value = { ip: '', phone: '', dateRange: [], processed: null }
   messagePage.value = 1
   messagePageSize.value = 10
+  messageSelectedIds.value = []
   getMessageList()
   messageDialogVisible.value = true
 }
@@ -877,12 +924,28 @@ const getMessageList = async () => {
     params.startTime = messageSearch.value.dateRange[0]
     params.endTime = messageSearch.value.dateRange[1]
   }
+  if (messageSearch.value.processed !== null && messageSearch.value.processed !== '') {
+    params.processed = messageSearch.value.processed
+  }
   const res = await getLandingMessageList(params)
   if (res.code === 0) {
     messageList.value = res.data.list
     messageTotal.value = res.data.total
     messagePage.value = res.data.page
     messagePageSize.value = res.data.pageSize
+    messageSelectedIds.value = []
+  }
+  updateUnprocessedTotal()
+}
+
+const updateUnprocessedTotal = async () => {
+  try {
+    const res = await getUnprocessedMessageCount({ linkId: currentLinkId.value })
+    if (res.code === 0) {
+      messageUnprocessedTotal.value = res.data
+    }
+  } catch (e) {
+    // ignore
   }
 }
 
@@ -892,8 +955,57 @@ const handleMessageCurrentChange = (val) => { messagePage.value = val; getMessag
 
 // 重置留言搜索
 const resetMessageSearch = () => {
-  messageSearch.value = { ip: '', phone: '', dateRange: [] }
+  messageSearch.value = { ip: '', phone: '', dateRange: [], processed: null }
   getMessageList()
+}
+
+// 单个标记处理状态
+const handleMessageProcessedChange = async (row) => {
+  try {
+    const res = await updateLandingMessageProcessed({ id: row.ID, processed: row.processed })
+    if (res.code === 0) {
+      ElMessage.success(row.processed ? '已标记为已处理' : '已标记为未处理')
+      updateUnprocessedTotal()
+      loadUnprocessedCounts()
+    } else {
+      row.processed = !row.processed
+    }
+  } catch (e) {
+    row.processed = !row.processed
+  }
+}
+
+// 批量选择
+const handleMessageSelectionChange = (selection) => {
+  messageSelectedIds.value = selection.map(item => item.ID)
+}
+
+// 批量标记
+const batchMarkProcessed = async (processed) => {
+  try {
+    const res = await batchUpdateLandingMessageProcessed({ ids: messageSelectedIds.value, processed })
+    if (res.code === 0) {
+      ElMessage.success(processed ? '已批量标记为已处理' : '已批量标记为未处理')
+      getMessageList()
+      loadUnprocessedCounts()
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
+// 全部标记已处理
+const markAllProcessed = async () => {
+  try {
+    const res = await markAllLandingMessageProcessed({ linkId: String(currentLinkId.value), processed: true })
+    if (res.code === 0) {
+      ElMessage.success('已全部标记为已处理')
+      getMessageList()
+      loadUnprocessedCounts()
+    }
+  } catch (e) {
+    // ignore
+  }
 }
 
 // 打开登录信息弹窗

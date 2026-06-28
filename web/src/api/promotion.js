@@ -308,6 +308,26 @@ export const getLandingMessageList = (params) => {
   return service({ url: '/promotion/landingMessage/list', method: 'get', params })
 }
 
+// 更新留言处理状态
+export const updateLandingMessageProcessed = (data) => {
+  return service({ url: '/promotion/landingMessage/updateProcessed', method: 'put', data })
+}
+
+// 批量更新留言处理状态
+export const batchUpdateLandingMessageProcessed = (data) => {
+  return service({ url: '/promotion/landingMessage/batchUpdateProcessed', method: 'put', data })
+}
+
+// 全部标记为已处理/未处理
+export const markAllLandingMessageProcessed = (data) => {
+  return service({ url: '/promotion/landingMessage/markAllProcessed', method: 'put', data })
+}
+
+// 获取未处理留言数量
+export const getUnprocessedMessageCount = (params) => {
+  return service({ url: '/promotion/landingMessage/unprocessedCount', method: 'get', params })
+}
+
 // 落地页手机号列表
 export const getLandingPhoneList = (params) => {
   return service({ url: '/promotion/landingPhone/list', method: 'get', params })

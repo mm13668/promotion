@@ -75,3 +75,109 @@ func (p *ApiGroup) GetLandingMessageList(c *gin.Context) {
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
 }
+
+// UpdateLandingMessageProcessed 更新留言处理状态
+// @Tags LandingMessage
+// @Summary 更新留言处理状态
+// @accept application/json
+// @Produce application/json
+// @Param data body promotion.LandingMessage true "更新留言处理状态"
+// @Success 200 {object} response.Response{msg=string} "更新成功"
+// @Router /promotion/landingMessage/updateProcessed [put]
+func (p *ApiGroup) UpdateLandingMessageProcessed(c *gin.Context) {
+	var req struct {
+		ID        uint `json:"id"`
+		Processed bool `json:"processed"`
+	}
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = landingMessageService.UpdateLandingMessageProcessed(req.ID, req.Processed)
+	if err != nil {
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+		return
+	}
+	response.OkWithMessage("更新成功", c)
+}
+
+// BatchUpdateLandingMessageProcessed 批量更新留言处理状态
+// @Tags LandingMessage
+// @Summary 批量更新留言处理状态
+// @accept application/json
+// @Produce application/json
+// @Param data body promotion.BatchProcessedReq true "批量更新留言处理状态"
+// @Success 200 {object} response.Response{msg=string} "更新成功"
+// @Router /promotion/landingMessage/batchUpdateProcessed [put]
+func (p *ApiGroup) BatchUpdateLandingMessageProcessed(c *gin.Context) {
+	var req promotion.BatchProcessedReq
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if len(req.IDs) == 0 {
+		response.FailWithMessage("请选择留言", c)
+		return
+	}
+	err = landingMessageService.BatchUpdateLandingMessageProcessed(req.IDs, req.Processed)
+	if err != nil {
+		global.GVA_LOG.Error("批量更新失败!", zap.Error(err))
+		response.FailWithMessage("批量更新失败", c)
+		return
+	}
+	response.OkWithMessage("更新成功", c)
+}
+
+// MarkAllLandingMessageProcessed 全部标记为已处理/未处理
+// @Tags LandingMessage
+// @Summary 全部标记为已处理/未处理
+// @accept application/json
+// @Produce application/json
+// @Param data body promotion.AllProcessedReq true "全部标记"
+// @Success 200 {object} response.Response{msg=string} "操作成功"
+// @Router /promotion/landingMessage/markAllProcessed [put]
+func (p *ApiGroup) MarkAllLandingMessageProcessed(c *gin.Context) {
+	var req promotion.AllProcessedReq
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if req.LinkID == "" {
+		response.FailWithMessage("链接ID不能为空", c)
+		return
+	}
+	err = landingMessageService.MarkAllLandingMessageProcessed(req.LinkID, req.Processed)
+	if err != nil {
+		global.GVA_LOG.Error("操作失败!", zap.Error(err))
+		response.FailWithMessage("操作失败", c)
+		return
+	}
+	response.OkWithMessage("操作成功", c)
+}
+
+// GetUnprocessedMessageCount 获取未处理留言数量
+// @Tags LandingMessage
+// @Summary 获取未处理留言数量
+// @accept application/json
+// @Produce application/json
+// @Param linkId query string true "推广链接ID"
+// @Success 200 {object} response.Response{data=int64} "获取成功"
+// @Router /promotion/landingMessage/unprocessedCount [get]
+func (p *ApiGroup) GetUnprocessedMessageCount(c *gin.Context) {
+	linkID := c.Query("linkId")
+	if linkID == "" {
+		response.FailWithMessage("链接ID不能为空", c)
+		return
+	}
+	count, err := landingMessageService.GetUnprocessedMessageCount(linkID)
+	if err != nil {
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(count, "获取成功", c)
+}
