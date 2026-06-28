@@ -12,7 +12,7 @@ import (
 
 const (
 	// 与 ad_platform.platform_key 的值保持一致
-	HuiChuanProviderName = "UC(超级汇川)"
+	HuiChuanProviderName = "huichuan"
 	huichuanApiUrl       = "https://huichuan.uc.cn/callback/webapi"
 )
 
