@@ -108,6 +108,46 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 		query.Where("status = ?", 1).Count(&onlineCount)
 		list[i].ServiceOnlineCount = int(onlineCount)
 	}
+
+	if len(list) > 0 {
+		todayStart := time.Now().Truncate(24 * time.Hour)
+		linkIDs := make([]uint, len(list))
+		for i, l := range list {
+			linkIDs[i] = l.ID
+		}
+
+		type todayStats struct {
+			LinkID uint
+			Count  int64
+		}
+
+		var visitStats []todayStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND created_at >= ?", linkIDs, todayStart).
+			Group("link_id").
+			Find(&visitStats)
+		visitMap := make(map[uint]int64, len(visitStats))
+		for _, s := range visitStats {
+			visitMap[s.LinkID] = s.Count
+		}
+
+		var copyStats []todayStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_copied = ? AND created_at >= ?", linkIDs, true, todayStart).
+			Group("link_id").
+			Find(&copyStats)
+		copyMap := make(map[uint]int64, len(copyStats))
+		for _, s := range copyStats {
+			copyMap[s.LinkID] = s.Count
+		}
+
+		for i := range list {
+			list[i].TodayVisitCount = int(visitMap[list[i].ID])
+			list[i].TodayCopyCount = int(copyMap[list[i].ID])
+		}
+	}
 	return
 }
 

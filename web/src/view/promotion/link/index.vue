@@ -64,28 +64,38 @@
         </el-table-column>
 
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column prop="visitCount" label="访问" width="80" />
-        <el-table-column prop="copyCount" label="复制" width="80" />
+        <el-table-column label="数据" width="160">
+          <template #default="{ row }">
+            <div class="flex justify-between text-sm">
+              <span>总访问 {{ row.visitCount || 0 }}</span>
+              <span>今日访问 {{ row.todayVisitCount || 0 }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>总复制 {{ row.copyCount || 0 }}</span>
+              <span>今日复制 {{ row.todayCopyCount || 0 }}</span>
+            </div>
+          </template>
+        </el-table-column>
 <!--        <el-table-column prop="inquiryCount" label="咨询" width="80" />-->
 <!--        <el-table-column prop="conversionCount" label="转化" width="80" />-->
 <!--        <el-table-column prop="followCount" label="到粉" width="80" />-->
-        <el-table-column prop="sort" label="排序" width="100" />
-        <el-table-column fixed="right" label="操作" width="560">
+<!--        <el-table-column prop="sort" label="排序" width="100" />-->
+        <el-table-column fixed="right" label="操作" width="280">
           <template #default="{ row }">
             <el-button type="primary" link @click="openForm(row)">编辑</el-button>
             <el-button type="primary" link @click="openBasic(row)">基本设置</el-button>
             <el-button type="primary" link @click="openCompany(row)">资质公司</el-button>
-<!--            <el-button type="primary" link @click="openCode(row)">代码设置</el-button>-->
-<!--            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>-->
-<!--            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>-->
+            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
+            <br>
             <el-button type="success" link @click="showLink(row)">推广链接</el-button>
             <el-tooltip content="请先设置好「基本设置」和「资质公司」两个选项，才能发布更新" placement="top">
               <el-button type="warning" link @click="publishLink(row)">发布更新</el-button>
             </el-tooltip>
-            <el-button type="info" link @click="openOcpc(row)">OCPC</el-button>
             <el-button type="success" link @click="openMessage(row)">留言信息</el-button>
-<!--            <el-button type="primary" link @click="openPhone(row)">登录信息</el-button>-->
             <el-button type="primary" link @click="remove(row)">删除</el-button>
+            <!--            <el-button type="primary" link @click="openCode(row)">代码设置</el-button>-->
+            <!--            <el-button type="primary" link @click="openTheme(row)">颜色调整</el-button>-->
+            <!--            <el-button type="primary" link @click="openComment(row)">评论设置</el-button>-->
           </template>
         </el-table-column>
       </el-table>
