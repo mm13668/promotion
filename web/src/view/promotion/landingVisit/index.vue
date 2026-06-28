@@ -18,8 +18,8 @@
         <el-form-item label="来源链接">
           <el-input v-model="search.referer" placeholder="请输入来源链接关键字" clearable style="width: 200px" />
         </el-form-item>
-        <el-form-item label="请求来源">
-          <el-input v-model="search.requestReferer" placeholder="请输入请求来源关键字" clearable style="width: 200px" />
+        <el-form-item label="访问链接">
+          <el-input v-model="search.requestReferer" placeholder="请输入访问链接关键字" clearable style="width: 200px" />
         </el-form-item>
         <el-form-item label="是否复制">
           <el-select v-model="search.isCopied" clearable placeholder="是否复制" style="width: 120px">
@@ -54,6 +54,7 @@
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button type="primary" icon="download" @click="exportExcel">导出</el-button>
+        <span class="ml-4 text-gray-400 text-xs">数据仅保留最近3天</span>
       </div>
       <el-table
         :data="tableData"
@@ -63,10 +64,11 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="ID" label="ID" width="80" />
         <el-table-column prop="linkId" label="推广链接ID" width="100" />
+        <el-table-column prop="categoryName" label="所属分类" width="120" />
         <el-table-column prop="ip" label="IP地址" width="140" />
         <el-table-column prop="region" label="地区" width="120" />
         <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip />
-        <el-table-column prop="requestReferer" label="请求来源" width="200" show-overflow-tooltip />
+        <el-table-column prop="requestReferer" label="访问链接" width="200" show-overflow-tooltip />
 <!--        <el-table-column prop="userAgent" label="浏览器UA" width="200" show-overflow-tooltip />-->
 <!--        <el-table-column prop="requestUserAgent" label="请求UA" width="200" show-overflow-tooltip />-->
         <el-table-column prop="duration" label="浏览时长(秒)" width="120" />
@@ -249,8 +251,71 @@ const handleManualCallback = async (row) => {
 }
 
 // 导出
-const exportExcel = () => {
-  ElMessage.success('导出功能开发中...')
+const exportExcel = async () => {
+  try {
+    const params = {
+      page: 1,
+      pageSize: 100000
+    }
+    if (search.linkId) params.linkId = search.linkId
+    if (search.ip) params.ip = search.ip
+    if (search.referer) params.referer = search.referer
+    if (search.requestReferer) params.requestReferer = search.requestReferer
+    if (search.isCopied !== null) params.isCopied = search.isCopied
+    if (search.isOcpcCallback !== null) params.isOcpcCallback = search.isOcpcCallback
+    if (search.dates && search.dates.length === 2) {
+      const [s, e] = search.dates
+      params.startTime = s ? formatDate(s) : undefined
+      params.endTime = e ? formatDate(e) : undefined
+    }
+
+    const res = await getLandingVisitList(params)
+    if (res.code !== 0) {
+      ElMessage.error('导出失败')
+      return
+    }
+    const data = res.data.list || []
+    if (!data.length) {
+      ElMessage.warning('没有可导出的数据')
+      return
+    }
+
+    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否回传', '创建时间']
+    const csvRows = [headers.join(',')]
+    for (const row of data) {
+      csvRows.push([
+        row.ID,
+        row.linkId,
+        `"${(row.categoryName || '').replace(/"/g, '""')}"`,
+        row.ip,
+        `"${(row.region || '').replace(/"/g, '""')}"`,
+        `"${(row.referer || '').replace(/"/g, '""')}"`,
+        `"${(row.requestReferer || '').replace(/"/g, '""')}"`,
+        row.duration ?? 0,
+        row.isCopied ? '已复制' : '未复制',
+        `"${(row.copiedServicePhone || '').replace(/"/g, '""')}"`,
+        `"${(row.copiedServiceNickname || '').replace(/"/g, '""')}"`,
+        formatDateTime(row.copiedAt),
+        row.isOcpcCallback ? '已回传' : '未回传',
+        formatDateTime(row.CreatedAt)
+      ].join(','))
+    }
+
+    const bom = '\uFEFF'
+    const blob = new Blob([bom + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `访问记录_${formatDate(new Date())}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    ElMessage.success(`导出成功，共 ${data.length} 条记录`)
+  } catch (e) {
+    console.error('导出失败:', e)
+    ElMessage.error('导出失败')
+  }
 }
 
 // 选择变化

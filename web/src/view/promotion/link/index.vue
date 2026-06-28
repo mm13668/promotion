@@ -67,11 +67,11 @@
         <el-table-column label="数据" width="160">
           <template #default="{ row }">
             <div class="flex justify-between text-sm">
-              <span>总访问 {{ row.visitCount || 0 }}</span>
+              <span>昨天访问 {{ row.yesterdayVisitCount || 0 }}</span>
               <span>今日访问 {{ row.todayVisitCount || 0 }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span>总复制 {{ row.copyCount || 0 }}</span>
+              <span>昨天复制 {{ row.yesterdayCopyCount || 0 }}</span>
               <span>今日复制 {{ row.todayCopyCount || 0 }}</span>
             </div>
           </template>
