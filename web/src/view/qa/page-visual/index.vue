@@ -86,8 +86,9 @@
 
       <!-- 右侧编辑面板 -->
       <div class="edit-panel">
-        <div class="panel-header">
+        <div class="panel-header panel-header-col">
           <span class="panel-title">编辑</span>
+          <div class="panel-tip">客服昵称号码用 <code>##昵称加号码##</code> 代替，仅昵称用 <code>##昵称##</code> 代替，客服号码用 <code>##号码##</code> 代替；根据客服性别替换成他或她，用 <code>##ta##</code> 代替</div>
         </div>
         <div class="edit-body" v-if="questionDetail.ID">
           <el-tabs v-model="activeTab" type="border-card">
@@ -350,7 +351,7 @@
         <el-form-item label="排序">
           <el-input-number v-model="createForm.sort" :min="0" />
         </el-form-item>
-        <el-form-item label="内容（客服昵称号码使用统一 ##昵称加号码## 代替，仅昵称使用统一 ##昵称## 代替，客服号码使用统一 ##号码## 代替；根据客服性别替换成他或她，使用统一 ##ta## 代替）" required>
+        <el-form-item label="内容（客服昵称号码用 ##昵称加号码## 代替，仅昵称用 ##昵称## 代替，客服号码用 ##号码## 代替；根据客服性别替换成他或她，用 ##ta## 代替）" required>
           <RichEdit v-model="createForm.content" :height="300" />
         </el-form-item>
       </el-form>
@@ -943,6 +944,26 @@ const removeReply = async (row) => {
   font-size: 15px;
   font-weight: 600;
   color: #333;
+}
+
+.panel-header-col {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.panel-tip {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.5;
+}
+
+.panel-tip code {
+  font-size: 12px;
+  color: #e6a23c;
+  background: #fdf6ec;
+  padding: 0 4px;
+  border-radius: 3px;
 }
 
 .preview-body {
