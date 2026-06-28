@@ -1,7 +1,7 @@
 # 需求
 1. 修改后台提示词
 页面 /Users/wangjingjun/work/promotion/web/src/view/qa/question/index.vue 
-内容（客服昵称使用统一`##昵称加号码##`代替）替换为 内容（客服昵称号码使用统一`##昵称加号码##`代替，仅昵称使用统一`##昵称##`代替，客服号码使用统一`##号码##`代替）
+内容（客服昵称用`##昵称加号码##`代替）替换为 内容（客服昵称号码用`##昵称加号码##`代替，仅昵称用`##昵称##`代替，客服号码用`##号码##`代替）
 
 2. 根据提示词，修改模板
    /Users/wangjingjun/work/promotion/server/uploads/template
