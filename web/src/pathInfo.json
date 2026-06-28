@@ -51,6 +51,7 @@
   "/src/view/layout/tabs/index.vue": "HistoryComponent",
   "/src/view/login/index.vue": "Login",
   "/src/view/person/person.vue": "Person",
+  "/src/view/promotion/contactMessage/index.vue": "Index",
   "/src/view/promotion/domain/index.vue": "Index",
   "/src/view/promotion/group/index.vue": "Index",
   "/src/view/promotion/landingVisit/index.vue": "Index",

@@ -351,3 +351,16 @@ export const getLinkGroupMembers = (params) => {
 export const updateGroupMemberStatus = (data) => {
   return service({ url: '/promotion/updateGroupMemberStatus', method: 'put', data })
 }
+
+// 官网留言
+export const createContactMessage = (data) => {
+  return service({ url: '/promotion/contactMessage/create', method: 'post', data })
+}
+
+export const getContactMessageList = (params) => {
+  return service({ url: '/promotion/contactMessage/list', method: 'get', params })
+}
+
+export const updateContactMessageProcessed = (data) => {
+  return service({ url: '/promotion/contactMessage/updateProcessed', method: 'put', data })
+}
