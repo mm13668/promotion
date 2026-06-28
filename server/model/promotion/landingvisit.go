@@ -38,6 +38,7 @@ type LandingVisit struct {
 	RefererUrl            string    `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
 	LastReportAt          time.Time `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
 	ConversionType        string    `json:"conversionType" gorm:"column:conversion_type;type:varchar(32);comment:转化类型(多个用逗号分隔):35=微信复制 3=表单提交 49=注册转化"`
+	CategoryName          string    `json:"categoryName" gorm:"-"`
 }
 
 func (LandingVisit) TableName() string {

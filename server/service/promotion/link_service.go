@@ -110,18 +110,20 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 	}
 
 	if len(list) > 0 {
-		todayStart := time.Now().Truncate(24 * time.Hour)
+		now := time.Now()
+		todayStart := now.Truncate(24 * time.Hour)
+		yesterdayStart := todayStart.Add(-24 * time.Hour)
 		linkIDs := make([]uint, len(list))
 		for i, l := range list {
 			linkIDs[i] = l.ID
 		}
 
-		type todayStats struct {
+		type dateStats struct {
 			LinkID uint
 			Count  int64
 		}
 
-		var visitStats []todayStats
+		var visitStats []dateStats
 		global.GVA_DB.Model(&promotion.LandingVisit{}).
 			Select("link_id, COUNT(*) as count").
 			Where("link_id IN ? AND created_at >= ?", linkIDs, todayStart).
@@ -132,7 +134,7 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 			visitMap[s.LinkID] = s.Count
 		}
 
-		var copyStats []todayStats
+		var copyStats []dateStats
 		global.GVA_DB.Model(&promotion.LandingVisit{}).
 			Select("link_id, COUNT(*) as count").
 			Where("link_id IN ? AND is_copied = ? AND created_at >= ?", linkIDs, true, todayStart).
@@ -143,9 +145,33 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 			copyMap[s.LinkID] = s.Count
 		}
 
+		var yesterdayVisitStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND created_at >= ? AND created_at < ?", linkIDs, yesterdayStart, todayStart).
+			Group("link_id").
+			Find(&yesterdayVisitStats)
+		yesterdayVisitMap := make(map[uint]int64, len(yesterdayVisitStats))
+		for _, s := range yesterdayVisitStats {
+			yesterdayVisitMap[s.LinkID] = s.Count
+		}
+
+		var yesterdayCopyStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_copied = ? AND created_at >= ? AND created_at < ?", linkIDs, true, yesterdayStart, todayStart).
+			Group("link_id").
+			Find(&yesterdayCopyStats)
+		yesterdayCopyMap := make(map[uint]int64, len(yesterdayCopyStats))
+		for _, s := range yesterdayCopyStats {
+			yesterdayCopyMap[s.LinkID] = s.Count
+		}
+
 		for i := range list {
 			list[i].TodayVisitCount = int(visitMap[list[i].ID])
 			list[i].TodayCopyCount = int(copyMap[list[i].ID])
+			list[i].YesterdayVisitCount = int(yesterdayVisitMap[list[i].ID])
+			list[i].YesterdayCopyCount = int(yesterdayCopyMap[list[i].ID])
 		}
 	}
 	return

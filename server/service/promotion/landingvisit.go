@@ -211,5 +211,51 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 		return
 	}
 	err = db.Order("created_at desc").Limit(limit).Offset(offset).Find(&list).Error
+	if err != nil {
+		return
+	}
+
+	// 批量查询所属分类名称
+	if len(list) > 0 {
+		linkIDs := make([]uint, 0, len(list))
+		for _, v := range list {
+			linkIDs = append(linkIDs, v.LinkId)
+		}
+
+		type linkRegion struct {
+			ID       uint
+			RegionID *uint
+		}
+		var linkResults []linkRegion
+		global.GVA_DB.Model(&promotion.PromotionLink{}).
+			Select("id, region_id").
+			Where("id IN ?", linkIDs).
+			Find(&linkResults)
+
+		regionIDMap := make(map[uint]*uint, len(linkResults))
+		regionIDs := make([]uint, 0)
+		for _, r := range linkResults {
+			regionIDMap[r.ID] = r.RegionID
+			if r.RegionID != nil {
+				regionIDs = append(regionIDs, *r.RegionID)
+			}
+		}
+
+		categoryNameMap := make(map[uint]string, len(regionIDs))
+		if len(regionIDs) > 0 {
+			var categories []promotion.RegionCategory
+			global.GVA_DB.Where("id IN ?", regionIDs).Find(&categories)
+			for _, c := range categories {
+				categoryNameMap[c.ID] = c.Name
+			}
+		}
+
+		for i, v := range list {
+			if rid, ok := regionIDMap[v.LinkId]; ok && rid != nil {
+				list[i].CategoryName = categoryNameMap[*rid]
+			}
+		}
+	}
+
 	return
 }

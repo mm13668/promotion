@@ -37,6 +37,8 @@ type PromotionLink struct {
 	ServiceOnlineCount int                   `json:"serviceOnlineCount" gorm:"-"`
 	TodayVisitCount    int                   `json:"todayVisitCount" gorm:"-"`
 	TodayCopyCount     int                   `json:"todayCopyCount" gorm:"-"`
+	YesterdayVisitCount int                  `json:"yesterdayVisitCount" gorm:"-"`
+	YesterdayCopyCount  int                  `json:"yesterdayCopyCount" gorm:"-"`
 	Basic              *PromotionLinkBasic   `json:"basic" gorm:"-"`
 	Company            *PromotionLinkCompany `json:"company" gorm:"-"`
 	CodeCfg            *PromotionLinkCode    `json:"codeCfg" gorm:"-"`
