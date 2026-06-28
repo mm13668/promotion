@@ -12,6 +12,7 @@ type ApiGroup struct {
 	AdApi
 	ActivityApi
 	LandingVisitApi
+	ContactMessageApi
 }
 
 var (

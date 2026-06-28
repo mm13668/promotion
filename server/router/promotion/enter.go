@@ -7,6 +7,7 @@ type RouterGroup struct {
 	LandingPhoneRouter
 	LandingMessageRouter
 	LandingVisitRouter
+	ContactMessageRouter
 }
 
 var (

@@ -12,4 +12,5 @@ type ServiceGroup struct {
 	LandingMessageService
 	LandingPhoneService
 	LandingVisitService
+	ContactMessageService
 }
