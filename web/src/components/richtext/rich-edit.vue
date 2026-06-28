@@ -199,13 +199,15 @@ const onReady = (editorRef) => {
             xhr.onload = () => {
               try {
                 const res = JSON.parse(xhr.responseText)
-                const fileUrl = res.data.file.url || res.data.file.Url
-                if (res.code === 0 && res.data && res.data.file && fileUrl) {
-                  const fullUrl = getBaseUrl() + '/' + fileUrl
-                  resolve({ default: fullUrl })
-                } else {
-                  reject(new Error(res.msg || '图片上传失败'))
+                if (res.code === 0 && res.data && res.data.file) {
+                  const fileUrl = res.data.file.url || res.data.file.Url
+                  if (fileUrl) {
+                    const fullUrl = getBaseUrl() + '/' + fileUrl
+                    resolve({ default: fullUrl })
+                    return
+                  }
                 }
+                reject(new Error(res.msg || '图片上传失败'))
               } catch (e) {
                 reject(new Error('解析上传响应失败'))
               }
