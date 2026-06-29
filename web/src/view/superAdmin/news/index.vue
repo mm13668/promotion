@@ -407,7 +407,7 @@ const handlePublish = async (row) => {
 
 const previewNews = (row) => {
   if (row.publishedPath) {
-    window.open(`${location.origin}${row.publishedPath}`, '_blank')
+    window.open(row.publishedPath, '_blank')
   }
 }
 
