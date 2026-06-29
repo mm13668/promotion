@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>test news</title>
-    <meta name="keywords" content="11">
-    <meta name="description" content="111">
+    <title>{{.Title}}</title>
+    <meta name="keywords" content="{{.SeoKeywords}}">
+    <meta name="description" content="{{.SeoDescription}}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -159,22 +159,28 @@
 <body>
     <div class="news-wrapper">
         <div class="news-header">
-            <h1 class="news-title">test news</h1>
+            <h1 class="news-title">{{.Title}}</h1>
             <div class="news-meta">
-                <span class="category">test</span>
-                
-                <span>作者: mm</span>
-                <span>发布时间: 2026-06-29 09:19:09</span>
-                
-                <span>浏览: 0</span>
+                {{if .Category}}<span class="category">{{.Category}}</span>{{end}}
+                {{if .IsTop}}<span class="is-top">置顶</span>{{end}}
+                {{if .Author}}<span>作者: {{.Author}}</span>{{end}}
+                {{if .PublishTime}}<span>发布时间: {{.PublishTime}}</span>{{end}}
+                {{if .Source}}<span>来源: {{if .SourceURL}}<a href="{{.SourceURL}}" target="_blank" rel="noopener">{{.Source}}</a>{{else}}{{.Source}}{{end}}</span>{{end}}
+                <span>浏览: {{.ViewCount}}</span>
             </div>
         </div>
-        
-        
-        <div class="news-content"><p>11111</p></div>
+        {{if .CoverImage}}
+        <div class="news-cover">
+            <img src="{{.CoverImage}}" alt="{{.Title}}" onerror="this.style.display='none'">
+        </div>
+        {{end}}
+        {{if .Summary}}
+        <div class="news-summary">{{.Summary}}</div>
+        {{end}}
+        <div class="news-content">{{.Content}}</div>
         <div class="news-footer">
-            <p>本文来源: </p>
-            <p>Copyright &copy; 2026 All Rights Reserved.</p>
+            <p>本文来源: {{if .SourceURL}}<a href="{{.SourceURL}}" target="_blank" rel="noopener">{{.Source}}</a>{{else}}{{.Source}}{{end}}</p>
+            <p>Copyright &copy; {{.Year}} All Rights Reserved.</p>
         </div>
     </div>
 </body>

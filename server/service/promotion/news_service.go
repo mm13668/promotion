@@ -118,6 +118,12 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 
 	newsPath := fmt.Sprintf("/news/%d", id)
 
+	// 如果配置了新闻预览域名，使用完整 URL
+	domain := global.GVA_CONFIG.Conf.NewsDomain
+	if domain != "" {
+		newsPath = fmt.Sprintf("https://%s/%d/index.html", domain, id)
+	}
+
 	data := struct {
 		Title          string
 		Summary        string
@@ -156,10 +162,12 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		Year:           time.Now().Year(),
 	}
 
-	tmpl, err := template.New("news").Parse(newsHTMLTemplate)
+	tmpl, err := template.ParseFiles("uploads/news/temp/index.html")
 	if err != nil {
-		return "", fmt.Errorf("解析模板失败: %w", err)
+		return "", fmt.Errorf("加载模板失败: %w", err)
 	}
+	// 使用模板文件名作为模板名
+	tmpl = tmpl.Lookup("index.html")
 
 	f, err := os.Create(outputPath)
 	if err != nil {
@@ -209,192 +217,6 @@ func (s *NewsService) FindNewsWithCategory(id uint) (news promotion.News, err er
 	return
 }
 
-const newsHTMLTemplate = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}}</title>
-    <meta name="keywords" content="{{.SeoKeywords}}">
-    <meta name="description" content="{{.SeoDescription}}">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.8;
-        }
-        .news-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            min-height: 100vh;
-            padding: 40px 30px;
-        }
-        .news-header {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-        }
-        .news-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a1a1a;
-            line-height: 1.4;
-            margin-bottom: 15px;
-        }
-        .news-meta {
-            font-size: 14px;
-            color: #999;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .news-meta span { display: inline-flex; align-items: center; gap: 4px; }
-        .news-meta .is-top {
-            display: inline-block;
-            padding: 1px 8px;
-            background: #e6f7ff;
-            color: #1890ff;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        .news-meta .category {
-            display: inline-block;
-            padding: 1px 10px;
-            background: #f0f5ff;
-            color: #2f54eb;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        .news-cover {
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .news-cover img {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        .news-summary {
-            font-size: 16px;
-            color: #666;
-            line-height: 1.8;
-            padding: 16px 20px;
-            background: #fafafa;
-            border-left: 4px solid #1890ff;
-            border-radius: 4px;
-            margin-bottom: 24px;
-        }
-        .news-content {
-            font-size: 16px;
-            color: #333;
-            line-height: 1.8;
-        }
-        .news-content h1, .news-content h2, .news-content h3,
-        .news-content h4, .news-content h5, .news-content h6 {
-            margin: 24px 0 12px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-        .news-content h1 { font-size: 24px; }
-        .news-content h2 { font-size: 20px; }
-        .news-content h3 { font-size: 18px; }
-        .news-content p { margin-bottom: 16px; }
-        .news-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin: 12px 0;
-        }
-        .news-content a { color: #1890ff; text-decoration: none; }
-        .news-content a:hover { text-decoration: underline; }
-        .news-content blockquote {
-            margin: 16px 0;
-            padding: 12px 20px;
-            border-left: 4px solid #1890ff;
-            background: #f6f8fa;
-            color: #666;
-        }
-        .news-content ul, .news-content ol { padding-left: 24px; margin-bottom: 16px; }
-        .news-content li { margin-bottom: 8px; }
-        .news-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 16px 0;
-        }
-        .news-content table th, .news-content table td {
-            border: 1px solid #e0e0e0;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        .news-content table th { background: #fafafa; font-weight: 600; }
-        .news-content pre {
-            background: #f6f8fa;
-            padding: 16px;
-            border-radius: 4px;
-            overflow-x: auto;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        .news-content code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 14px;
-        }
-        .news-content pre code { background: none; padding: 0; }
-        .news-content hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 24px 0;
-        }
-        .news-footer {
-            margin-top: 30px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-            font-size: 13px;
-            color: #999;
-        }
-        .news-footer a { color: #1890ff; text-decoration: none; }
-        @media (max-width: 640px) {
-            .news-wrapper { padding: 20px 16px; }
-            .news-title { font-size: 22px; }
-            .news-meta { font-size: 12px; gap: 10px; }
-            .news-content { font-size: 15px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="news-wrapper">
-        <div class="news-header">
-            <h1 class="news-title">{{.Title}}</h1>
-            <div class="news-meta">
-                {{if .Category}}<span class="category">{{.Category}}</span>{{end}}
-                {{if .IsTop}}<span class="is-top">置顶</span>{{end}}
-                {{if .Author}}<span>作者: {{.Author}}</span>{{end}}
-                {{if .PublishTime}}<span>发布时间: {{.PublishTime}}</span>{{end}}
-                {{if .Source}}<span>来源: {{if .SourceURL}}<a href="{{.SourceURL}}" target="_blank" rel="noopener">{{.Source}}</a>{{else}}{{.Source}}{{end}}</span>{{end}}
-                <span>浏览: {{.ViewCount}}</span>
-            </div>
-        </div>
-        {{if .CoverImage}}
-        <div class="news-cover">
-            <img src="{{.CoverImage}}" alt="{{.Title}}" onerror="this.style.display='none'">
-        </div>
-        {{end}}
-        {{if .Summary}}
-        <div class="news-summary">{{.Summary}}</div>
-        {{end}}
-        <div class="news-content">{{.Content}}</div>
-        <div class="news-footer">
-            <p>本文来源: {{if .SourceURL}}<a href="{{.SourceURL}}" target="_blank" rel="noopener">{{.Source}}</a>{{else}}{{.Source}}{{end}}</p>
-            <p>Copyright &copy; {{.Year}} All Rights Reserved.</p>
-        </div>
-    </div>
-</body>
-</html>`
+
 
 
