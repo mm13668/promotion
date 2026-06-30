@@ -67,6 +67,11 @@
         <el-table-column prop="categoryName" label="所属分类" width="120" />
         <el-table-column prop="ip" label="IP地址" width="140" />
         <el-table-column prop="region" label="地区" width="120" />
+        <el-table-column label="关键词" width="180" show-overflow-tooltip>
+          <template #default="{ row }">
+            {{ extractKeyword(row.requestReferer) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip />
         <el-table-column prop="requestReferer" label="访问链接" width="200" show-overflow-tooltip />
 <!--        <el-table-column prop="userAgent" label="浏览器UA" width="200" show-overflow-tooltip />-->
@@ -280,7 +285,7 @@ const exportExcel = async () => {
       return
     }
 
-    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否回传', '创建时间']
+    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否回传', '创建时间']
     const csvRows = [headers.join(',')]
     for (const row of data) {
       csvRows.push([
@@ -289,6 +294,7 @@ const exportExcel = async () => {
         `"${(row.categoryName || '').replace(/"/g, '""')}"`,
         row.ip,
         `"${(row.region || '').replace(/"/g, '""')}"`,
+        `"${extractKeyword(row.requestReferer)}"`,
         `"${(row.referer || '').replace(/"/g, '""')}"`,
         `"${(row.requestReferer || '').replace(/"/g, '""')}"`,
         row.duration ?? 0,
@@ -334,6 +340,18 @@ const formatDateTime = (dateTime) => {
   const minutes = String(date.getMinutes()).padStart(2, '0')
   const seconds = String(date.getSeconds()).padStart(2, '0')
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+// 从URL中提取keyword参数
+const extractKeyword = (url) => {
+  if (!url) return '-'
+  try {
+    const match = url.match(/[?&]keyword=([^&]+)/)
+    if (match) return decodeURIComponent(match[1])
+    return '-'
+  } catch {
+    return '-'
+  }
 }
 
 // 格式化日期（本地时间）
