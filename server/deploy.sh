@@ -51,7 +51,7 @@ UPLOADS_PACKAGE_NAME="server-uploads.tar.gz"
 
 rm -f $UPLOADS_PACKAGE_NAME
 
-tar -czvf $UPLOADS_PACKAGE_NAME -C "$(dirname "$0")/uploads" plugins template
+tar -czvf $UPLOADS_PACKAGE_NAME -C "$(dirname "$0")/uploads" plugins template news/temp
 
 echo "========================="
 echo "4. 上传服务器"
@@ -84,7 +84,7 @@ chmod +x $REMOTE_DIR/$APP_NAME
 
 echo "清理旧的模板和插件"
 
-rm -rf $REMOTE_DIR/uploads/plugins $REMOTE_DIR/uploads/template
+rm -rf $REMOTE_DIR/uploads/plugins $REMOTE_DIR/uploads/template $REMOTE_DIR/uploads/news/temp
 
 echo "解压模板和插件"
 
