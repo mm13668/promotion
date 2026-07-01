@@ -109,6 +109,19 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
+            <el-form-item label="发布时间" prop="publishTime">
+              <el-date-picker v-model="form.publishTime" type="datetime" placeholder="选择发布时间" value-format="YYYY-MM-DDTHH:mm:ssZ" style="width:100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="浏览次数" prop="viewCount">
+              <el-input-number v-model="form.viewCount" :min="0" :max="999999" style="width:100%" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="8">
             <el-form-item label="来源" prop="source">
               <el-input v-model="form.source" placeholder="来源名称" />
             </el-form-item>
@@ -286,6 +299,8 @@ const defaultForm = () => ({
   status: 0,
   isTop: false,
   sort: 0,
+  publishTime: null,
+  viewCount: 0,
   seoKeywords: '',
   seoDescription: ''
 })
@@ -338,6 +353,8 @@ const openForm = (row) => {
       status: row.status,
       isTop: row.isTop || false,
       sort: row.sort || 0,
+      publishTime: row.publishTime || null,
+      viewCount: row.viewCount || 0,
       seoKeywords: row.seoKeywords || '',
       seoDescription: row.seoDescription || ''
     }
