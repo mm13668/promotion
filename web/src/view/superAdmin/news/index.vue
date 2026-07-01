@@ -27,6 +27,7 @@
       <div class="gva-btn-list">
         <el-button type="primary" icon="plus" @click="openForm()">新增新闻</el-button>
         <el-button type="success" icon="collection-tag" @click="openCategoryDialog">分类管理</el-button>
+        <el-button type="warning" icon="refresh" @click="handleBatchPublish">一键全部更新</el-button>
       </div>
       <el-table :data="tableData" row-key="ID" style="width:100%" v-loading="loading">
         <el-table-column prop="ID" label="ID" width="70" />
@@ -259,7 +260,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  createNews, updateNews, deleteNews, getNewsList, publishNews,
+  createNews, updateNews, deleteNews, getNewsList, publishNews, batchPublishNews,
   createNewsCategory, updateNewsCategory, deleteNewsCategory,
   getNewsCategoryList, getAllEnabledNewsCategories
 } from '@/api/news'
@@ -417,6 +418,20 @@ const handlePublish = async (row) => {
     const res = await publishNews({ id: row.ID })
     if (res.code === 0) {
       ElMessage.success('发布成功')
+      getTableData()
+    }
+  }).catch(() => {})
+}
+
+const handleBatchPublish = async () => {
+  ElMessageBox.confirm(
+    '一键全部更新将重新生成所有已发布的新闻页面，确定要继续吗？',
+    '提示',
+    { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+  ).then(async () => {
+    const res = await batchPublishNews()
+    if (res.code === 0) {
+      ElMessage.success(res.msg || '批量发布完成')
       getTableData()
     }
   }).catch(() => {})

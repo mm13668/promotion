@@ -29,4 +29,5 @@ func initBizPublicRouter(routers ...*gin.RouterGroup) {
 	router.RouterGroupApp.Promotion.InitLandingMessageRouter(publicGroup)
 	router.RouterGroupApp.Promotion.InitLandingVisitRouter(publicGroup, privateGroup)
 	router.RouterGroupApp.Promotion.InitContactMessageRouter(publicGroup, privateGroup)
+	router.RouterGroupApp.Promotion.InitNewsPublicRouter(publicGroup)
 }

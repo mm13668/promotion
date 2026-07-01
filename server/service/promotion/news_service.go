@@ -11,6 +11,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type NewsService struct{}
@@ -141,6 +142,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 	}
 
 	data := struct {
+		ID             uint
 		Title          string
 		Summary        string
 		Content        template.HTML
@@ -159,6 +161,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		NewsPath       string
 		Year           int
 	}{
+		ID:             news.ID,
 		Title:          news.Title,
 		Summary:        news.Summary,
 		Content:        template.HTML(news.Content),
@@ -207,6 +210,35 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 	}
 
 	return publishedPath, nil
+}
+
+// IncrementViewCount 增加浏览次数，返回更新后的值
+func (s *NewsService) IncrementViewCount(id uint) (int, error) {
+	err := global.GVA_DB.Model(&promotion.News{}).Where("id = ?", id).
+		UpdateColumn("view_count", gorm.Expr("view_count + 1")).Error
+	if err != nil {
+		return 0, err
+	}
+	var news promotion.News
+	err = global.GVA_DB.Select("view_count").Where("id = ?", id).First(&news).Error
+	return news.ViewCount, err
+}
+
+// BatchPublishNews 一键重新发布所有已发布的新闻
+func (s *NewsService) BatchPublishNews() (success int, failed int, err error) {
+	var list []promotion.News
+	if err := global.GVA_DB.Where("status = ?", 1).Find(&list).Error; err != nil {
+		return 0, 0, err
+	}
+	for _, news := range list {
+		if _, err := s.PublishNews(news.ID); err != nil {
+			global.GVA_LOG.Error("批量发布新闻失败", zap.Uint("id", news.ID), zap.Error(err))
+			failed++
+		} else {
+			success++
+		}
+	}
+	return success, failed, nil
 }
 
 // resolveCategoryName 根据分类ID获取分类名称

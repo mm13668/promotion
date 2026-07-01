@@ -643,14 +643,14 @@ body {
 <div class="news-hero">
   <div class="news-hero-inner">
     <div class="news-hero-meta">
-      <span class="category">test</span>
+      <span class="category">回传</span>
       
     </div>
     <h1>百度OCPC_API高级回传方式的落地页管理系统</h1>
     <div class="news-hero-info">
       <span><span class="icon">✍️</span> mm</span>
-      <span><span class="icon">🕐</span> 2026-07-01 23:11:00</span>
-      <span><span class="icon">👁️</span> 0 次浏览</span>
+      <span><span class="icon">🕐</span> 2026-07-01 23:26:44</span>
+      <span><span class="icon">👁️</span> 1012 次浏览</span>
       
     </div>
   </div>
@@ -676,9 +676,9 @@ body {
       <div class="news-author-info">
         <div class="news-author-name">mm</div>
         <div class="news-author-meta">
-          发布于 2026-07-01 23:11:00
-           · test
-          · 0 次阅读
+          发布于 2026-07-01 23:26:44
+           · 回传
+          · 1012 次阅读
         </div>
       </div>
     </div>
@@ -702,9 +702,6 @@ body {
 
     <div class="news-footer">
       
-      <div class="news-site-link">
-        <a href="https://www.huokecang.online/" target="_blank" rel="noopener">🏠 获客仓官网 www.huokecang.online</a>
-      </div>
       <div class="news-footer-brand">
         Copyright &copy; 2026 <span>获客仓</span> All Rights Reserved.
       </div>
@@ -759,6 +756,27 @@ body {
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 <script>
+var NEWS_ID =  1 ;
+(function incrementView() {
+  fetch('/api/promotion/incrementNewsViewCount', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: NEWS_ID })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.code === 0 && res.data && res.data.viewCount) {
+      var count = res.data.viewCount;
+      document.querySelectorAll('.news-hero-info span').forEach(function(el) {
+        if (el.textContent.indexOf('浏览') > -1) {
+          el.innerHTML = '<span class="icon">👁️</span> ' + count + ' 次浏览';
+        }
+      });
+      document.querySelectorAll('.news-author-meta').forEach(function(el) {
+        el.textContent = el.textContent.replace(/\d+ 次阅读/, count + ' 次阅读');
+      });
+    }
+  }).catch(function() {});
+})();
+
 var phoneNumber = '18028414502';
 
 function copyToClipboard(text) {

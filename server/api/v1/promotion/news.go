@@ -1,6 +1,8 @@
 package promotion
 
 import (
+	"fmt"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -86,6 +88,36 @@ func (a *NewsApi) GetNewsList(c *gin.Context) {
 		Page:     pageInfo.Page,
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
+}
+
+// IncrementViewCount 增加浏览次数（公开接口，供H5页面调用）
+func (a *NewsApi) IncrementViewCount(c *gin.Context) {
+	var e request.GetById
+	if err := c.ShouldBindJSON(&e); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	count, err := newsService.IncrementViewCount(uint(e.ID))
+	if err != nil {
+		global.GVA_LOG.Error("增加浏览次数失败", zap.Error(err))
+		response.FailWithMessage("操作失败", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"viewCount": count}, "ok", c)
+}
+
+// BatchPublishNews 一键重新发布所有已发布的新闻
+func (a *NewsApi) BatchPublishNews(c *gin.Context) {
+	success, failed, err := newsService.BatchPublishNews()
+	if err != nil {
+		global.GVA_LOG.Error("批量发布新闻失败", zap.Error(err))
+		response.FailWithMessage("批量发布失败："+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(gin.H{
+		"success": success,
+		"failed":  failed,
+	}, fmt.Sprintf("批量发布完成：成功 %d 条，失败 %d 条", success, failed), c)
 }
 
 // PublishNews 发布新闻，生成静态HTML页面
