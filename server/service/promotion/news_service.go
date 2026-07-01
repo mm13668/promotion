@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -40,9 +41,13 @@ func (s *NewsService) UpdateNews(e *promotion.News) (err error) {
 		"sort":            e.Sort,
 		"seo_keywords":    e.SeoKeywords,
 		"seo_description": e.SeoDescription,
+		"view_count":      e.ViewCount,
 	}
 	if e.IsTop != nil {
 		updates["is_top"] = *e.IsTop
+	}
+	if e.PublishTime != nil {
+		updates["publish_time"] = e.PublishTime
 	}
 	err = global.GVA_DB.Model(&promotion.News{}).Where("id = ?", e.ID).Updates(updates).Error
 	return
@@ -124,6 +129,17 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		newsPath = fmt.Sprintf("https://%s/%d/index.html", domain, id)
 	}
 
+	// 构建封面图片完整URL
+	coverImage := news.CoverImage
+	if coverImage != "" && !strings.HasPrefix(coverImage, "http") {
+		baseDomain := global.GVA_CONFIG.Conf.MainDomain
+		if baseDomain != "" {
+			coverImage = fmt.Sprintf("https://%s%s", baseDomain, coverImage)
+		} else {
+			coverImage = fmt.Sprintf("http://localhost:8080%s", coverImage)
+		}
+	}
+
 	data := struct {
 		Title          string
 		Summary        string
@@ -146,7 +162,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		Title:          news.Title,
 		Summary:        news.Summary,
 		Content:        template.HTML(news.Content),
-		CoverImage:     news.CoverImage,
+		CoverImage:     coverImage,
 		Author:         news.Author,
 		Category:       s.resolveCategoryName(news.CategoryID),
 		Source:         news.Source,

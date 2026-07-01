@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>test news</title>
+<title>百度OCPC_API高级回传方式的落地页管理系统</title>
 <meta name="keywords" content="11">
 <meta name="description" content="111">
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
 :root {
   --primary: #4f46e5;
@@ -27,12 +28,53 @@ body {
   background: #f1f5f9;
   color: var(--dark);
   line-height: 1.8;
+  padding-top: 0;
+}
+
+ 
+.hkc-navbar {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px);
+  padding: 12px 0;
+  transition: all 0.3s;
+}
+.hkc-navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff !important;
+  text-decoration: none;
+}
+.hkc-navbar .logo-icon {
+  font-size: 1.6rem;
+  margin-right: 4px;
+}
+.hkc-navbar .nav-link {
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 0.9rem;
+  padding: 8px 14px !important;
+  border-radius: 8px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.hkc-navbar .nav-link:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+.hkc-navbar .nav-cta {
+  background: var(--gradient) !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.hkc-navbar .nav-cta:hover {
+  opacity: 0.9;
 }
 
  
 .news-hero {
   background: var(--gradient);
-  padding: 60px 0 40px;
+  padding: 120px 0 40px;
   position: relative;
   overflow: hidden;
 }
@@ -40,8 +82,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.12) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  background: url('https://pub-0aa45ce6d1324502a4355b0939c4825b.r2.dev/images/news_banner.jpg') center/cover no-repeat;
 }
 .news-hero-inner {
   max-width: 800px;
@@ -364,6 +405,174 @@ body {
 .news-footer-brand span { font-weight: 700; color: var(--primary); }
 
  
+.float-free-account {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  cursor: pointer;
+}
+.float-free-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 2px solid #ff6b35;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  padding: 14px 12px;
+  box-shadow: -4px 4px 16px rgba(255,107,53,0.25);
+  animation: float-free-glow 2s ease-in-out infinite;
+}
+.float-free-inner:hover {
+  animation: none;
+  box-shadow: -4px 4px 24px rgba(255,107,53,0.5);
+}
+.free-text {
+  font-size: 0.85rem;
+  color: #5d4037;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.free-tag {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #e53935;
+  line-height: 1.3;
+}
+.free-phone-hidden {
+  display: none;
+}
+@keyframes float-free-glow {
+  0%, 100% { box-shadow: -4px 4px 16px rgba(255,107,53,0.25); }
+  50% { box-shadow: -4px 4px 24px rgba(255,107,53,0.45); }
+}
+.news-site-link {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.news-site-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+}
+.news-site-link a:hover {
+  text-decoration: underline;
+}
+
+ 
+.contact-modal .modal-content {
+  background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 44px 36px 36px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(79,70,229,0.15);
+}
+.contact-modal .close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #f1f3f5;
+  border-radius: 50%;
+  color: #94a3b8;
+  opacity: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.contact-modal .close:hover {
+  background: #e2e6ea;
+  color: #475569;
+}
+.contact-modal-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+.contact-modal-icon svg {
+  filter: drop-shadow(0 4px 8px rgba(16,185,129,0.3));
+  animation: modal-check-bounce 0.5s ease;
+}
+@keyframes modal-check-bounce {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.contact-modal .modal-body h4 {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #1a2332;
+  margin-bottom: 12px;
+}
+.modal-phone {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+.modal-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+.contact-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btn-contact {
+  flex: 1;
+  max-width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e9ef;
+  background: #fff;
+  color: #1a2332;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.4;
+}
+.btn-contact .btn-icon {
+  font-size: 1.6rem;
+}
+.btn-contact:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(79,70,229,0.12);
+  text-decoration: none;
+}
+.btn-wechat:hover {
+  border-color: #07c160;
+  color: #07c160;
+}
+.btn-phone:hover {
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+
+ 
 .toast {
   position: fixed;
   bottom: 40px;
@@ -387,8 +596,9 @@ body {
 }
 
  
+
 @media (max-width: 640px) {
-  .news-hero { padding: 40px 0 30px; }
+  .news-hero { padding: 100px 0 30px; }
   .news-hero h1 { font-size: 22px; }
   .news-hero-info { gap: 12px; font-size: 12px; }
   .news-wrapper { margin-top: -12px; padding: 0 12px 24px; }
@@ -407,16 +617,39 @@ body {
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top hkc-navbar" id="hkc-navbar">
+  <div class="container">
+    <a class="navbar-brand hkc-logo" href="https://www.huokecang.online/" target="_blank">
+      <span class="logo-icon">📦</span> 获客仓
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#hkc-nav" aria-controls="hkc-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="hkc-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a href="https://www.huokecang.online/#hero" target="_blank" class="nav-link">首屏</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#features" target="_blank" class="nav-link">核心功能</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#industries" target="_blank" class="nav-link">适用行业</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#advantages" target="_blank" class="nav-link">系统优势</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#pricing" target="_blank" class="nav-link">产品价格</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#faq" target="_blank" class="nav-link">常见问题</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#contact" target="_blank" class="nav-link">联系我们</a></li>
+        <li class="nav-item cta"><a href="http://admin-h5.huokecang.online/" target="_blank" class="nav-link nav-cta"><span>进入后台</span></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div class="news-hero">
   <div class="news-hero-inner">
     <div class="news-hero-meta">
       <span class="category">test</span>
       
     </div>
-    <h1>test news</h1>
+    <h1>百度OCPC_API高级回传方式的落地页管理系统</h1>
     <div class="news-hero-info">
       <span><span class="icon">✍️</span> mm</span>
-      <span><span class="icon">🕐</span> 2026-06-29 09:32:26</span>
+      <span><span class="icon">🕐</span> 2026-07-01 23:11:00</span>
       <span><span class="icon">👁️</span> 0 次浏览</span>
       
     </div>
@@ -427,13 +660,13 @@ body {
   <div class="news-card">
     
     <div class="news-cover-wrap">
-      <div class="news-cover-placeholder">📰</div>
+      <img src="https://admin-h5.huokecang.online/api/uploads/file/c4ca4238a0b923820dcc509a6f75849b_20260629100417.jpg" alt="百度OCPC_API高级回传方式的落地页管理系统">
     </div>
     
 
     <div class="news-body">
       
-      <div class="news-content"><p>11111</p></div>
+      <div class="news-content"><p>落地页管理系统已经在7月份和百度OCPC的API高级回传方式打通，配置方法非常简单：</p><p>OCPC推广配置方法 直接到您推广后台配置，然后把获取到的TOKEN填写到我们落地页管理后台的 版权资质里面就可以。</p><p>1、在百度推广后台-工具中心-OCPC里面【新建转化追踪】，选择API回传。</p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200516/1-2005161F445H3.jpg" alt="" width="607" height="186"></p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200516/1-2005161F50X46.jpg" alt="" width="787" height="397"></p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200516/1-2005161F526159.jpg" alt="" width="560" height="368"></p><p>点击【保存-并创建OCPC投放包】</p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200516/1-2005161G1164Q.jpg" alt="" width="894" height="659"></p><p>设置完后，选择你的计划范围就可以。</p><p><strong>当然，非常重要的步骤，就是接下来，在我们网络后台的设置。</strong></p><p>【版权资质管理—xxx版权设置—OCPC设置】</p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200721/1-200H1112010N4.jpg" alt="" width="731" height="283"></p><p>&nbsp;复杂的API回传的配置我们系统已经跟百度对接完成，客户只需要简单的获取token填写即可。<br>关于OCPC api回传的详细参数也都在下面，不懂的地方，可以点击 参数后面的 ？进行查看详细的信息。<br>【回传方式】：尽量选择自动回传。</p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/200516/1-2005161G443416.jpg" alt="" width="821" height="597"></p><p>OCPC回传的状态 直接也可以到后台查看到，显示已转化，就表示回传给百度成功了。</p><p><img style="border:0px;height:auto;margin:0px;max-width:100%;padding:0px;vertical-align:middle;" src="https://itzjj.cdn.bcebos.com/files/images/190925/2116241410-1.jpg" alt="" width="503" height="407"></p><p><br>&nbsp;</p></div>
     </div>
 
     <div class="news-divider"></div>
@@ -443,7 +676,7 @@ body {
       <div class="news-author-info">
         <div class="news-author-name">mm</div>
         <div class="news-author-meta">
-          发布于 2026-06-29 09:32:26
+          发布于 2026-07-01 23:11:00
            · test
           · 0 次阅读
         </div>
@@ -457,7 +690,7 @@ body {
       <a class="news-share-btn wechat" href="javascript:;" onclick="copyLink()">
         <span class="ico">💬</span> 微信
       </a>
-      <a class="news-share-btn weibo" href="https://service.weibo.com/share/share.php?title=test%20news&url=%2fnews%2f1" target="_blank" rel="noopener">
+      <a class="news-share-btn weibo" href="https://service.weibo.com/share/share.php?title=%e7%99%be%e5%ba%a6OCPC_API%e9%ab%98%e7%ba%a7%e5%9b%9e%e4%bc%a0%e6%96%b9%e5%bc%8f%e7%9a%84%e8%90%bd%e5%9c%b0%e9%a1%b5%e7%ae%a1%e7%90%86%e7%b3%bb%e7%bb%9f&url=%2fnews%2f1" target="_blank" rel="noopener">
         <span class="ico">🔴</span> 微博
       </a>
       <a class="news-share-btn copy" href="javascript:;" onclick="copyLink()">
@@ -469,6 +702,9 @@ body {
 
     <div class="news-footer">
       
+      <div class="news-site-link">
+        <a href="https://www.huokecang.online/" target="_blank" rel="noopener">🏠 获客仓官网 www.huokecang.online</a>
+      </div>
       <div class="news-footer-brand">
         Copyright &copy; 2026 <span>获客仓</span> All Rights Reserved.
       </div>
@@ -476,9 +712,78 @@ body {
   </div>
 </div>
 
+
+<div class="float-free-account" id="floatFreeAccount">
+  <div class="float-free-inner">
+    <span class="free-text">点击</span>
+    <span class="free-tag">免费</span>
+    <span class="free-text">领取账号</span>
+    <span class="free-phone-hidden" id="freePhone">+v 18028414502</span>
+  </div>
+</div>
+
+
+<div class="modal fade contact-modal" id="contactModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <button type="button" class="close" data-dismiss="modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-body text-center">
+        <div class="contact-modal-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h4>已复制号码</h4>
+        <p class="modal-phone">18028414502</p>
+        <p class="modal-hint">+v领取系统账号密码</p>
+        <div class="contact-modal-actions">
+          <button class="btn btn-contact btn-wechat" data-action="wechat">
+            <span class="btn-icon">💬</span>
+            <span>去微信</span>
+          </button>
+          <a class="btn btn-contact btn-phone" href="tel:18028414502">
+            <span class="btn-icon">📞</span>
+            <span>拨打电话</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 <script>
+var phoneNumber = '18028414502';
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  var $temp = $('<input>');
+  $('body').append($temp);
+  $temp.val(text).select();
+  document.execCommand('copy');
+  $temp.remove();
+  return Promise.resolve();
+}
+
+$('#floatFreeAccount').on('click', function () {
+  copyToClipboard(phoneNumber).then(function () {
+    $('#contactModal').modal('show');
+  });
+});
+
+$('#contactModal .btn-wechat').on('click', function () {
+  $('#contactModal').modal('hide');
+  window.location.href = 'weixin://';
+});
+
 function copyLink() {
   const url = window.location.href;
   if (navigator.clipboard && navigator.clipboard.writeText) {
