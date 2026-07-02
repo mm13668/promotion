@@ -75,8 +75,12 @@
               <span>今复制 {{ row.todayCopyCount || 0 }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span>昨点企微链接 {{ row.yesterdayAssistClickCount || 0 }}</span>
-              <span>今点企微链接 {{ row.todayAssistClickCount || 0 }}</span>
+              <span>昨点获客链接 {{ row.yesterdayAssistClickCount || 0 }}</span>
+              <span>今点获客链接 {{ row.todayAssistClickCount || 0 }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>昨回传 {{ row.yesterdayOcpcCallbackCount || 0 }}</span>
+              <span>今回传 {{ row.todayOcpcCallbackCount || 0 }}</span>
             </div>
           </template>
         </el-table-column>

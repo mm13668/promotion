@@ -26,3 +26,6 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 
 ## 添加企业微信成功回调通知添加成功
 在适当位置实现这个功能
+成员成功添加客户会回调add_external_contact事件，配置回调URL接收相关事件即可
+https://developer.work.weixin.qq.com/document/path/91116
+https://developer.work.weixin.qq.com/devtool/introduce?id=36388

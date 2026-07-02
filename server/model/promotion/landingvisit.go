@@ -55,7 +55,13 @@ type LandingVisitSearch struct {
 	RequestReferer  string `json:"requestReferer" form:"requestReferer"`
 	IsCopied         *bool  `json:"isCopied" form:"isCopied"`
 	IsOcpcCallback   *bool  `json:"isOcpcCallback" form:"isOcpcCallback"`
-	IsClickedAssist  *bool  `json:"isClickedAssist" form:"isClickedAssist"`
+	IsClickedAssist    *bool  `json:"isClickedAssist" form:"isClickedAssist"`
+	CopiedAtStart     string `json:"copiedAtStart" form:"copiedAtStart"`
+	CopiedAtEnd       string `json:"copiedAtEnd" form:"copiedAtEnd"`
+	OcpcCallbackAtStart string `json:"ocpcCallbackAtStart" form:"ocpcCallbackAtStart"`
+	OcpcCallbackAtEnd   string `json:"ocpcCallbackAtEnd" form:"ocpcCallbackAtEnd"`
+	ClickedAssistAtStart string `json:"clickedAssistAtStart" form:"clickedAssistAtStart"`
+	ClickedAssistAtEnd   string `json:"clickedAssistAtEnd" form:"clickedAssistAtEnd"`
 	StartTime       string `json:"startTime" form:"startTime"`
 	EndTime         string `json:"endTime" form:"endTime"`
 	request.PageInfo

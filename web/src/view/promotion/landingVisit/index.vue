@@ -28,12 +28,15 @@
             <el-option label="未复制" :value="false" />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否回传">
-          <el-select v-model="search.isOcpcCallback" clearable placeholder="是否回传" style="width: 120px">
-            <el-option label="全部" :value="null" />
-            <el-option label="已回传" :value="true" />
-            <el-option label="未回传" :value="false" />
-          </el-select>
+        <el-form-item label="复制时间">
+          <el-date-picker
+            v-model="search.copiedAtDates"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 280px"
+          />
         </el-form-item>
         <el-form-item label="是否点击获客助手">
           <el-select v-model="search.isClickedAssist" clearable placeholder="是否点击" style="width: 120px">
@@ -41,6 +44,33 @@
             <el-option label="已点击" :value="true" />
             <el-option label="未点击" :value="false" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="点击获客助手时间">
+          <el-date-picker
+            v-model="search.clickedAssistAtDates"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 280px"
+          />
+        </el-form-item>
+        <el-form-item label="是否回传">
+          <el-select v-model="search.isOcpcCallback" clearable placeholder="是否回传" style="width: 120px">
+            <el-option label="全部" :value="null" />
+            <el-option label="已回传" :value="true" />
+            <el-option label="未回传" :value="false" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="回传时间">
+          <el-date-picker
+            v-model="search.ocpcCallbackAtDates"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 280px"
+          />
         </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
@@ -61,6 +91,16 @@
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button type="primary" icon="download" @click="exportExcel">导出</el-button>
+        <el-popover placement="bottom" :width="220" trigger="click">
+          <template #reference>
+            <el-button icon="setting">展示字段</el-button>
+          </template>
+          <el-checkbox-group v-model="visibleColumns" class="flex flex-col gap-1">
+            <el-checkbox v-for="col in allColumns" :key="col.key" :label="col.key" class="ml-1">
+              {{ col.label }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-popover>
         <span class="ml-4 text-gray-400 text-xs">数据仅保留最近3天</span>
       </div>
       <el-table
@@ -68,64 +108,59 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column prop="ID" label="ID" width="80" />
-        <el-table-column prop="linkId" label="推广链接ID" width="100" />
-        <el-table-column prop="categoryName" label="所属分类" width="120" />
-        <el-table-column prop="ip" label="IP地址" width="140" />
-        <el-table-column prop="region" label="地区" width="120" />
-        <el-table-column label="关键词" width="180" show-overflow-tooltip>
+        <el-table-column type="selection" width="55" v-if="visibleColumns.length" />
+        <el-table-column prop="ID" label="ID" width="80" v-if="visibleColumns.includes('ID')" />
+        <el-table-column prop="linkId" label="推广链接ID" width="100" v-if="visibleColumns.includes('linkId')" />
+        <el-table-column prop="categoryName" label="所属分类" width="120" v-if="visibleColumns.includes('categoryName')" />
+        <el-table-column prop="ip" label="IP地址" width="140" v-if="visibleColumns.includes('ip')" />
+        <el-table-column prop="region" label="地区" width="120" v-if="visibleColumns.includes('region')" />
+        <el-table-column label="关键词" width="180" show-overflow-tooltip v-if="visibleColumns.includes('keyword')">
           <template #default="{ row }">
             {{ extractKeyword(row.requestReferer) }}
           </template>
         </el-table-column>
-        <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip />
-        <el-table-column prop="requestReferer" label="访问链接" width="200" show-overflow-tooltip />
-<!--        <el-table-column prop="userAgent" label="浏览器UA" width="200" show-overflow-tooltip />-->
-<!--        <el-table-column prop="requestUserAgent" label="请求UA" width="200" show-overflow-tooltip />-->
-        <el-table-column prop="duration" label="浏览时长(秒)" width="120" />
-        <el-table-column prop="isCopied" label="是否复制" width="100">
+        <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip v-if="visibleColumns.includes('referer')" />
+        <el-table-column prop="requestReferer" label="访问链接" width="200" show-overflow-tooltip v-if="visibleColumns.includes('requestReferer')" />
+        <el-table-column prop="duration" label="浏览时长(秒)" width="120" v-if="visibleColumns.includes('duration')" />
+        <el-table-column prop="isCopied" label="是否复制" width="100" v-if="visibleColumns.includes('isCopied')">
           <template #default="{ row }">
             <el-tag :type="row.isCopied ? 'success' : 'info'">
               {{ row.isCopied ? '已复制' : '未复制' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="isClickedAssist" label="是否点击获客助手" width="140">
+        <el-table-column prop="copiedAt" label="复制时间" width="170" v-if="visibleColumns.includes('copiedAt')">
+          <template #default="{ row }">
+            {{ formatDateTime(row.copiedAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="isClickedAssist" label="是否点击获客助手" width="140" v-if="visibleColumns.includes('isClickedAssist')">
           <template #default="{ row }">
             <el-tag :type="row.isClickedAssist ? 'success' : 'info'">
               {{ row.isClickedAssist ? '已点击' : '未点击' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="clickedAssistAt" label="点击获客助手时间" width="170">
+        <el-table-column prop="clickedAssistAt" label="点击获客助手时间" width="170" v-if="visibleColumns.includes('clickedAssistAt')">
           <template #default="{ row }">
             {{ formatDateTime(row.clickedAssistAt) }}
           </template>
         </el-table-column>
-        <el-table-column prop="copiedServicePhone" label="复制客服号码" width="120" />
-        <el-table-column prop="copiedServiceNickname" label="复制客服昵称" width="120" />
-        <el-table-column prop="copiedAt" label="复制时间" width="170">
-          <template #default="{ row }">
-            {{ formatDateTime(row.copiedAt) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="isOcpcCallback" label="是否回传" width="100">
+        <el-table-column prop="isOcpcCallback" label="是否回传" width="100" v-if="visibleColumns.includes('isOcpcCallback')">
           <template #default="{ row }">
             <el-tag :type="row.isOcpcCallback ? 'success' : 'warning'" style="cursor: pointer" @click="handleManualCallback(row)">
               {{ row.isOcpcCallback ? '已回传' : '未回传' }}
             </el-tag>
           </template>
         </el-table-column>
-<!--        <el-table-column prop="deviceType" label="设备类型" width="100" />-->
-<!--        <el-table-column prop="os" label="操作系统" width="100" />-->
-<!--        <el-table-column prop="browser" label="浏览器" width="100" />-->
-<!--        <el-table-column prop="lastReportAt" label="最后上报时间" width="160">-->
-<!--          <template #default="{ row }">-->
-<!--            {{ formatDateTime(row.lastReportAt) }}-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-        <el-table-column prop="CreatedAt" label="创建时间" width="180">
+        <el-table-column prop="ocpcCallbackAt" label="回传时间" width="170" v-if="visibleColumns.includes('ocpcCallbackAt')">
+          <template #default="{ row }">
+            {{ formatDateTime(row.ocpcCallbackAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="copiedServicePhone" label="复制客服号码" width="120" v-if="visibleColumns.includes('copiedServicePhone')" />
+        <el-table-column prop="copiedServiceNickname" label="复制客服昵称" width="120" v-if="visibleColumns.includes('copiedServiceNickname')" />
+        <el-table-column prop="CreatedAt" label="创建时间" width="180" v-if="visibleColumns.includes('CreatedAt')">
           <template #default="{ row }">
             {{ formatDateTime(row.CreatedAt) }}
           </template>
@@ -146,7 +181,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import { getLandingVisitList, reportManualOcpcCallback } from '@/api/promotion'
 import { getPromotionLinkList } from '@/api/promotion'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -157,14 +192,46 @@ const pageSize = ref(10)
 const total = ref(0)
 const linkOptions = ref([])
 
+const STORAGE_KEY = 'landing_visit_visible_columns'
+
+const allColumns = [
+  { key: 'ID', label: 'ID' },
+  { key: 'linkId', label: '推广链接ID' },
+  { key: 'categoryName', label: '所属分类' },
+  { key: 'ip', label: 'IP地址' },
+  { key: 'region', label: '地区' },
+  { key: 'keyword', label: '关键词' },
+  { key: 'referer', label: '来源链接' },
+  { key: 'requestReferer', label: '访问链接' },
+  { key: 'duration', label: '浏览时长(秒)' },
+  { key: 'isCopied', label: '是否复制' },
+  { key: 'copiedAt', label: '复制时间' },
+  { key: 'isClickedAssist', label: '是否点击获客助手' },
+  { key: 'clickedAssistAt', label: '点击获客助手时间' },
+  { key: 'isOcpcCallback', label: '是否回传' },
+  { key: 'ocpcCallbackAt', label: '回传时间' },
+  { key: 'copiedServicePhone', label: '复制客服号码' },
+  { key: 'copiedServiceNickname', label: '复制客服昵称' },
+  { key: 'CreatedAt', label: '创建时间' }
+]
+const saved = localStorage.getItem(STORAGE_KEY)
+const visibleColumns = ref(saved ? JSON.parse(saved) : allColumns.map(c => c.key))
+
+watch(visibleColumns, (val) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+}, { deep: true })
+
 const search = reactive({
   linkId: null,
   ip: '',
   referer: '',
   requestReferer: '',
   isCopied: null,
+  copiedAtDates: [],
   isOcpcCallback: null,
+  ocpcCallbackAtDates: [],
   isClickedAssist: null,
+  clickedAssistAtDates: [],
   dates: []
 })
 
@@ -203,8 +270,26 @@ const getTableData = async () => {
   if (search.isCopied !== null) {
     params.isCopied = search.isCopied
   }
+  if (search.copiedAtDates && search.copiedAtDates.length === 2) {
+    const [s, e] = search.copiedAtDates
+    params.copiedAtStart = s ? formatDate(s) : undefined
+    params.copiedAtEnd = e ? formatDate(e) : undefined
+  }
   if (search.isOcpcCallback !== null) {
     params.isOcpcCallback = search.isOcpcCallback
+  }
+  if (search.ocpcCallbackAtDates && search.ocpcCallbackAtDates.length === 2) {
+    const [s, e] = search.ocpcCallbackAtDates
+    params.ocpcCallbackAtStart = s ? formatDate(s) : undefined
+    params.ocpcCallbackAtEnd = e ? formatDate(e) : undefined
+  }
+  if (search.isClickedAssist !== null) {
+    params.isClickedAssist = search.isClickedAssist
+  }
+  if (search.clickedAssistAtDates && search.clickedAssistAtDates.length === 2) {
+    const [s, e] = search.clickedAssistAtDates
+    params.clickedAssistAtStart = s ? formatDate(s) : undefined
+    params.clickedAssistAtEnd = e ? formatDate(e) : undefined
   }
   if (search.dates && search.dates.length === 2) {
     const [s, e] = search.dates
@@ -237,8 +322,11 @@ const onReset = () => {
   search.referer = ''
   search.requestReferer = ''
   search.isCopied = null
+  search.copiedAtDates = []
   search.isOcpcCallback = null
+  search.ocpcCallbackAtDates = []
   search.isClickedAssist = null
+  search.clickedAssistAtDates = []
   search.dates = []
   page.value = 1
   getTableData()
@@ -288,8 +376,20 @@ const exportExcel = async () => {
     if (search.referer) params.referer = search.referer
     if (search.requestReferer) params.requestReferer = search.requestReferer
     if (search.isCopied !== null) params.isCopied = search.isCopied
+    if (search.copiedAtDates && search.copiedAtDates.length === 2) {
+      params.copiedAtStart = search.copiedAtDates[0] ? formatDate(search.copiedAtDates[0]) : undefined
+      params.copiedAtEnd = search.copiedAtDates[1] ? formatDate(search.copiedAtDates[1]) : undefined
+    }
     if (search.isOcpcCallback !== null) params.isOcpcCallback = search.isOcpcCallback
+    if (search.ocpcCallbackAtDates && search.ocpcCallbackAtDates.length === 2) {
+      params.ocpcCallbackAtStart = search.ocpcCallbackAtDates[0] ? formatDate(search.ocpcCallbackAtDates[0]) : undefined
+      params.ocpcCallbackAtEnd = search.ocpcCallbackAtDates[1] ? formatDate(search.ocpcCallbackAtDates[1]) : undefined
+    }
     if (search.isClickedAssist !== null) params.isClickedAssist = search.isClickedAssist
+    if (search.clickedAssistAtDates && search.clickedAssistAtDates.length === 2) {
+      params.clickedAssistAtStart = search.clickedAssistAtDates[0] ? formatDate(search.clickedAssistAtDates[0]) : undefined
+      params.clickedAssistAtEnd = search.clickedAssistAtDates[1] ? formatDate(search.clickedAssistAtDates[1]) : undefined
+    }
     if (search.dates && search.dates.length === 2) {
       const [s, e] = search.dates
       params.startTime = s ? formatDate(s) : undefined
@@ -307,7 +407,7 @@ const exportExcel = async () => {
       return
     }
 
-    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '创建时间']
+    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '回传时间', '复制客服号码', '复制客服昵称', '创建时间']
     const csvRows = [headers.join(',')]
     for (const row of data) {
       csvRows.push([
@@ -321,12 +421,13 @@ const exportExcel = async () => {
         `"${(row.requestReferer || '').replace(/"/g, '""')}"`,
         row.duration ?? 0,
         row.isCopied ? '已复制' : '未复制',
-        `"${(row.copiedServicePhone || '').replace(/"/g, '""')}"`,
-        `"${(row.copiedServiceNickname || '').replace(/"/g, '""')}"`,
         formatDateTime(row.copiedAt),
         row.isClickedAssist ? '已点击' : '未点击',
         formatDateTime(row.clickedAssistAt),
         row.isOcpcCallback ? '已回传' : '未回传',
+        formatDateTime(row.ocpcCallbackAt),
+        `"${(row.copiedServicePhone || '').replace(/"/g, '""')}"`,
+        `"${(row.copiedServiceNickname || '').replace(/"/g, '""')}"`,
         formatDateTime(row.CreatedAt)
       ].join(','))
     }

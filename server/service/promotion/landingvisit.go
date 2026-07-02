@@ -251,6 +251,30 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 		db = db.Where("is_clicked_assist = ?", *info.IsClickedAssist)
 	}
 
+	// 复制时间范围筛选
+	if info.CopiedAtStart != "" {
+		db = db.Where("copied_at >= ?", info.CopiedAtStart+" 00:00:00")
+	}
+	if info.CopiedAtEnd != "" {
+		db = db.Where("copied_at <= ?", info.CopiedAtEnd+" 23:59:59")
+	}
+
+	// 回传时间范围筛选
+	if info.OcpcCallbackAtStart != "" {
+		db = db.Where("ocpc_callback_at >= ?", info.OcpcCallbackAtStart+" 00:00:00")
+	}
+	if info.OcpcCallbackAtEnd != "" {
+		db = db.Where("ocpc_callback_at <= ?", info.OcpcCallbackAtEnd+" 23:59:59")
+	}
+
+	// 点击获客助手时间范围筛选
+	if info.ClickedAssistAtStart != "" {
+		db = db.Where("clicked_assist_at >= ?", info.ClickedAssistAtStart+" 00:00:00")
+	}
+	if info.ClickedAssistAtEnd != "" {
+		db = db.Where("clicked_assist_at <= ?", info.ClickedAssistAtEnd+" 23:59:59")
+	}
+
 	// 创建时间范围筛选
 	if info.StartTime != "" {
 		db = db.Where("created_at >= ?", info.StartTime+" 00:00:00")

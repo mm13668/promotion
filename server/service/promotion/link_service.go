@@ -190,6 +190,28 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 			yesterdayAssistMap[s.LinkID] = s.Count
 		}
 
+		var todayOcpcCallbackStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_ocpc_callback = ? AND created_at >= ?", linkIDs, true, todayStart).
+			Group("link_id").
+			Find(&todayOcpcCallbackStats)
+		todayOcpcCallbackMap := make(map[uint]int64, len(todayOcpcCallbackStats))
+		for _, s := range todayOcpcCallbackStats {
+			todayOcpcCallbackMap[s.LinkID] = s.Count
+		}
+
+		var yesterdayOcpcCallbackStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_ocpc_callback = ? AND created_at >= ? AND created_at < ?", linkIDs, true, yesterdayStart, todayStart).
+			Group("link_id").
+			Find(&yesterdayOcpcCallbackStats)
+		yesterdayOcpcCallbackMap := make(map[uint]int64, len(yesterdayOcpcCallbackStats))
+		for _, s := range yesterdayOcpcCallbackStats {
+			yesterdayOcpcCallbackMap[s.LinkID] = s.Count
+		}
+
 		for i := range list {
 			list[i].TodayVisitCount = int(visitMap[list[i].ID])
 			list[i].TodayCopyCount = int(copyMap[list[i].ID])
@@ -197,6 +219,8 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 			list[i].YesterdayCopyCount = int(yesterdayCopyMap[list[i].ID])
 			list[i].TodayAssistClickCount = int(todayAssistMap[list[i].ID])
 			list[i].YesterdayAssistClickCount = int(yesterdayAssistMap[list[i].ID])
+			list[i].TodayOcpcCallbackCount = int(todayOcpcCallbackMap[list[i].ID])
+			list[i].YesterdayOcpcCallbackCount = int(yesterdayOcpcCallbackMap[list[i].ID])
 		}
 	}
 	return
