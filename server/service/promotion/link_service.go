@@ -168,11 +168,35 @@ func (s *LinkService) GetPromotionLinkList(info request.PageInfo, f LinkFilter) 
 			yesterdayCopyMap[s.LinkID] = s.Count
 		}
 
+		var todayAssistStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_clicked_assist = ? AND created_at >= ?", linkIDs, true, todayStart).
+			Group("link_id").
+			Find(&todayAssistStats)
+		todayAssistMap := make(map[uint]int64, len(todayAssistStats))
+		for _, s := range todayAssistStats {
+			todayAssistMap[s.LinkID] = s.Count
+		}
+
+		var yesterdayAssistStats []dateStats
+		global.GVA_DB.Model(&promotion.LandingVisit{}).
+			Select("link_id, COUNT(*) as count").
+			Where("link_id IN ? AND is_clicked_assist = ? AND created_at >= ? AND created_at < ?", linkIDs, true, yesterdayStart, todayStart).
+			Group("link_id").
+			Find(&yesterdayAssistStats)
+		yesterdayAssistMap := make(map[uint]int64, len(yesterdayAssistStats))
+		for _, s := range yesterdayAssistStats {
+			yesterdayAssistMap[s.LinkID] = s.Count
+		}
+
 		for i := range list {
 			list[i].TodayVisitCount = int(visitMap[list[i].ID])
 			list[i].TodayCopyCount = int(copyMap[list[i].ID])
 			list[i].YesterdayVisitCount = int(yesterdayVisitMap[list[i].ID])
 			list[i].YesterdayCopyCount = int(yesterdayCopyMap[list[i].ID])
+			list[i].TodayAssistClickCount = int(todayAssistMap[list[i].ID])
+			list[i].YesterdayAssistClickCount = int(yesterdayAssistMap[list[i].ID])
 		}
 	}
 	return

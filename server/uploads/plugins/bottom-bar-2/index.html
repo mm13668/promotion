@@ -305,8 +305,18 @@
 
     window.openCustomerAssist = function() {
         var link = window.currentService?.customerAssistLink;
-        console.log("link ",link )
         if (link) {
+            if (window.LANDING_VISIT_ID) {
+                fetch('/api/promotion/landingVisit/reportAssistClick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: Number(window.LANDING_VISIT_ID),
+                        servicePhone: window.currentService?.mobile || '',
+                        serviceNickname: window.currentService?.nickname || ''
+                    })
+                }).catch(function() {});
+            }
             window.location.href = link;
         }
     }

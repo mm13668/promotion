@@ -14,6 +14,7 @@ func (s *LandingVisitRouter) InitLandingVisitRouter(PublicRouter *gin.RouterGrou
 		landingVisitPublicRouter.POST("reportDuration", promoApi.ReportDuration)
 		landingVisitPublicRouter.POST("reportCopy", promoApi.ReportCopy) //复制号码
 		landingVisitPublicRouter.POST("reportWechatFollow", promoApi.ReportWechatFollow) //企业微信添加成功回调
+		landingVisitPublicRouter.POST("reportAssistClick", promoApi.ReportAssistClick) //获客助手链接点击
 	}
 
 	// 管理后台接口，需要认证

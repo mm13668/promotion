@@ -115,6 +115,27 @@ func (l *LandingVisitService) UpdateWechatFollow(ctx context.Context, id uint) (
 	return err
 }
 
+// UpdateAssistClick 更新获客助手点击状态
+func (l *LandingVisitService) UpdateAssistClick(ctx context.Context, id uint, phone, nickname string) (err error) {
+	var visit promotion.LandingVisit
+	err = global.GVA_DB.Where("id = ?", id).First(&visit).Error
+	if err != nil {
+		return err
+	}
+
+	if visit.IsClickedAssist {
+		return nil
+	}
+
+	now := time.Now()
+	err = global.GVA_DB.Model(&promotion.LandingVisit{}).Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"is_clicked_assist": true,
+			"clicked_assist_at": now,
+		}).Error
+	return err
+}
+
 func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
 	var visit promotion.LandingVisit
 	err := global.GVA_DB.Where("id = ?", visitId).First(&visit).Error
@@ -223,6 +244,11 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 	// 是否OCPC回传筛选
 	if info.IsOcpcCallback != nil {
 		db = db.Where("is_ocpc_callback = ?", *info.IsOcpcCallback)
+	}
+
+	// 是否点击获客助手链接筛选
+	if info.IsClickedAssist != nil {
+		db = db.Where("is_clicked_assist = ?", *info.IsClickedAssist)
 	}
 
 	// 创建时间范围筛选

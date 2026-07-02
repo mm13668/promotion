@@ -35,6 +35,13 @@
             <el-option label="未回传" :value="false" />
           </el-select>
         </el-form-item>
+        <el-form-item label="是否点击获客助手">
+          <el-select v-model="search.isClickedAssist" clearable placeholder="是否点击" style="width: 120px">
+            <el-option label="全部" :value="null" />
+            <el-option label="已点击" :value="true" />
+            <el-option label="未点击" :value="false" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="search.dates"
@@ -82,6 +89,18 @@
             <el-tag :type="row.isCopied ? 'success' : 'info'">
               {{ row.isCopied ? '已复制' : '未复制' }}
             </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="isClickedAssist" label="是否点击获客助手" width="140">
+          <template #default="{ row }">
+            <el-tag :type="row.isClickedAssist ? 'success' : 'info'">
+              {{ row.isClickedAssist ? '已点击' : '未点击' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="clickedAssistAt" label="点击获客助手时间" width="170">
+          <template #default="{ row }">
+            {{ formatDateTime(row.clickedAssistAt) }}
           </template>
         </el-table-column>
         <el-table-column prop="copiedServicePhone" label="复制客服号码" width="120" />
@@ -145,6 +164,7 @@ const search = reactive({
   requestReferer: '',
   isCopied: null,
   isOcpcCallback: null,
+  isClickedAssist: null,
   dates: []
 })
 
@@ -218,6 +238,7 @@ const onReset = () => {
   search.requestReferer = ''
   search.isCopied = null
   search.isOcpcCallback = null
+  search.isClickedAssist = null
   search.dates = []
   page.value = 1
   getTableData()
@@ -268,6 +289,7 @@ const exportExcel = async () => {
     if (search.requestReferer) params.requestReferer = search.requestReferer
     if (search.isCopied !== null) params.isCopied = search.isCopied
     if (search.isOcpcCallback !== null) params.isOcpcCallback = search.isOcpcCallback
+    if (search.isClickedAssist !== null) params.isClickedAssist = search.isClickedAssist
     if (search.dates && search.dates.length === 2) {
       const [s, e] = search.dates
       params.startTime = s ? formatDate(s) : undefined
@@ -285,7 +307,7 @@ const exportExcel = async () => {
       return
     }
 
-    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否回传', '创建时间']
+    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制客服号码', '复制客服昵称', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '创建时间']
     const csvRows = [headers.join(',')]
     for (const row of data) {
       csvRows.push([
@@ -302,6 +324,8 @@ const exportExcel = async () => {
         `"${(row.copiedServicePhone || '').replace(/"/g, '""')}"`,
         `"${(row.copiedServiceNickname || '').replace(/"/g, '""')}"`,
         formatDateTime(row.copiedAt),
+        row.isClickedAssist ? '已点击' : '未点击',
+        formatDateTime(row.clickedAssistAt),
         row.isOcpcCallback ? '已回传' : '未回传',
         formatDateTime(row.CreatedAt)
       ].join(','))

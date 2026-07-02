@@ -14,3 +14,9 @@ type LandingVisitCopyReport struct {
 type LandingVisitWechatFollowReport struct {
 	Id uint `json:"id" form:"id" binding:"required"`
 }
+
+type LandingVisitAssistClickReport struct {
+	Id              uint   `json:"id" form:"id"`
+	ServicePhone    string `json:"servicePhone" form:"servicePhone"`
+	ServiceNickname string `json:"serviceNickname" form:"serviceNickname"`
+}

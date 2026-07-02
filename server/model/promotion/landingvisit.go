@@ -38,6 +38,8 @@ type LandingVisit struct {
 	RefererUrl            string     `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
 	LastReportAt          time.Time  `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
 	WechatFollowedAt      *time.Time `json:"wechatFollowedAt" gorm:"column:wechat_followed_at;comment:企业微信添加时间"`
+	IsClickedAssist       bool       `json:"isClickedAssist" gorm:"column:is_clicked_assist;default:false;comment:是否点击获客助手链接"`
+	ClickedAssistAt       *time.Time `json:"clickedAssistAt" gorm:"column:clicked_assist_at;comment:点击获客助手时间"`
 	ConversionType        string    `json:"conversionType" gorm:"column:conversion_type;type:varchar(32);comment:转化类型(多个用逗号分隔):35=微信复制 3=表单提交 49=注册转化"`
 	CategoryName          string    `json:"categoryName" gorm:"-"`
 }
@@ -47,13 +49,14 @@ func (LandingVisit) TableName() string {
 }
 
 type LandingVisitSearch struct {
-	LinkId         *uint  `json:"linkId" form:"linkId"`
-	Ip             string `json:"ip" form:"ip"`
-	Referer        string `json:"referer" form:"referer"`
-	RequestReferer string `json:"requestReferer" form:"requestReferer"`
-	IsCopied        *bool  `json:"isCopied" form:"isCopied"`
-	IsOcpcCallback  *bool  `json:"isOcpcCallback" form:"isOcpcCallback"`
-	StartTime      string `json:"startTime" form:"startTime"`
-	EndTime        string `json:"endTime" form:"endTime"`
+	LinkId          *uint  `json:"linkId" form:"linkId"`
+	Ip              string `json:"ip" form:"ip"`
+	Referer         string `json:"referer" form:"referer"`
+	RequestReferer  string `json:"requestReferer" form:"requestReferer"`
+	IsCopied         *bool  `json:"isCopied" form:"isCopied"`
+	IsOcpcCallback   *bool  `json:"isOcpcCallback" form:"isOcpcCallback"`
+	IsClickedAssist  *bool  `json:"isClickedAssist" form:"isClickedAssist"`
+	StartTime       string `json:"startTime" form:"startTime"`
+	EndTime         string `json:"endTime" form:"endTime"`
 	request.PageInfo
 }

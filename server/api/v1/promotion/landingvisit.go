@@ -92,6 +92,23 @@ func (l *LandingVisitApi) ReportCopy(c *gin.Context) {
 	response.OkWithMessage("上报成功", c)
 }
 
+// ReportAssistClick 上报获客助手点击
+func (l *LandingVisitApi) ReportAssistClick(c *gin.Context) {
+	var req promotionReq.LandingVisitAssistClickReport
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = landingVisitService.UpdateAssistClick(c.Request.Context(), req.Id, req.ServicePhone, req.ServiceNickname)
+	if err != nil {
+		global.GVA_LOG.Error("更新获客助手点击失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+		return
+	}
+	response.OkWithMessage("上报成功", c)
+}
+
 // ReportWechatFollow 上报企业微信添加成功
 func (l *LandingVisitApi) ReportWechatFollow(c *gin.Context) {
 	var req promotionReq.LandingVisitWechatFollowReport

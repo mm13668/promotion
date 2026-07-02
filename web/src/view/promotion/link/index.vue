@@ -64,15 +64,19 @@
         </el-table-column>
 
         <el-table-column prop="remark" label="备注" width="100" />
-        <el-table-column label="数据" width="160">
+        <el-table-column label="数据" width="240">
           <template #default="{ row }">
             <div class="flex justify-between text-sm">
-              <span>昨天访问 {{ row.yesterdayVisitCount || 0 }}</span>
-              <span>今日访问 {{ row.todayVisitCount || 0 }}</span>
+              <span>昨访问 {{ row.yesterdayVisitCount || 0 }}</span>
+              <span>今访问 {{ row.todayVisitCount || 0 }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span>昨天复制 {{ row.yesterdayCopyCount || 0 }}</span>
-              <span>今日复制 {{ row.todayCopyCount || 0 }}</span>
+              <span>昨复制 {{ row.yesterdayCopyCount || 0 }}</span>
+              <span>今复制 {{ row.todayCopyCount || 0 }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>昨点企微链接 {{ row.yesterdayAssistClickCount || 0 }}</span>
+              <span>今点企微链接 {{ row.todayAssistClickCount || 0 }}</span>
             </div>
           </template>
         </el-table-column>
