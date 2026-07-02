@@ -233,6 +233,10 @@
           />
           <el-button type="primary" link class="ml-2" @click="showPreview(qrcodeWidgetOptions, basic.pcQrcodeWidgetId)">预览</el-button>
         </el-form-item>
+        <el-form-item label="优先使用获客助手链接">
+          <el-switch v-model="basic.preferCustomerAssist" active-text="是" inactive-text="否" />
+          <span class="ml-4 text-gray-500">开启后跳转到添加企业微信账号</span>
+        </el-form-item>
         <el-form-item label="显示12301投诉电话">
           <el-switch v-model="basic.show12301Phone" active-text="是" inactive-text="否" />
           <span class="ml-4 text-gray-500">开启后落地页上显示投诉电话</span>
@@ -716,6 +720,7 @@ const basic = ref({
   mobileBottomWidgetId: null,
   pcQrcodeWidgetId: null,
   show12301Phone: false,
+  preferCustomerAssist: false,
   mobileShowQrcode: false,
   pcShowRightQrcode: false,
   autoDetectDevice: false,
@@ -732,6 +737,7 @@ const openBasic = async (row) => {
     mobileBottomWidgetId: null,
     pcQrcodeWidgetId: null,
     show12301Phone: false,
+    preferCustomerAssist: false,
     mobileShowQrcode: false,
     pcShowRightQrcode: false,
     autoDetectDevice: false,

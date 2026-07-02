@@ -10,3 +10,7 @@ type LandingVisitCopyReport struct {
 	ServicePhone    string `json:"servicePhone" form:"servicePhone"`
 	ServiceNickname string `json:"serviceNickname" form:"serviceNickname"`
 }
+
+type LandingVisitWechatFollowReport struct {
+	Id uint `json:"id" form:"id" binding:"required"`
+}

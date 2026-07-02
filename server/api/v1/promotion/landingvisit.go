@@ -92,6 +92,23 @@ func (l *LandingVisitApi) ReportCopy(c *gin.Context) {
 	response.OkWithMessage("上报成功", c)
 }
 
+// ReportWechatFollow 上报企业微信添加成功
+func (l *LandingVisitApi) ReportWechatFollow(c *gin.Context) {
+	var req promotionReq.LandingVisitWechatFollowReport
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = landingVisitService.UpdateWechatFollow(c.Request.Context(), req.Id)
+	if err != nil {
+		global.GVA_LOG.Error("更新企业微信添加状态失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+		return
+	}
+	response.OkWithMessage("上报成功", c)
+}
+
 // GetLandingVisitList 分页查询访问记录列表
 func (l *LandingVisitApi) GetLandingVisitList(c *gin.Context) {
 	var pageInfo promotion.LandingVisitSearch

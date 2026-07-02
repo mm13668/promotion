@@ -88,6 +88,33 @@ func (l *LandingVisitService) UpdateCopyInfo(ctx context.Context, id uint, phone
 	return err
 }
 
+// UpdateWechatFollow 更新企业微信添加状态
+func (l *LandingVisitService) UpdateWechatFollow(ctx context.Context, id uint) (err error) {
+	var visit promotion.LandingVisit
+	err = global.GVA_DB.Where("id = ?", id).First(&visit).Error
+	if err != nil {
+		return err
+	}
+
+	if visit.WechatFollowedAt != nil {
+		return nil
+	}
+
+	now := time.Now()
+	err = global.GVA_DB.Model(&promotion.LandingVisit{}).Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"wechat_followed_at": now,
+			"conversion_type":    gorm.Expr("CONCAT_WS(',', NULLIF(conversion_type, ''), ?)", "wechat_follow"),
+		}).Error
+	if err != nil {
+		return err
+	}
+
+	err = global.GVA_DB.Model(&promotion.PromotionLink{}).Where("id = ?", visit.LinkId).
+		Update("follow_count", gorm.Expr("follow_count + 1")).Error
+	return err
+}
+
 func (l *LandingVisitService) ReportManualOcpcCallback(visitId uint) error {
 	var visit promotion.LandingVisit
 	err := global.GVA_DB.Where("id = ?", visitId).First(&visit).Error

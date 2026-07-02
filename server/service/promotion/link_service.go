@@ -19,11 +19,12 @@ import (
 
 // GroupMember 客服成员结构体
 type GroupMember struct {
-	Nickname     string `json:"nickname"`
-	Wechat       string `json:"wechat"`
-	Mobile       string `json:"mobile"`
-	WechatQrcode string `json:"wechat_qrcode"`
-	Gender       string `json:"gender"`
+	Nickname           string `json:"nickname"`
+	Wechat             string `json:"wechat"`
+	Mobile             string `json:"mobile"`
+	WechatQrcode       string `json:"wechat_qrcode"`
+	Gender             string `json:"gender"`
+	CustomerAssistLink string `json:"customerAssistLink"`
 }
 
 type LinkService struct{}
@@ -426,7 +427,7 @@ func (s *LinkService) PublishPromotionLink(linkId uint) error {
 	var serviceListJSON string = "[]"
 	if link.RegionID != nil && link.GroupID != nil {
 		var members []GroupMember
-		if err := global.GVA_DB.Debug().Table("group_member").Select("nickname, wechat, wechat_qrcode, mobile, gender").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
+		if err := global.GVA_DB.Debug().Table("group_member").Select("nickname, wechat, wechat_qrcode, mobile, gender, customer_assist_link").Where("region_id = ? AND group_id = ? AND status=1 AND deleted_at IS NULL", *link.RegionID, *link.GroupID).Find(&members).Error; err == nil && len(members) > 0 {
 			// 序列化所有客服为JSON字符串
 			if jsonBytes, err := json.Marshal(members); err == nil {
 				serviceListJSON = string(jsonBytes)

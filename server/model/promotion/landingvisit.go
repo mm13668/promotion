@@ -35,8 +35,9 @@ type LandingVisit struct {
 	CopiedAt              *time.Time `json:"copiedAt" gorm:"column:copied_at;comment:复制时间"`
 	IsOcpcCallback        bool      `json:"isOcpcCallback" gorm:"column:is_ocpc_callback;default:false;comment:是否已OCPC回传"`
 	OcpcCallbackAt        *time.Time `json:"ocpcCallbackAt" gorm:"column:ocpc_callback_at;comment:OCPC回传时间"`
-	RefererUrl            string    `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
-	LastReportAt          time.Time `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
+	RefererUrl            string     `json:"refererUrl" gorm:"column:referer_url;type:varchar(1024);comment:访问落地页完整URL(含bd_vid)"`
+	LastReportAt          time.Time  `json:"lastReportAt" gorm:"column:last_report_at;comment:最后上报时间"`
+	WechatFollowedAt      *time.Time `json:"wechatFollowedAt" gorm:"column:wechat_followed_at;comment:企业微信添加时间"`
 	ConversionType        string    `json:"conversionType" gorm:"column:conversion_type;type:varchar(32);comment:转化类型(多个用逗号分隔):35=微信复制 3=表单提交 49=注册转化"`
 	CategoryName          string    `json:"categoryName" gorm:"-"`
 }

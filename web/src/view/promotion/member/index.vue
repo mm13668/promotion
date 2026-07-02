@@ -43,6 +43,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="sort" label="排序" width="100" />
+        <el-table-column prop="customerAssistLink" label="获客助手链接" min-width="200" show-overflow-tooltip />
         <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip />
         <el-table-column fixed="right" label="操作" width="180">
           <template #default="{ row }">
@@ -114,6 +115,10 @@
             <el-option label="离线" :value="2" />
           </el-select>
         </el-form-item>
+        <el-form-item label="获客助手链接">
+          <el-input v-model="form.customerAssistLink" placeholder="请输入企业微信获客助手链接" />
+          <span class="ml-4 text-gray-500">开启后用户点击底部按钮直接跳转添加企业微信</span>
+        </el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="form.sort" />
         </el-form-item>
@@ -180,12 +185,12 @@ const handleCurrentChange = (val) => {
 }
 
 const drawer = ref(false)
-const form = ref({ ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '' })
+const form = ref({ ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '', customerAssistLink: '' })
 const openForm = (row) => {
   if (row) {
     form.value = { ...row }
   } else {
-    form.value = { ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '' }
+    form.value = { ID: 0, nickname: '', realName: '', regionId: 0, groupId: 0, mobile: '', wechat: '', wechatQrcode: '', gender: '未知', status: 2, sort: 0, remark: '', customerAssistLink: '' }
   }
   drawer.value = true
 }

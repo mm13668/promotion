@@ -125,6 +125,8 @@
                 </div>
                  <div class="sidebar">
                      <!-- 微信复制插件插槽 -->
+                     <!-- 设置全局变量，供插件使用 -->
+                     <script>window.preferCustomerAssist = {{.PreferCustomerAssist}};</script>
                      <div id="plugin-copy"></div>
                      <!-- 二维码插件插槽 -->
                      <div id="plugin-qrcode"></div>
@@ -197,6 +199,16 @@
 
             // 暴露全局变量给插件使用，确保一定有值
             window.currentService = currentService;
+            // 同步客服完整信息（防止localStorage缓存缺失字段）
+            if (Array.isArray(serviceList) && serviceList.length > 0 && window.currentService && window.currentService.wechat) {
+                var full = serviceList.find(function(item) {
+                    return item.wechat === window.currentService.wechat;
+                });
+                if (full) {
+                    window.currentService = full;
+                    localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(full));
+                }
+            }
             // 兼容旧版插件直接取wechat变量
             window.wechat = currentService.wechat;
             window.phone = currentService.mobile;

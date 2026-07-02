@@ -74,6 +74,7 @@ type TemplateData struct {
 	QrcodeURL             string
 	Year                  int
 	Show12301Phone        bool
+	PreferCustomerAssist  bool
 	QuestionTitle         string
 	QuestionTags          []string
 	QuestionAvatar        string
@@ -205,6 +206,7 @@ func (g *PageGenerator) BuildTemplateData(link promotion.PromotionLink, basic pr
 		QrcodeURL:             "https://picsum.photos/200/200",
 		Year:                  time.Now().Year(),
 		Show12301Phone:        basic.Show12301Phone,
+		PreferCustomerAssist:  basic.PreferCustomerAssist,
 		QuestionTitle:         question.Title,
 		QuestionTags:          question.Label,
 		QuestionAvatar:        question.AvatarUrl,

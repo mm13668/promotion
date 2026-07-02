@@ -1,4 +1,4 @@
-<div class="plugin-bottom-bar-2">
+<div class="plugin-bottom-bar-2" id="plugin-bottom-bar-2">
     <div class="floating-card">
         <div class="card-header">
             <div class="pulse-dot"></div>
@@ -23,6 +23,14 @@
             </div>
         </div>
     </div>
+</div>
+<div class="plugin-bottom-assist" id="plugin-bottom-assist" style="display:none;">
+    <a class="assist-btn" id="assist-btn-link" href="javascript:void(0)" onclick="openCustomerAssist()">
+        <span class="assist-text">点此咨询 给您详细介绍</span>
+        <svg class="assist-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+    </a>
 </div>
 <style>
 .plugin-bottom-bar-2 {
@@ -171,6 +179,46 @@
     color: #fff;
 }
 
+.plugin-bottom-assist {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.plugin-bottom-assist .assist-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+    border-radius: 26px;
+    box-shadow: 0 6px 20px rgba(7, 193, 96, 0.4);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 8px;
+}
+
+.plugin-bottom-assist .assist-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 10px rgba(7, 193, 96, 0.3);
+}
+
+.plugin-bottom-assist .assist-text {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.plugin-bottom-assist .assist-arrow {
+    color: #fff;
+    opacity: 0.9;
+}
+
 /* 移动端适配 */
 @media (max-width: 480px) {
     .plugin-bottom-bar-2 {
@@ -219,21 +267,53 @@
     .plugin-bottom-bar-2 .btn-text {
         font-size: 11px;
     }
+
+    .plugin-bottom-assist {
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+    }
+
+    .plugin-bottom-assist .assist-btn {
+        height: 48px;
+        border-radius: 24px;
+    }
+
+    .plugin-bottom-assist .assist-text {
+        font-size: 15px;
+    }
 }
 </style>
 <script>
 (function() {
+    var preferAssist = window.preferCustomerAssist;
+    console.log("preferAssist",preferAssist);
+
+    if (preferAssist) {
+        var bar = document.getElementById('plugin-bottom-bar-2');
+        var assist = document.getElementById('plugin-bottom-assist');
+        var linkEl = document.getElementById('assist-btn-link');
+        if (bar) bar.style.display = 'none';
+        if (assist) assist.style.display = 'block';
+        if (linkEl) linkEl.href = window.currentService?.customerAssistLink || '#';
+    }
+
     window.callPhone = function() {
-        // 多重容错取电话号码
-        const phone = window.currentService?.mobile || window.phone;
+        var phone = window.currentService?.mobile || window.phone;
         window.location.href = "tel:" + phone;
     }
 
+    window.openCustomerAssist = function() {
+        var link = window.currentService?.customerAssistLink;
+        console.log("link ",link )
+        if (link) {
+            window.location.href = link;
+        }
+    }
+
     window.copyWechatBottom = function() {
-        // 多重容错取微信账号
-        const wechat = window.currentService?.wechat || window.wechat;
-        // 先检查本地是否已有复制记录
-        const copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
+        var wechat = window.currentService?.wechat || window.wechat;
+        var copyReported = localStorage.getItem('landing_copy_reported_' + window.location.pathname);
 
         function reportCopyEvent() {
             if (window.LANDING_VISIT_ID && !copyReported) {
@@ -257,7 +337,6 @@
 
         if (navigator.clipboard) {
             navigator.clipboard.writeText(wechat).then(function() {
-                // 调用复制插件的弹窗方法
                 if (window.showCopySuccessPopup) {
                     window.showCopySuccessPopup();
                 } else {
@@ -265,8 +344,7 @@
                 }
                 reportCopyEvent();
             }).catch(function() {
-                // 降级处理
-                const input = document.createElement('input');
+                var input = document.createElement('input');
                 input.value = wechat;
                 document.body.appendChild(input);
                 input.select();
@@ -280,8 +358,7 @@
                 reportCopyEvent();
             });
         } else {
-            // 降级处理
-            const input = document.createElement('input');
+            var input = document.createElement('input');
             input.value = wechat;
             document.body.appendChild(input);
             input.select();

@@ -13,6 +13,8 @@
 </head>
 <body>
     <div class="ql-editor-content" id="questionContent">{{.QuestionContent}}</div>
+    <!-- 设置全局变量，供插件使用 -->
+    <script>window.preferCustomerAssist = {{.PreferCustomerAssist}};</script>
     <div id="plugin-copy"></div>
     <div id="plugin-bottom"></div>
 
@@ -60,6 +62,17 @@
             }
 
             window.currentService = currentService;
+
+            // 同步客服完整信息（防止localStorage缓存缺失字段）
+            if (Array.isArray(serviceList) && serviceList.length > 0 && window.currentService && window.currentService.wechat) {
+                var full = serviceList.find(function(item) {
+                    return item.wechat === window.currentService.wechat;
+                });
+                if (full) {
+                    window.currentService = full;
+                    localStorage.setItem('promotion_service_' + window.location.pathname, JSON.stringify(full));
+                }
+            }
 
             window.copyWechatGlobal = function(wechat) {
                 const copyWechat = wechat || window.currentService?.wechat || window.wechat;
