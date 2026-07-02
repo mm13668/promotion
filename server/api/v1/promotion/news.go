@@ -120,6 +120,17 @@ func (a *NewsApi) BatchPublishNews(c *gin.Context) {
 	}, fmt.Sprintf("批量发布完成：成功 %d 条，失败 %d 条", success, failed), c)
 }
 
+// PublishNewsCenter 生成新闻中心页面
+func (a *NewsApi) PublishNewsCenter(c *gin.Context) {
+	publishedPath, err := newsService.PublishNewsCenter()
+	if err != nil {
+		global.GVA_LOG.Error("生成新闻中心失败", zap.Error(err))
+		response.FailWithMessage("生成失败："+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"publishedPath": publishedPath}, "生成成功", c)
+}
+
 // PublishNews 发布新闻，生成静态HTML页面
 func (a *NewsApi) PublishNews(c *gin.Context) {
 	var e request.GetById

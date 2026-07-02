@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新闻中心 - 获客仓</title>
+<meta name="keywords" content="获客仓,新闻中心,行业资讯">
+<meta name="description" content="获客仓新闻中心，为您提供最新的行业资讯和产品动态。">
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #818cf8;
+  --secondary: #0ea5e9;
+  --accent: #10b981;
+  --dark: #0f172a;
+  --gray: #64748b;
+  --light: #f8fafc;
+  --gradient: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+  --shadow: 0 4px 24px rgba(79, 70, 229, 0.12);
+  --shadow-lg: 0 12px 40px rgba(79, 70, 229, 0.18);
+  --radius: 16px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f1f5f9;
+  color: var(--dark);
+  line-height: 1.7;
+}
+
+/* Navbar */
+.hkc-navbar {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px);
+  padding: 12px 0;
+  transition: all 0.3s;
+}
+.hkc-navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff !important;
+  text-decoration: none;
+}
+.hkc-navbar .logo-icon { font-size: 1.6rem; margin-right: 4px; }
+.hkc-navbar .nav-link {
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 0.9rem;
+  padding: 8px 14px !important;
+  border-radius: 8px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.hkc-navbar .nav-link:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+.hkc-navbar .nav-cta {
+  background: var(--gradient) !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.hkc-navbar .nav-cta:hover { opacity: 0.9; }
+
+/* Hero */
+.news-center-hero {
+  background: var(--gradient);
+  padding: 120px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+.news-center-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://pub-0aa45ce6d1324502a4355b0939c4825b.r2.dev/images/news_banner.jpg') center/cover no-repeat;
+  opacity: 0.15;
+}
+.news-center-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.news-center-hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.news-center-hero p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+.news-center-hero .total-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 30px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+.news-center-hero .total-badge strong { font-size: 22px; }
+
+/* Main Layout */
+.news-main-wrap {
+  max-width: 1200px;
+  margin: -30px auto 0;
+  padding: 0 16px 60px;
+  position: relative;
+  z-index: 2;
+}
+.news-main-row {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* Sidebar */
+.news-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+}
+.news-sidebar-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.news-sidebar-title {
+  padding: 18px 22px 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark);
+  position: relative;
+}
+.news-sidebar-title::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--gradient);
+  border-radius: 2px;
+}
+.news-sidebar-body { padding: 14px 0; }
+
+/* Category list */
+.category-list { list-style: none; padding: 0; margin: 0; }
+.category-item { padding: 0; }
+.category-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 22px;
+  color: var(--gray);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+.category-link:hover {
+  background: #f8fafc;
+  color: var(--primary);
+  text-decoration: none;
+  border-left-color: var(--primary);
+}
+.category-link.active {
+  background: #eef2ff;
+  color: var(--primary);
+  font-weight: 700;
+  border-left-color: var(--primary);
+}
+.category-link .count {
+  background: #f1f5f9;
+  padding: 1px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+}
+.category-link.active .count {
+  background: var(--primary);
+  color: #fff;
+}
+.category-link .icon { margin-right: 6px; font-size: 14px; }
+
+/* Sidebar hot news */
+.sidebar-news-list { list-style: none; padding: 0; margin: 0; }
+.sidebar-news-item { padding: 12px 22px; border-bottom: 1px solid #f1f5f9; }
+.sidebar-news-item:last-child { border-bottom: none; }
+.sidebar-news-link {
+  display: flex;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.sidebar-news-link:hover { text-decoration: none; }
+.sidebar-news-rank {
+  width: 24px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #cbd5e1;
+  padding-top: 2px;
+}
+.sidebar-news-rank.top1 { color: #f59e0b; }
+.sidebar-news-rank.top2 { color: #94a3b8; }
+.sidebar-news-rank.top3 { color: #d97706; }
+.sidebar-news-info { flex: 1; min-width: 0; }
+.sidebar-news-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+.sidebar-news-link:hover .sidebar-news-title { color: var(--primary); }
+.sidebar-news-meta {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* Main Content */
+.news-content-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* News Card */
+.news-list-item {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+.news-list-item:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+.news-list-inner {
+  display: flex;
+  padding: 24px;
+  gap: 24px;
+  text-decoration: none;
+  color: inherit;
+}
+.news-list-inner:hover { text-decoration: none; }
+
+.news-list-cover {
+  width: 260px;
+  min-height: 160px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.news-list-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.news-list-cover .placeholder {
+  font-size: 36px;
+  opacity: 0.3;
+}
+
+.news-list-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.news-list-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.news-list-category {
+  display: inline-flex;
+  padding: 2px 12px;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  color: var(--primary);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.news-list-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.news-list-tag.top {
+  display: inline-flex;
+  padding: 1px 8px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.news-list-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+.news-list-inner:hover .news-list-title { color: var(--primary); }
+.news-list-summary {
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 14px;
+  flex: 1;
+}
+.news-list-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+.news-list-footer span { display: inline-flex; align-items: center; gap: 4px; }
+
+/* Empty State */
+.news-empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.news-empty-icon { font-size: 64px; opacity: 0.3; margin-bottom: 16px; }
+.news-empty h4 { font-size: 18px; color: var(--gray); font-weight: 600; }
+
+/* Footer */
+.news-footer {
+  background: rgba(15, 23, 42, 0.95);
+  padding: 40px 0;
+  text-align: center;
+}
+.news-footer p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.news-footer span { color: var(--primary-light); font-weight: 700; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Scroll to top */
+.back-to-top {
+  position: fixed;
+  right: 30px;
+  bottom: 40px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: var(--gray);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 99;
+}
+.back-to-top.show { opacity: 1; visibility: visible; }
+.back-to-top:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Loading skeleton */
+.skeleton { animation: skeleton-pulse 1.5s ease-in-out infinite; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; }
+@keyframes skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+@media (max-width: 992px) {
+  .news-main-row { flex-direction: column; }
+  .news-sidebar { width: 100%; position: static; }
+}
+@media (max-width: 768px) {
+  .news-center-hero { padding: 100px 0 40px; }
+  .news-center-hero h1 { font-size: 26px; }
+  .news-center-hero p { font-size: 15px; }
+  .news-list-inner { flex-direction: column; padding: 16px; }
+  .news-list-cover { width: 100%; height: 200px; }
+  .news-list-title { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top hkc-navbar" id="hkc-navbar">
+  <div class="container">
+    <a class="navbar-brand hkc-logo" href="https://www.huokecang.online/" target="_blank">
+      <span class="logo-icon">📦</span> 获客仓
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#hkc-nav" aria-controls="hkc-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="hkc-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a href="https://www.huokecang.online/#hero" target="_blank" class="nav-link">首屏</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#features" target="_blank" class="nav-link">核心功能</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#industries" target="_blank" class="nav-link">适用行业</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#advantages" target="_blank" class="nav-link">系统优势</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#pricing" target="_blank" class="nav-link">产品价格</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#faq" target="_blank" class="nav-link">常见问题</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#contact" target="_blank" class="nav-link">联系我们</a></li>
+        <li class="nav-item cta"><a href="http://admin-h5.huokecang.online/" target="_blank" class="nav-link nav-cta"><span>进入后台</span></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="news-center-hero">
+  <div class="news-center-hero-inner">
+    <h1>📰 新闻中心</h1>
+    <p>获取最新的行业资讯、产品动态和公司新闻，了解获客仓的最新进展</p>
+    <div class="total-badge">
+      📄 共 <strong>{{.TotalCount}}</strong> 篇资讯
+    </div>
+  </div>
+</div>
+
+<div class="news-main-wrap" id="app">
+  <div class="news-main-row">
+
+    <!-- Sidebar -->
+    <aside class="news-sidebar">
+
+      <!-- Category Sidebar -->
+      <div class="news-sidebar-card">
+        <div class="news-sidebar-title">📂 全部分类</div>
+        <div class="news-sidebar-body">
+          <ul class="category-list">
+            <li class="category-item">
+              <a href="javascript:;" class="category-link active" data-category-id="0">
+                <span><span class="icon">📋</span>全部资讯</span>
+                <span class="count">{{.TotalCount}}</span>
+              </a>
+            </li>
+            {{range .Categories}}
+            <li class="category-item">
+              <a href="javascript:;" class="category-link" data-category-id="{{.ID}}">
+                <span><span class="icon">📄</span>{{.Name}}</span>
+                <span class="count">{{.Count}}</span>
+              </a>
+            </li>
+            {{end}}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Hot News Sidebar -->
+      <div class="news-sidebar-card">
+        <div class="news-sidebar-title">🔥 热门资讯</div>
+        <div class="news-sidebar-body">
+          <ul class="sidebar-news-list">
+            {{range $index, $item := .HotNews}}
+            <li class="sidebar-news-item">
+              <a href="{{$item.Link}}" class="sidebar-news-link" target="_blank">
+                <div class="sidebar-news-rank {{if eq $index 0}}top1{{else if eq $index 1}}top2{{else if eq $index 2}}top3{{end}}">{{add $index 1}}</div>
+                <div class="sidebar-news-info">
+                  <div class="sidebar-news-title">{{$item.Title}}</div>
+                  <div class="sidebar-news-meta">{{$item.PublishTime}} · 👁️ {{$item.ViewCount}}</div>
+                </div>
+              </a>
+            </li>
+            {{end}}
+          </ul>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="news-content-area" id="newsList">
+
+      {{range .News}}
+      <article class="news-list-item" data-category-id="{{.CategoryID}}">
+        <a href="{{.Link}}" class="news-list-inner" target="_blank">
+          <div class="news-list-cover">
+            {{if .CoverImage}}
+            <img src="{{.CoverImage}}" alt="{{.Title}}">
+            {{else}}
+            <span class="placeholder">📰</span>
+            {{end}}
+          </div>
+          <div class="news-list-body">
+            <div class="news-list-meta">
+              {{if .CategoryName}}<span class="news-list-category">{{.CategoryName}}</span>{{end}}
+              {{if .IsTop}}<span class="news-list-tag top">置顶</span>{{end}}
+              <span class="news-list-date">🕐 {{.PublishTime}}</span>
+            </div>
+            <h3 class="news-list-title">{{.Title}}</h3>
+            {{if .Summary}}
+            <p class="news-list-summary">{{.Summary}}</p>
+            {{end}}
+            <div class="news-list-footer">
+              {{if .Author}}<span>✍️ {{.Author}}</span>{{end}}
+              <span>👁️ {{.ViewCount}} 次浏览</span>
+            </div>
+          </div>
+        </a>
+      </article>
+      {{else}}
+      <div class="news-empty">
+        <div class="news-empty-icon">📭</div>
+        <h4>暂无资讯内容</h4>
+      </div>
+      {{end}}
+
+    </main>
+
+  </div>
+</div>
+
+<footer class="news-footer">
+  <div class="container">
+    <p>Copyright &copy; {{.Year}} <span>获客仓</span> All Rights Reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<button class="back-to-top" id="backToTop" title="回到顶部">↑</button>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+  // Category filter
+  var categoryLinks = document.querySelectorAll('.category-link');
+  var newsItems = document.querySelectorAll('.news-list-item');
+
+  categoryLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      categoryLinks.forEach(function(l) { l.classList.remove('active'); });
+      this.classList.add('active');
+
+      var catId = parseInt(this.getAttribute('data-category-id'));
+      newsItems.forEach(function(item) {
+        if (catId === 0 || parseInt(item.getAttribute('data-category-id')) === catId) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Back to top
+  var backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 500) {
+      backBtn.classList.add('show');
+    } else {
+      backBtn.classList.remove('show');
+    }
+  });
+  backBtn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>

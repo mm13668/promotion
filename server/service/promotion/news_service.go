@@ -272,6 +272,206 @@ func (s *NewsService) BatchPublishNews() (success int, failed int, err error) {
 	return success, failed, nil
 }
 
+// ===== 新闻中心数据结构 =====
+
+type NewsCenterNewsItem struct {
+	ID           uint
+	Title        string
+	Summary      string
+	CoverImage   string
+	Author       string
+	CategoryName string
+	CategoryID   uint
+	PublishTime  string
+	ViewCount    int
+	IsTop        bool
+	Link         string
+}
+
+type NewsCenterCategoryItem struct {
+	ID    uint
+	Name  string
+	Count int
+}
+
+type NewsCenterData struct {
+	Categories []NewsCenterCategoryItem
+	News       []NewsCenterNewsItem
+	HotNews    []NewsCenterNewsItem
+	TotalCount int
+	Year       int
+}
+
+// PublishNewsCenter 生成新闻中心静态页面
+func (s *NewsService) PublishNewsCenter() (string, error) {
+	var categories []promotion.NewsCategory
+	if err := global.GVA_DB.Where("status = ?", 1).Order("sort asc, id asc").Find(&categories).Error; err != nil {
+		return "", fmt.Errorf("查询分类失败: %w", err)
+	}
+
+	var newsList []promotion.News
+	if err := global.GVA_DB.Preload("Category").Where("status = ?", 1).Order("is_top desc, sort asc, id desc").Find(&newsList).Error; err != nil {
+		return "", fmt.Errorf("查询新闻失败: %w", err)
+	}
+
+	domain := global.GVA_CONFIG.Conf.NewsDomain
+
+	// 构建分类统计
+	type catCount struct {
+		CategoryID uint
+		Count      int
+	}
+	countMap := make(map[uint]int)
+	for _, n := range newsList {
+		countMap[n.CategoryID]++
+	}
+
+	categoryItems := make([]NewsCenterCategoryItem, 0, len(categories))
+	for _, cat := range categories {
+		c := countMap[cat.ID]
+		categoryItems = append(categoryItems, NewsCenterCategoryItem{
+			ID:    cat.ID,
+			Name:  cat.Name,
+			Count: c,
+		})
+	}
+
+	// 构建新闻列表
+	newsItems := make([]NewsCenterNewsItem, 0, len(newsList))
+	for _, n := range newsList {
+		catName := ""
+		if n.Category.ID > 0 {
+			catName = n.Category.Name
+		}
+
+		var publishTime string
+		if n.PublishTime != nil {
+			publishTime = n.PublishTime.Format("2006-01-02")
+		} else {
+			publishTime = n.CreatedAt.Format("2006-01-02")
+		}
+
+		link := fmt.Sprintf("/%d/index.html", n.ID)
+		if domain != "" {
+			link = fmt.Sprintf("https://%s/%d/index.html", domain, n.ID)
+		}
+
+		coverImage := n.CoverImage
+		if coverImage != "" && !strings.HasPrefix(coverImage, "http") {
+			baseDomain := global.GVA_CONFIG.Conf.MainDomain
+			if baseDomain != "" {
+				coverImage = fmt.Sprintf("https://%s%s", baseDomain, coverImage)
+			}
+		}
+
+		isTop := false
+		if n.IsTop != nil {
+			isTop = *n.IsTop
+		}
+
+		newsItems = append(newsItems, NewsCenterNewsItem{
+			ID:           n.ID,
+			Title:        n.Title,
+			Summary:      n.Summary,
+			CoverImage:   coverImage,
+			Author:       n.Author,
+			CategoryName: catName,
+			CategoryID:   n.CategoryID,
+			PublishTime:  publishTime,
+			ViewCount:    n.ViewCount,
+			IsTop:        isTop,
+			Link:         link,
+		})
+	}
+
+	// 热门新闻（按浏览数排序取前6）
+	hotItems := make([]NewsCenterNewsItem, 0, 6)
+	hotList := make([]promotion.News, len(newsList))
+	copy(hotList, newsList)
+	for i := 0; i < len(hotList); i++ {
+		for j := i + 1; j < len(hotList); j++ {
+			if hotList[j].ViewCount > hotList[i].ViewCount {
+				hotList[i], hotList[j] = hotList[j], hotList[i]
+			}
+		}
+	}
+	maxHot := 6
+	if len(hotList) < maxHot {
+		maxHot = len(hotList)
+	}
+	for _, n := range hotList[:maxHot] {
+		catName := ""
+		if n.Category.ID > 0 {
+			catName = n.Category.Name
+		}
+		var publishTime string
+		if n.PublishTime != nil {
+			publishTime = n.PublishTime.Format("2006-01-02")
+		} else {
+			publishTime = n.CreatedAt.Format("2006-01-02")
+		}
+		link := fmt.Sprintf("/%d/index.html", n.ID)
+		if domain != "" {
+			link = fmt.Sprintf("https://%s/%d/index.html", domain, n.ID)
+		}
+		hotItems = append(hotItems, NewsCenterNewsItem{
+			ID:           n.ID,
+			Title:        n.Title,
+			Summary:      n.Summary,
+			CoverImage:   n.CoverImage,
+			Author:       n.Author,
+			CategoryName: catName,
+			CategoryID:   n.CategoryID,
+			PublishTime:  publishTime,
+			ViewCount:    n.ViewCount,
+			IsTop:        false,
+			Link:         link,
+		})
+	}
+
+	data := NewsCenterData{
+		Categories: categoryItems,
+		News:       newsItems,
+		HotNews:    hotItems,
+		TotalCount: len(newsList),
+		Year:       time.Now().Year(),
+	}
+
+	basePath := "uploads/news"
+	dir := filepath.Join(basePath, "center")
+	outputPath := filepath.Join(dir, "index.html")
+
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return "", fmt.Errorf("创建目录失败: %w", err)
+	}
+
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int { return a + b },
+	}
+	tmpl, err := template.New("news.html").Funcs(funcMap).ParseFiles("uploads/news/temp/news.html")
+	if err != nil {
+		return "", fmt.Errorf("加载模板失败: %w", err)
+	}
+	tmpl = tmpl.Lookup("news.html")
+
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return "", fmt.Errorf("创建文件失败: %w", err)
+	}
+	defer f.Close()
+
+	if err := tmpl.Execute(f, data); err != nil {
+		return "", fmt.Errorf("渲染模板失败: %w", err)
+	}
+
+	publishedPath := "/center/index.html"
+	if domain != "" {
+		publishedPath = fmt.Sprintf("https://%s/center/index.html", domain)
+	}
+
+	return publishedPath, nil
+}
+
 // resolveCategoryName 根据分类ID获取分类名称
 func (s *NewsService) resolveCategoryName(categoryID uint) string {
 	if categoryID == 0 {

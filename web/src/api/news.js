@@ -56,6 +56,13 @@ export const batchPublishNews = () => {
   })
 }
 
+export const publishNewsCenter = () => {
+  return service({
+    url: '/promotion/publishNewsCenter',
+    method: 'post'
+  })
+}
+
 // ===== 新闻分类 =====
 export const createNewsCategory = (data) => {
   return service({
