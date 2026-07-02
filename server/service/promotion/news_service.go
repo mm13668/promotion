@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -90,6 +91,26 @@ func (s *NewsService) GetNewsList(info promotion.NewsSearch) (list []promotion.N
 	return
 }
 
+// processContentImages 处理内容中的图片，将相对路径转为绝对路径
+func (s *NewsService) processContentImages(content string) string {
+	baseDomain := global.GVA_CONFIG.Conf.MainDomain
+	if baseDomain == "" || content == "" {
+		return content
+	}
+	re := regexp.MustCompile(`(<img[^>]+src=")([^"]+)(")`)
+	return re.ReplaceAllStringFunc(content, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 4 {
+			return match
+		}
+		src := parts[2]
+		if strings.HasPrefix(src, "http") || strings.HasPrefix(src, "//") || strings.HasPrefix(src, "data:") {
+			return match
+		}
+		return parts[1] + fmt.Sprintf("https://%s%s", baseDomain, src) + parts[3]
+	})
+}
+
 // PublishNews 发布新闻，生成静态HTML页面
 func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 	news, err := s.FindNews(id)
@@ -141,6 +162,14 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		}
 	}
 
+	// API域名，用于前端请求
+	apiDomain := global.GVA_CONFIG.Conf.MainDomain
+	if apiDomain != "" {
+		apiDomain = fmt.Sprintf("https://%s", apiDomain)
+	} else {
+		apiDomain = "http://localhost:8080"
+	}
+
 	data := struct {
 		ID             uint
 		Title          string
@@ -159,12 +188,13 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		SeoKeywords    string
 		SeoDescription string
 		NewsPath       string
+		ApiDomain      string
 		Year           int
 	}{
 		ID:             news.ID,
 		Title:          news.Title,
 		Summary:        news.Summary,
-		Content:        template.HTML(news.Content),
+		Content:        template.HTML(s.processContentImages(news.Content)),
 		CoverImage:     coverImage,
 		Author:         news.Author,
 		Category:       s.resolveCategoryName(news.CategoryID),
@@ -178,6 +208,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		SeoKeywords:    news.SeoKeywords,
 		SeoDescription: news.SeoDescription,
 		NewsPath:       newsPath,
+		ApiDomain:      apiDomain,
 		Year:           time.Now().Year(),
 	}
 

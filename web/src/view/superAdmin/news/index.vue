@@ -82,7 +82,16 @@
     </div>
 
     <!-- 新闻编辑抽屉 -->
-    <el-drawer v-model="drawerVisible" :title="drawerTitle" size="80%" destroy-on-close>
+    <el-drawer v-model="drawerVisible" size="80%" destroy-on-close>
+      <template #header>
+        <div class="flex items-center justify-between w-full">
+          <span class="text-base font-semibold">{{ drawerTitle }}</span>
+          <div>
+            <el-button @click="closeDrawer">取消</el-button>
+            <el-button type="primary" :loading="saving" @click="enterDrawer">保存</el-button>
+          </div>
+        </div>
+      </template>
       <el-form ref="formRef" :model="form" label-width="100px" class="pr-6">
         <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '请输入新闻标题' }]">
           <el-input v-model="form.title" placeholder="请输入新闻标题" maxlength="200" show-word-limit />
@@ -187,10 +196,6 @@
         </el-form-item>
       </el-form>
 
-      <template #footer>
-        <el-button @click="closeDrawer">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="enterDrawer">保存</el-button>
-      </template>
     </el-drawer>
 
     <!-- 分类管理对话框 -->

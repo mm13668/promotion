@@ -764,7 +764,7 @@ body {
 <script>
 var NEWS_ID = {{.ID}};
 (function incrementView() {
-  fetch('/api/promotion/incrementNewsViewCount', {
+  fetch('{{.ApiDomain}}/api/promotion/incrementNewsViewCount', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: NEWS_ID })
