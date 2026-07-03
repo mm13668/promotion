@@ -24,6 +24,7 @@ type News struct {
 	ViewCount      int           `json:"viewCount" form:"viewCount" gorm:"default:0;comment:浏览次数"`
 	LikeCount      int           `json:"likeCount" form:"likeCount" gorm:"default:0;comment:点赞次数"`
 	PublishTime    *time.Time    `json:"publishTime" form:"publishTime" gorm:"comment:发布时间"`
+	DisplayTime    *time.Time    `json:"displayTime" form:"displayTime" gorm:"comment:展示时间"`
 	PublishedPath  string        `json:"publishedPath" form:"publishedPath" gorm:"type:varchar(500);default:'';comment:发布路径"`
 	SeoKeywords    string        `json:"seoKeywords" form:"seoKeywords" gorm:"type:text;comment:SEO关键词"`
 	SeoDescription string        `json:"seoDescription" form:"seoDescription" gorm:"type:text;comment:SEO描述"`

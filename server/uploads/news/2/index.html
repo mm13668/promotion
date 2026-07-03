@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{.Title}}</title>
-<meta name="keywords" content="{{.SeoKeywords}}">
-<meta name="description" content="{{.SeoDescription}}">
+<title>获客助手设置</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
 <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
 :root {
@@ -31,7 +31,7 @@ body {
   padding-top: 0;
 }
 
-/* Navbar */
+ 
 .hkc-navbar {
   background: rgba(15, 23, 42, 0.95) !important;
   backdrop-filter: blur(12px);
@@ -56,8 +56,7 @@ body {
   transition: all 0.2s;
   text-decoration: none;
 }
-.hkc-navbar .nav-link:hover,
-.hkc-navbar .nav-link.active {
+.hkc-navbar .nav-link:hover {
   color: #fff !important;
   background: rgba(255,255,255,0.1);
 }
@@ -72,7 +71,7 @@ body {
   opacity: 0.9;
 }
 
-/* Hero */
+ 
 .news-hero {
   background: var(--gradient);
   padding: 120px 0 40px;
@@ -84,7 +83,6 @@ body {
   position: absolute;
   inset: 0;
   background: url('https://pub-0aa45ce6d1324502a4355b0939c4825b.r2.dev/images/news_banner.jpg') center/cover no-repeat;
-  opacity: 0.15;
 }
 .news-hero-inner {
   max-width: 800px;
@@ -146,7 +144,7 @@ body {
   font-size: 14px;
 }
 
-/* Wrapper */
+ 
 .news-wrapper {
   max-width: 1200px;
   margin: -20px auto 0;
@@ -161,7 +159,7 @@ body {
   overflow: hidden;
 }
 
-/* Cover */
+ 
 .news-cover-wrap {
   position: relative;
   width: 100%;
@@ -183,12 +181,12 @@ body {
   user-select: none;
 }
 
-/* Body */
+ 
 .news-body {
   padding: 36px 40px 32px;
 }
 
-/* Summary */
+ 
 .news-summary {
   background: linear-gradient(135deg, #eef2ff, #e0e7ff);
   border-radius: 12px;
@@ -205,7 +203,7 @@ body {
   margin-right: 8px;
 }
 
-/* Article content */
+ 
 .news-content {
   font-size: 16px;
   color: #334155;
@@ -307,14 +305,14 @@ body {
   margin: 32px 0;
 }
 
-/* Divider */
+ 
 .news-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
   margin: 0 40px;
 }
 
-/* Author card */
+ 
 .news-author {
   padding: 24px 40px;
   display: flex;
@@ -348,7 +346,7 @@ body {
   margin-top: 2px;
 }
 
-/* Share */
+ 
 .news-share {
   padding: 20px 40px 32px;
   display: flex;
@@ -385,7 +383,7 @@ body {
 .news-share-btn.copy:hover { border-color: var(--primary); color: var(--primary); }
 .news-share-btn .ico { font-size: 16px; }
 
-/* Footer */
+ 
 .news-footer {
   padding: 24px 40px 32px;
   text-align: center;
@@ -406,7 +404,7 @@ body {
 }
 .news-footer-brand span { font-weight: 700; color: var(--primary); }
 
-/* Floating Free Account */
+ 
 .float-free-account {
   position: fixed;
   right: 0;
@@ -466,7 +464,7 @@ body {
   text-decoration: underline;
 }
 
-/* Contact Modal */
+ 
 .contact-modal .modal-content {
   background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
   border: none;
@@ -574,7 +572,7 @@ body {
   color: #4f46e5;
 }
 
-/* Toast */
+ 
 .toast {
   position: fixed;
   bottom: 40px;
@@ -597,7 +595,7 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Responsive */
+ 
 
 @media (max-width: 640px) {
   .news-hero { padding: 100px 0 30px; }
@@ -635,7 +633,6 @@ body {
         <li class="nav-item"><a href="https://www.huokecang.online/#advantages" target="_blank" class="nav-link">系统优势</a></li>
         <li class="nav-item"><a href="https://www.huokecang.online/#pricing" target="_blank" class="nav-link">产品价格</a></li>
         <li class="nav-item"><a href="https://www.huokecang.online/#faq" target="_blank" class="nav-link">常见问题</a></li>
-        <li class="nav-item"><a href="https://news.huokecang.online/center/index.html" target="_blank" class="nav-link active">资讯中心</a></li>
         <li class="nav-item"><a href="https://www.huokecang.online/#contact" target="_blank" class="nav-link">联系我们</a></li>
         <li class="nav-item cta"><a href="http://admin-h5.huokecang.online/" target="_blank" class="nav-link nav-cta"><span>进入后台</span></a></li>
       </ul>
@@ -646,32 +643,26 @@ body {
 <div class="news-hero">
   <div class="news-hero-inner">
     <div class="news-hero-meta">
-      {{if .Category}}<span class="category">{{.Category}}</span>{{end}}
-      {{if .IsTop}}<span class="is-top">置顶</span>{{end}}
+      <span class="category">操作说明</span>
+      
     </div>
-    <h1>{{.Title}}</h1>
+    <h1>获客助手设置</h1>
     <div class="news-hero-info">
-      {{if .Author}}<span><span class="icon">✍️</span> {{.Author}}</span>{{end}}
-      {{if .DisplayTime}}<span><span class="icon">🕐</span> {{.DisplayTime}}</span>{{end}}
-      <span><span class="icon">👁️</span> {{.ViewCount}} 次浏览</span>
-      {{if .Source}}<span><span class="icon">🔗</span> {{.Source}}</span>{{end}}
+      
+      <span><span class="icon">🕐</span> 2026-04-02 10:00:00</span>
+      <span><span class="icon">👁️</span> 235 次浏览</span>
+      
     </div>
   </div>
 </div>
 
 <div class="news-wrapper">
   <div class="news-card">
-    {{if .CoverImage}}
-    <div class="news-cover-wrap">
-      <img src="{{.CoverImage}}" alt="{{.Title}}">
-    </div>
-    {{end}}
+    
 
     <div class="news-body">
-      {{if .Summary}}
-      <div class="news-summary">{{.Summary}}</div>
-      {{end}}
-      <div class="news-content">{{.Content}}</div>
+      
+      <div class="news-content"><p>1. 成员设置获客助手链接<br>&nbsp;</p><figure class="image"><img style="aspect-ratio:1706/784;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260702093000.png" width="1706" height="784"></figure><p>&nbsp;</p><p>2. 推广链接-基本设置，打开助手开关</p><figure class="image"><img style="aspect-ratio:1275/681;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260702093100.png" width="1275" height="681"></figure><p>&nbsp;</p><p>3. 发布更新后，手机端出现</p><figure class="image"><img style="aspect-ratio:397/255;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260702093145.png" width="397" height="255"></figure><p>&nbsp;</p><p>4. 用户点击咨询，上报点击数据到后台</p><figure class="image"><img style="aspect-ratio:1593/737;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260702093249.png" width="1593" height="737"></figure><p>&nbsp;</p><p>5. 推广链接页面可查询统计数据</p><figure class="image"><img style="aspect-ratio:1411/417;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260702093334.png" width="1411" height="417"></figure></div>
     </div>
 
     <div class="news-divider"></div>
@@ -679,11 +670,11 @@ body {
     <div class="news-author">
       <div class="news-author-avatar">📝</div>
       <div class="news-author-info">
-        <div class="news-author-name">{{if .Author}}{{.Author}}{{else}}获客仓{{end}}</div>
+        <div class="news-author-name">获客仓</div>
         <div class="news-author-meta">
-          {{if .DisplayTime}}发布于 {{.DisplayTime}}{{end}}
-          {{if .Category}} · {{.Category}}{{end}}
-          · {{.ViewCount}} 次阅读
+          发布于 2026-04-02 10:00:00
+           · 操作说明
+          · 235 次阅读
         </div>
       </div>
     </div>
@@ -695,7 +686,7 @@ body {
       <a class="news-share-btn wechat" href="javascript:;" onclick="copyLink()">
         <span class="ico">💬</span> 微信
       </a>
-      <a class="news-share-btn weibo" href="https://service.weibo.com/share/share.php?title={{.Title}}&url={{.NewsPath}}" target="_blank" rel="noopener">
+      <a class="news-share-btn weibo" href="https://service.weibo.com/share/share.php?title=%e8%8e%b7%e5%ae%a2%e5%8a%a9%e6%89%8b%e8%ae%be%e7%bd%ae&url=%2fnews%2f2" target="_blank" rel="noopener">
         <span class="ico">🔴</span> 微博
       </a>
       <a class="news-share-btn copy" href="javascript:;" onclick="copyLink()">
@@ -706,19 +697,15 @@ body {
     <div class="news-divider"></div>
 
     <div class="news-footer">
-      {{if .Source}}
-      <div class="news-footer-source">
-        本文来源：{{if .SourceURL}}<a href="{{.SourceURL}}" target="_blank" rel="noopener">{{.Source}}</a>{{else}}{{.Source}}{{end}}
-      </div>
-      {{end}}
+      
       <div class="news-footer-brand">
-        Copyright &copy; {{.Year}} <span>获客仓</span> All Rights Reserved.
+        Copyright &copy; 2026 <span>获客仓</span> All Rights Reserved.
       </div>
     </div>
   </div>
 </div>
 
-<!-- Floating Free Account -->
+
 <div class="float-free-account" id="floatFreeAccount">
   <div class="float-free-inner">
     <span class="free-text">点击</span>
@@ -728,7 +715,7 @@ body {
   </div>
 </div>
 
-<!-- Contact Modal -->
+
 <div class="modal fade contact-modal" id="contactModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -765,9 +752,9 @@ body {
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 <script>
-var NEWS_ID = {{.ID}};
+var NEWS_ID =  2 ;
 (function incrementView() {
-  fetch('{{.ApiDomain}}/api/promotion/incrementNewsViewCount', {
+  fetch('https:\/\/admin-h5.huokecang.online/api/promotion/incrementNewsViewCount', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: NEWS_ID })

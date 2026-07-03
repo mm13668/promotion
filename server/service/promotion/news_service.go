@@ -20,6 +20,8 @@ type NewsService struct{}
 var NewsServiceApp = new(NewsService)
 
 func (s *NewsService) CreateNews(e promotion.News) (err error) {
+	now := time.Now()
+	e.DisplayTime = &now
 	err = global.GVA_DB.Create(&e).Error
 	return err
 }
@@ -50,6 +52,9 @@ func (s *NewsService) UpdateNews(e *promotion.News) (err error) {
 	}
 	if e.PublishTime != nil {
 		updates["publish_time"] = e.PublishTime
+	}
+	if e.DisplayTime != nil {
+		updates["display_time"] = e.DisplayTime
 	}
 	err = global.GVA_DB.Model(&promotion.News{}).Where("id = ?", e.ID).Updates(updates).Error
 	return
@@ -126,11 +131,11 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		return "", fmt.Errorf("创建目录失败: %w", err)
 	}
 
-	var publishTime string
-	if news.PublishTime != nil {
-		publishTime = news.PublishTime.Format("2006-01-02 15:04:05")
+	var displayTime string
+	if news.DisplayTime != nil {
+		displayTime = news.DisplayTime.Format("2006-01-02 15:04:05")
 	} else {
-		publishTime = news.CreatedAt.Format("2006-01-02 15:04:05")
+		displayTime = news.CreatedAt.Format("2006-01-02 15:04:05")
 	}
 
 	isTop := false
@@ -182,7 +187,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		SourceURL      string
 		StatusText     string
 		IsTop          bool
-		PublishTime    string
+		DisplayTime    string
 		ViewCount      int
 		LikeCount      int
 		SeoKeywords    string
@@ -202,7 +207,7 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 		SourceURL:      news.SourceURL,
 		StatusText:     statusText,
 		IsTop:          isTop,
-		PublishTime:    publishTime,
+		DisplayTime:    displayTime,
 		ViewCount:      news.ViewCount,
 		LikeCount:      news.LikeCount,
 		SeoKeywords:    news.SeoKeywords,
@@ -282,7 +287,7 @@ type NewsCenterNewsItem struct {
 	Author       string
 	CategoryName string
 	CategoryID   uint
-	PublishTime  string
+	DisplayTime  string
 	ViewCount    int
 	IsTop        bool
 	Link         string
@@ -310,7 +315,7 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 	}
 
 	var newsList []promotion.News
-	if err := global.GVA_DB.Preload("Category").Where("status = ?", 1).Order("is_top desc, sort asc, id desc").Find(&newsList).Error; err != nil {
+	if err := global.GVA_DB.Preload("Category").Where("status = ?", 1).Order("is_top desc, display_time desc, id desc").Find(&newsList).Error; err != nil {
 		return "", fmt.Errorf("查询新闻失败: %w", err)
 	}
 
@@ -344,11 +349,11 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 			catName = n.Category.Name
 		}
 
-		var publishTime string
-		if n.PublishTime != nil {
-			publishTime = n.PublishTime.Format("2006-01-02")
+		var displayTime string
+		if n.DisplayTime != nil {
+			displayTime = n.DisplayTime.Format("2006-01-02")
 		} else {
-			publishTime = n.CreatedAt.Format("2006-01-02")
+			displayTime = n.CreatedAt.Format("2006-01-02")
 		}
 
 		link := fmt.Sprintf("/%d/index.html", n.ID)
@@ -377,7 +382,7 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 			Author:       n.Author,
 			CategoryName: catName,
 			CategoryID:   n.CategoryID,
-			PublishTime:  publishTime,
+			DisplayTime:  displayTime,
 			ViewCount:    n.ViewCount,
 			IsTop:        isTop,
 			Link:         link,
@@ -404,11 +409,11 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 		if n.Category.ID > 0 {
 			catName = n.Category.Name
 		}
-		var publishTime string
-		if n.PublishTime != nil {
-			publishTime = n.PublishTime.Format("2006-01-02")
+		var displayTime string
+		if n.DisplayTime != nil {
+			displayTime = n.DisplayTime.Format("2006-01-02")
 		} else {
-			publishTime = n.CreatedAt.Format("2006-01-02")
+			displayTime = n.CreatedAt.Format("2006-01-02")
 		}
 		link := fmt.Sprintf("/%d/index.html", n.ID)
 		if domain != "" {
@@ -422,7 +427,7 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 			Author:       n.Author,
 			CategoryName: catName,
 			CategoryID:   n.CategoryID,
-			PublishTime:  publishTime,
+			DisplayTime:  displayTime,
 			ViewCount:    n.ViewCount,
 			IsTop:        false,
 			Link:         link,

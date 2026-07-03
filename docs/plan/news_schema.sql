@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `view_count` int(11) DEFAULT '0' COMMENT '浏览次数',
   `like_count` int(11) DEFAULT '0' COMMENT '点赞次数',
   `publish_time` datetime(3) DEFAULT NULL COMMENT '发布时间',
+  `display_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT '展示时间',
   `published_path` varchar(500) DEFAULT '' COMMENT '发布路径',
   `seo_keywords` text COMMENT 'SEO关键词',
   `seo_description` text COMMENT 'SEO描述',

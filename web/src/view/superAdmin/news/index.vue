@@ -120,8 +120,8 @@
 
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="发布时间" prop="publishTime">
-              <el-date-picker v-model="form.publishTime" type="datetime" placeholder="选择发布时间" value-format="YYYY-MM-DDTHH:mm:ssZ" style="width:100%" />
+            <el-form-item label="展示时间" prop="displayTime">
+              <el-date-picker v-model="form.displayTime" type="datetime" placeholder="选择展示时间" value-format="YYYY-MM-DDTHH:mm:ssZ" style="width:100%" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -306,7 +306,7 @@ const defaultForm = () => ({
   status: 0,
   isTop: false,
   sort: 0,
-  publishTime: null,
+  displayTime: null,
   viewCount: 0,
   seoKeywords: '',
   seoDescription: ''
@@ -360,7 +360,7 @@ const openForm = (row) => {
       status: row.status,
       isTop: row.isTop || false,
       sort: row.sort || 0,
-      publishTime: row.publishTime || null,
+      displayTime: row.displayTime || null,
       viewCount: row.viewCount || 0,
       seoKeywords: row.seoKeywords || '',
       seoDescription: row.seoDescription || ''
