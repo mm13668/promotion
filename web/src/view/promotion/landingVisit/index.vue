@@ -12,14 +12,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="IP地址">
-          <el-input v-model="search.ip" placeholder="请输入IP地址" clearable style="width: 180px" />
-        </el-form-item>
-        <el-form-item label="来源链接">
-          <el-input v-model="search.referer" placeholder="请输入来源链接关键字" clearable style="width: 200px" />
-        </el-form-item>
-        <el-form-item label="访问链接">
-          <el-input v-model="search.requestReferer" placeholder="请输入访问链接关键字" clearable style="width: 200px" />
+        <el-form-item label="地区">
+          <el-input v-model="search.region" placeholder="请输入地区关键字" clearable style="width: 180px" />
         </el-form-item>
         <el-form-item label="是否复制">
           <el-select v-model="search.isCopied" clearable placeholder="是否复制" style="width: 120px">
@@ -72,6 +66,16 @@
             style="width: 280px"
           />
         </el-form-item>
+        <el-form-item label="域名">
+          <el-select v-model="search.domainId" clearable filterable placeholder="选择域名" style="width: 200px">
+            <el-option
+              v-for="item in domainOptions"
+              :key="item.ID"
+              :label="item.domain"
+              :value="item.ID"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="search.dates"
@@ -112,6 +116,7 @@
         <el-table-column prop="ID" label="ID" width="80" v-if="visibleColumns.includes('ID')" />
         <el-table-column prop="linkId" label="推广链接ID" width="100" v-if="visibleColumns.includes('linkId')" />
         <el-table-column prop="categoryName" label="所属分类" width="120" v-if="visibleColumns.includes('categoryName')" />
+        <el-table-column prop="domainName" label="域名" width="180" v-if="visibleColumns.includes('domainName')" />
         <el-table-column prop="ip" label="IP地址" width="140" v-if="visibleColumns.includes('ip')" />
         <el-table-column prop="region" label="地区" width="120" v-if="visibleColumns.includes('region')" />
         <el-table-column label="关键词" width="180" show-overflow-tooltip v-if="visibleColumns.includes('keyword')">
@@ -182,7 +187,7 @@
 
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
-import { getLandingVisitList, reportManualOcpcCallback } from '@/api/promotion'
+import { getLandingVisitList, reportManualOcpcCallback, getPromotionDomainList } from '@/api/promotion'
 import { getPromotionLinkList } from '@/api/promotion'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -191,6 +196,7 @@ const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 const linkOptions = ref([])
+const domainOptions = ref([])
 
 const STORAGE_KEY = 'landing_visit_visible_columns'
 
@@ -198,6 +204,7 @@ const allColumns = [
   { key: 'ID', label: 'ID' },
   { key: 'linkId', label: '推广链接ID' },
   { key: 'categoryName', label: '所属分类' },
+  { key: 'domainName', label: '域名' },
   { key: 'ip', label: 'IP地址' },
   { key: 'region', label: '地区' },
   { key: 'keyword', label: '关键词' },
@@ -223,9 +230,8 @@ watch(visibleColumns, (val) => {
 
 const search = reactive({
   linkId: null,
-  ip: '',
-  referer: '',
-  requestReferer: '',
+  domainId: null,
+  region: '',
   isCopied: null,
   copiedAtDates: [],
   isOcpcCallback: null,
@@ -247,6 +253,18 @@ const loadLinkOptions = async () => {
   }
 }
 
+// 获取域名列表
+const loadDomainOptions = async () => {
+  try {
+    const res = await getPromotionDomainList({ page: 1, pageSize: 999 })
+    if (res.code === 0) {
+      domainOptions.value = res.data.list || []
+    }
+  } catch (error) {
+    console.error('获取域名列表失败:', error)
+  }
+}
+
 // 获取表格数据
 const getTableData = async () => {
   const params = {
@@ -258,14 +276,11 @@ const getTableData = async () => {
   if (search.linkId) {
     params.linkId = search.linkId
   }
-  if (search.ip) {
-    params.ip = search.ip
+  if (search.domainId) {
+    params.domainId = search.domainId
   }
-  if (search.referer) {
-    params.referer = search.referer
-  }
-  if (search.requestReferer) {
-    params.requestReferer = search.requestReferer
+  if (search.region) {
+    params.region = search.region
   }
   if (search.isCopied !== null) {
     params.isCopied = search.isCopied
@@ -318,9 +333,8 @@ const onSubmit = () => {
 // 重置
 const onReset = () => {
   search.linkId = null
-  search.ip = ''
-  search.referer = ''
-  search.requestReferer = ''
+  search.domainId = null
+  search.region = ''
   search.isCopied = null
   search.copiedAtDates = []
   search.isOcpcCallback = null
@@ -372,9 +386,8 @@ const exportExcel = async () => {
       pageSize: 100000
     }
     if (search.linkId) params.linkId = search.linkId
-    if (search.ip) params.ip = search.ip
-    if (search.referer) params.referer = search.referer
-    if (search.requestReferer) params.requestReferer = search.requestReferer
+    if (search.domainId) params.domainId = search.domainId
+    if (search.region) params.region = search.region
     if (search.isCopied !== null) params.isCopied = search.isCopied
     if (search.copiedAtDates && search.copiedAtDates.length === 2) {
       params.copiedAtStart = search.copiedAtDates[0] ? formatDate(search.copiedAtDates[0]) : undefined
@@ -407,13 +420,14 @@ const exportExcel = async () => {
       return
     }
 
-    const headers = ['ID', '推广链接ID', '所属分类', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '回传时间', '复制客服号码', '复制客服昵称', '创建时间']
+    const headers = ['ID', '推广链接ID', '所属分类', '域名', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '回传时间', '复制客服号码', '复制客服昵称', '创建时间']
     const csvRows = [headers.join(',')]
     for (const row of data) {
       csvRows.push([
         row.ID,
         row.linkId,
         `"${(row.categoryName || '').replace(/"/g, '""')}"`,
+        `"${(row.domainName || '').replace(/"/g, '""')}"`,
         row.ip,
         `"${(row.region || '').replace(/"/g, '""')}"`,
         `"${extractKeyword(row.requestReferer)}"`,
@@ -492,6 +506,7 @@ const formatDate = (date) => {
 // 页面加载时获取数据
 onMounted(() => {
   loadLinkOptions()
+  loadDomainOptions()
   getTableData()
 })
 </script>

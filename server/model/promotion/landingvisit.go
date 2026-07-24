@@ -42,6 +42,7 @@ type LandingVisit struct {
 	ClickedAssistAt       *time.Time `json:"clickedAssistAt" gorm:"column:clicked_assist_at;comment:点击获客助手时间"`
 	ConversionType        string    `json:"conversionType" gorm:"column:conversion_type;type:varchar(32);comment:转化类型(多个用逗号分隔):35=微信复制 3=表单提交 49=注册转化"`
 	CategoryName          string    `json:"categoryName" gorm:"-"`
+	DomainName            string    `json:"domainName" gorm:"-"`
 }
 
 func (LandingVisit) TableName() string {
@@ -50,9 +51,7 @@ func (LandingVisit) TableName() string {
 
 type LandingVisitSearch struct {
 	LinkId          *uint  `json:"linkId" form:"linkId"`
-	Ip              string `json:"ip" form:"ip"`
-	Referer         string `json:"referer" form:"referer"`
-	RequestReferer  string `json:"requestReferer" form:"requestReferer"`
+	Region          string `json:"region" form:"region"`
 	IsCopied         *bool  `json:"isCopied" form:"isCopied"`
 	IsOcpcCallback   *bool  `json:"isOcpcCallback" form:"isOcpcCallback"`
 	IsClickedAssist    *bool  `json:"isClickedAssist" form:"isClickedAssist"`
@@ -62,6 +61,7 @@ type LandingVisitSearch struct {
 	OcpcCallbackAtEnd   string `json:"ocpcCallbackAtEnd" form:"ocpcCallbackAtEnd"`
 	ClickedAssistAtStart string `json:"clickedAssistAtStart" form:"clickedAssistAtStart"`
 	ClickedAssistAtEnd   string `json:"clickedAssistAtEnd" form:"clickedAssistAtEnd"`
+	DomainID             *uint  `json:"domainId" form:"domainId"`
 	StartTime       string `json:"startTime" form:"startTime"`
 	EndTime         string `json:"endTime" form:"endTime"`
 	request.PageInfo

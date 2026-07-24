@@ -221,19 +221,14 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 		db = db.Where("link_id = ?", *info.LinkId)
 	}
 
-	// IP 精准搜索
-	if info.Ip != "" {
-		db = db.Where("ip = ?", info.Ip)
+	// 域名筛选：通过 promotion_link 表关联查询 domain_id
+	if info.DomainID != nil {
+		db = db.Where("link_id IN (SELECT id FROM promotion_link WHERE domain_id = ?)", *info.DomainID)
 	}
 
-	// referer 关键字搜索
-	if info.Referer != "" {
-		db = db.Where("referer LIKE ?", "%"+info.Referer+"%")
-	}
-
-	// request_referer 关键字搜索
-	if info.RequestReferer != "" {
-		db = db.Where("request_referer LIKE ?", "%"+info.RequestReferer+"%")
+	// 地区模糊搜索
+	if info.Region != "" {
+		db = db.Where("region LIKE ?", "%"+info.Region+"%")
 	}
 
 	// 是否复制客服信息筛选
@@ -302,19 +297,26 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 		type linkRegion struct {
 			ID       uint
 			RegionID *uint
+			DomainID *uint
 		}
 		var linkResults []linkRegion
 		global.GVA_DB.Model(&promotion.PromotionLink{}).
-			Select("id, region_id").
+			Select("id, region_id, domain_id").
 			Where("id IN ?", linkIDs).
 			Find(&linkResults)
 
 		regionIDMap := make(map[uint]*uint, len(linkResults))
+		domainIDMap := make(map[uint]*uint, len(linkResults))
 		regionIDs := make([]uint, 0)
+		domainIDs := make([]uint, 0)
 		for _, r := range linkResults {
 			regionIDMap[r.ID] = r.RegionID
+			domainIDMap[r.ID] = r.DomainID
 			if r.RegionID != nil {
 				regionIDs = append(regionIDs, *r.RegionID)
+			}
+			if r.DomainID != nil {
+				domainIDs = append(domainIDs, *r.DomainID)
 			}
 		}
 
@@ -327,9 +329,21 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 			}
 		}
 
+		domainNameMap := make(map[uint]string, len(domainIDs))
+		if len(domainIDs) > 0 {
+			var domains []promotion.PromotionDomain
+			global.GVA_DB.Where("id IN ?", domainIDs).Find(&domains)
+			for _, d := range domains {
+				domainNameMap[d.ID] = d.Domain
+			}
+		}
+
 		for i, v := range list {
 			if rid, ok := regionIDMap[v.LinkId]; ok && rid != nil {
 				list[i].CategoryName = categoryNameMap[*rid]
+			}
+			if did, ok := domainIDMap[v.LinkId]; ok && did != nil {
+				list[i].DomainName = domainNameMap[*did]
 			}
 		}
 	}
