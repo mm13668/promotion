@@ -121,7 +121,7 @@
         <el-table-column prop="region" label="地区" width="120" v-if="visibleColumns.includes('region')" />
         <el-table-column label="关键词" width="180" show-overflow-tooltip v-if="visibleColumns.includes('keyword')">
           <template #default="{ row }">
-            {{ extractKeyword(row.requestReferer) }}
+            {{ extractKeyword(row.requestReferer, row.referer) }}
           </template>
         </el-table-column>
         <el-table-column prop="referer" label="来源链接" width="200" show-overflow-tooltip v-if="visibleColumns.includes('referer')" />
@@ -430,7 +430,7 @@ const exportExcel = async () => {
         `"${(row.domainName || '').replace(/"/g, '""')}"`,
         row.ip,
         `"${(row.region || '').replace(/"/g, '""')}"`,
-        `"${extractKeyword(row.requestReferer)}"`,
+        `"${extractKeyword(row.requestReferer, row.referer)}"`,
         `"${(row.referer || '').replace(/"/g, '""')}"`,
         `"${(row.requestReferer || '').replace(/"/g, '""')}"`,
         row.duration ?? 0,
@@ -481,12 +481,17 @@ const formatDateTime = (dateTime) => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
-// 从URL中提取keyword参数
-const extractKeyword = (url) => {
-  if (!url) return '-'
+// 从URL中提取keyword参数（优先从访问链接keyword=提取，再从来源链接q=提取）
+const extractKeyword = (requestReferer, referer) => {
   try {
-    const match = url.match(/[?&]keyword=([^&]+)/)
-    if (match) return decodeURIComponent(match[1])
+    if (requestReferer) {
+      const match = requestReferer.match(/[?&]keyword=([^&]+)/)
+      if (match) return decodeURIComponent(match[1])
+    }
+    if (referer) {
+      const match = referer.match(/[?&]q=([^&]+)/)
+      if (match) return decodeURIComponent(match[1])
+    }
     return '-'
   } catch {
     return '-'
