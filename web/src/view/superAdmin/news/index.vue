@@ -266,7 +266,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  createNews, updateNews, deleteNews, getNewsList, publishNews, batchPublishNews, publishNewsCenter,
+  createNews, updateNews, deleteNews, getNewsList, publishNews, batchPublishNews, publishNewsCenter, submitToBaidu,
   createNewsCategory, updateNewsCategory, deleteNewsCategory,
   getNewsCategoryList, getAllEnabledNewsCategories
 } from '@/api/news'
@@ -423,7 +423,19 @@ const handlePublish = async (row) => {
   ).then(async () => {
     const res = await publishNews({ id: row.ID })
     if (res.code === 0) {
+      const publishedPath = res.data.publishedPath
       ElMessage.success('发布成功')
+      if (publishedPath && publishedPath.startsWith('http')) {
+        try {
+          const baiduRes = await submitToBaidu({ urls: [publishedPath] })
+          if (baiduRes.code === 0) {
+            const { success, remain } = baiduRes.data
+            ElMessage.success(`百度收录成功 ${success} 条，今日剩余 ${remain} 条`)
+          }
+        } catch {
+          ElMessage.warning('百度收录提交失败，可稍后手动提交')
+        }
+      }
       getTableData()
     }
   }).catch(() => {})
@@ -437,7 +449,7 @@ const handlePublishNewsCenter = async () => {
   ).then(async () => {
     const res = await publishNewsCenter()
     if (res.code === 0) {
-      ElMessage.success('新闻中心生成成功')
+      ElMessage.success('新闻中心生成成功，已提交百度收录')
       ElMessage.info('预览地址：https://news.huokecang.online/center/index.html')
     }
   }).catch(() => {})
@@ -451,7 +463,7 @@ const handleBatchPublish = async () => {
   ).then(async () => {
     const res = await batchPublishNews()
     if (res.code === 0) {
-      ElMessage.success(res.msg || '批量发布完成')
+      ElMessage.success(res.msg || '批量发布完成，已提交百度收录')
       getTableData()
     }
   }).catch(() => {})

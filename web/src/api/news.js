@@ -63,6 +63,14 @@ export const publishNewsCenter = () => {
   })
 }
 
+export const submitToBaidu = (data) => {
+  return service({
+    url: '/promotion/submitToBaidu',
+    method: 'post',
+    data
+  })
+}
+
 // ===== 新闻分类 =====
 export const createNewsCategory = (data) => {
   return service({
