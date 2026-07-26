@@ -257,4 +257,7 @@ conf:
     main-domain: 'admin-h5.huokecang.online'
     ldy-domain: 'admin-h5.huokecang.online'
     cname-domain: 'w.kunlunaq.com'
-    news-domain: ""
+    news-domain: "news.huokecang.online"
+    baidu-submit:
+        site: "news.huokecang.online"
+        token: "5KNLwMGhno7F5ICr"

@@ -18,6 +18,7 @@ func (s *NewsRouter) InitNewsRouter(Router *gin.RouterGroup) {
 		newsRouter.POST("publishNews", promoApi.NewsApi.PublishNews)
 		newsRouter.POST("batchPublishNews", promoApi.NewsApi.BatchPublishNews)
 		newsRouter.POST("publishNewsCenter", promoApi.NewsApi.PublishNewsCenter)
+		newsRouter.POST("submitToBaidu", promoApi.NewsApi.SubmitToBaidu)
 		// 新闻分类
 		newsRouter.POST("createNewsCategory", promoApi.NewsCategoryApi.Create)
 		newsRouter.DELETE("deleteNewsCategory", promoApi.NewsCategoryApi.Delete)

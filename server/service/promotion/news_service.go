@@ -1,8 +1,12 @@
 package promotion
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -116,8 +120,8 @@ func (s *NewsService) processContentImages(content string) string {
 	})
 }
 
-// PublishNews 发布新闻，生成静态HTML页面
-func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
+// publishNewsInternal 发布新闻，生成静态HTML页面（内部方法，不提交百度收录）
+func (s *NewsService) publishNewsInternal(id uint) (publishedPath string, err error) {
 	news, err := s.FindNews(id)
 	if err != nil {
 		return "", fmt.Errorf("新闻不存在: %w", err)
@@ -248,6 +252,11 @@ func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
 	return publishedPath, nil
 }
 
+// PublishNews 发布新闻，生成静态HTML页面
+func (s *NewsService) PublishNews(id uint) (publishedPath string, err error) {
+	return s.publishNewsInternal(id)
+}
+
 // IncrementViewCount 增加浏览次数，返回更新后的值
 func (s *NewsService) IncrementViewCount(id uint) (int, error) {
 	err := global.GVA_DB.Model(&promotion.News{}).Where("id = ?", id).
@@ -266,14 +275,34 @@ func (s *NewsService) BatchPublishNews() (success int, failed int, err error) {
 	if err := global.GVA_DB.Where("status = ?", 1).Find(&list).Error; err != nil {
 		return 0, 0, err
 	}
+
+	domain := global.GVA_CONFIG.Conf.NewsDomain
+
 	for _, news := range list {
-		if _, err := s.PublishNews(news.ID); err != nil {
+		if _, err := s.publishNewsInternal(news.ID); err != nil {
 			global.GVA_LOG.Error("批量发布新闻失败", zap.Uint("id", news.ID), zap.Error(err))
 			failed++
 		} else {
 			success++
 		}
 	}
+
+	// 批量提交所有已发布新闻的URL到百度收录
+	if domain != "" {
+		var baiduURLs []string
+		for _, news := range list {
+			baiduURLs = append(baiduURLs, fmt.Sprintf("https://%s/%d/index.html", domain, news.ID))
+		}
+		if baiduResult, baiduErr := s.SubmitUrlsToBaidu(baiduURLs); baiduErr != nil {
+			global.GVA_LOG.Error("批量提交百度收录失败", zap.Error(baiduErr))
+		} else if baiduResult != nil {
+			global.GVA_LOG.Info("批量提交百度收录完成",
+				zap.Int("success", baiduResult.Success),
+				zap.Int("remain", baiduResult.Remain),
+			)
+		}
+	}
+
 	return success, failed, nil
 }
 
@@ -468,10 +497,36 @@ func (s *NewsService) PublishNewsCenter() (string, error) {
 	if err := tmpl.Execute(f, data); err != nil {
 		return "", fmt.Errorf("渲染模板失败: %w", err)
 	}
+	f.Close()
+
+	// 复制到 news/index.html，供域名根目录访问
+	rootOutputPath := filepath.Join(basePath, "index.html")
+	rootFile, err := os.Create(rootOutputPath)
+	if err != nil {
+		return "", fmt.Errorf("创建根目录新闻中心文件失败: %w", err)
+	}
+	if err := tmpl.Execute(rootFile, data); err != nil {
+		rootFile.Close()
+		return "", fmt.Errorf("渲染根目录新闻中心模板失败: %w", err)
+	}
+	rootFile.Close()
 
 	publishedPath := "/center/index.html"
 	if domain != "" {
 		publishedPath = fmt.Sprintf("https://%s/center/index.html", domain)
+	}
+
+	// 自动提交新闻中心URL到百度收录
+	if domain != "" {
+		centerURL := fmt.Sprintf("https://%s/center/index.html", domain)
+		if baiduResult, baiduErr := s.SubmitUrlsToBaidu([]string{centerURL}); baiduErr != nil {
+			global.GVA_LOG.Error("提交新闻中心到百度收录失败", zap.Error(baiduErr))
+		} else if baiduResult != nil {
+			global.GVA_LOG.Info("提交新闻中心到百度收录完成",
+				zap.Int("success", baiduResult.Success),
+				zap.Int("remain", baiduResult.Remain),
+			)
+		}
 	}
 
 	return publishedPath, nil
@@ -501,6 +556,53 @@ func (s *NewsService) FindNewsWithCategory(id uint) (news promotion.News, err er
 	return
 }
 
+type BaiduSubmitResult struct {
+	Success int `json:"success"`
+	Remain  int `json:"remain"`
+}
 
+// SubmitUrlsToBaidu 提交URL到百度收录
+func (s *NewsService) SubmitUrlsToBaidu(urls []string) (*BaiduSubmitResult, error) {
+	cfg := global.GVA_CONFIG.Conf.BaiduSubmit
+	if cfg.Site == "" || cfg.Token == "" {
+		return nil, fmt.Errorf("百度收录配置未设置")
+	}
 
+	body := strings.Join(urls, "\n")
+	apiURL := fmt.Sprintf("http://data.zz.baidu.com/urls?site=%s&token=%s", cfg.Site, cfg.Token)
 
+	req, err := http.NewRequest("POST", apiURL, bytes.NewBufferString(body))
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %w", err)
+	}
+	req.Header.Set("Content-Type", "text/plain")
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("请求百度API失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("读取响应失败: %w", err)
+	}
+
+	global.GVA_LOG.Info("百度收录响应",
+		zap.String("urls", body),
+		zap.Int("status", resp.StatusCode),
+		zap.String("response", string(respBody)),
+	)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("百度API返回异常状态码: %d, body: %s", resp.StatusCode, string(respBody))
+	}
+
+	var result BaiduSubmitResult
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return nil, fmt.Errorf("解析百度响应失败: %w", err)
+	}
+
+	return &result, nil
+}

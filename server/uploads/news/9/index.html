@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百度OCPC_api高级回传</title>
+<meta name="keywords" content="网站制作，网络公司，网站建设，网站开发，落地页制作，竞价推广页制作，获客仓https://www.huokecang.online">
+<meta name="description" content="OCPC_api回传，因为在回传数据给百度服务器之前，我们还有很多事情可以做，比如筛选哪些是有效咨询，哪些回传是无效的，那么对于这种无效的回传，我们要把他去掉，避免干扰ocpc 智能投放模型。">
+<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #818cf8;
+  --secondary: #0ea5e9;
+  --accent: #10b981;
+  --dark: #0f172a;
+  --gray: #64748b;
+  --light: #f8fafc;
+  --gradient: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+  --shadow: 0 4px 24px rgba(79, 70, 229, 0.12);
+  --shadow-lg: 0 12px 40px rgba(79, 70, 229, 0.18);
+  --radius: 16px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f1f5f9;
+  color: var(--dark);
+  line-height: 1.8;
+  padding-top: 0;
+}
+
+ 
+.hkc-navbar {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px);
+  padding: 12px 0;
+  transition: all 0.3s;
+}
+.hkc-navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff !important;
+  text-decoration: none;
+}
+.hkc-navbar .logo-icon {
+  font-size: 1.6rem;
+  margin-right: 4px;
+}
+.hkc-navbar .nav-link {
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 0.9rem;
+  padding: 8px 14px !important;
+  border-radius: 8px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.hkc-navbar .nav-link:hover,
+.hkc-navbar .nav-link.active {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+.hkc-navbar .nav-cta {
+  background: var(--gradient) !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.hkc-navbar .nav-cta:hover {
+  opacity: 0.9;
+}
+
+ 
+.news-hero {
+  background: var(--gradient);
+  padding: 120px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+.news-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://pub-0aa45ce6d1324502a4355b0939c4825b.r2.dev/images/news_banner.jpg') center/cover no-repeat;
+  opacity: 0.80;
+}
+.news-hero-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+.news-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.news-hero .category {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 14px;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+.news-hero .is-top {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  background: #f59e0b;
+  color: #fff;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.news-hero h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 18px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.news-hero-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+}
+.news-hero-info span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.news-hero-info .icon {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+ 
+.news-wrapper {
+  max-width: 1200px;
+  margin: -20px auto 0;
+  padding: 0 16px 40px;
+  position: relative;
+  z-index: 2;
+}
+.news-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+ 
+.news-cover-wrap {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.news-cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.news-cover-placeholder {
+  font-size: 48px;
+  opacity: 0.3;
+  user-select: none;
+}
+
+ 
+.news-body {
+  padding: 36px 40px 32px;
+}
+
+ 
+.news-summary {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  font-size: 15px;
+  color: var(--gray);
+  line-height: 1.8;
+  border-left: 4px solid var(--primary);
+  position: relative;
+}
+.news-summary::before {
+  content: '📌';
+  margin-right: 8px;
+}
+
+ 
+.news-content {
+  font-size: 16px;
+  color: #334155;
+  line-height: 1.9;
+}
+.news-content h1, .news-content h2, .news-content h3,
+.news-content h4, .news-content h5, .news-content h6 {
+  margin: 28px 0 14px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.4;
+}
+.news-content h1 { font-size: 24px; }
+.news-content h2 { font-size: 20px; padding-bottom: 8px; border-bottom: 2px solid #f1f5f9; }
+.news-content h3 { font-size: 18px; }
+.news-content h4 { font-size: 16px; }
+.news-content p { margin-bottom: 18px; }
+.news-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+.news-content a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.news-content a:hover { border-bottom-color: var(--primary); }
+.news-content blockquote {
+  margin: 20px 0;
+  padding: 18px 24px;
+  border-left: 4px solid var(--primary);
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  border-radius: 0 12px 12px 0;
+  color: var(--gray);
+  font-style: italic;
+}
+.news-content ul, .news-content ol {
+  padding-left: 24px;
+  margin-bottom: 18px;
+}
+.news-content li { margin-bottom: 8px; }
+.news-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.news-content table th {
+  background: var(--gradient);
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+.news-content table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+.news-content table tr:last-child td { border-bottom: none; }
+.news-content table tr:hover td { background: #f8fafc; }
+.news-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 20px 24px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 18px;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+.news-content code {
+  background: #eef2ff;
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+.news-content pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+.news-content hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+  margin: 32px 0;
+}
+
+ 
+.news-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  margin: 0 40px;
+}
+
+ 
+.news-author {
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.news-author-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.news-author-info {
+  flex: 1;
+}
+.news-author-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+}
+.news-author-meta {
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+ 
+.news-share {
+  padding: 20px 40px 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.news-share-label {
+  font-size: 13px;
+  color: var(--gray);
+  font-weight: 600;
+}
+.news-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.news-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.news-share-btn.wechat:hover { border-color: #07c160; color: #07c160; }
+.news-share-btn.weibo:hover { border-color: #e6162d; color: #e6162d; }
+.news-share-btn.copy:hover { border-color: var(--primary); color: var(--primary); }
+.news-share-btn .ico { font-size: 16px; }
+
+ 
+.news-footer {
+  padding: 24px 40px 32px;
+  text-align: center;
+}
+.news-footer-source {
+  font-size: 13px;
+  color: var(--gray);
+}
+.news-footer-source a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.news-footer-brand {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+.news-footer-brand span { font-weight: 700; color: var(--primary); }
+
+ 
+.float-free-account {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  cursor: pointer;
+}
+.float-free-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 2px solid #ff6b35;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  padding: 14px 12px;
+  box-shadow: -4px 4px 16px rgba(255,107,53,0.25);
+  animation: float-free-glow 2s ease-in-out infinite;
+}
+.float-free-inner:hover {
+  animation: none;
+  box-shadow: -4px 4px 24px rgba(255,107,53,0.5);
+}
+.free-text {
+  font-size: 0.85rem;
+  color: #5d4037;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.free-tag {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #e53935;
+  line-height: 1.3;
+}
+.free-phone-hidden {
+  display: none;
+}
+@keyframes float-free-glow {
+  0%, 100% { box-shadow: -4px 4px 16px rgba(255,107,53,0.25); }
+  50% { box-shadow: -4px 4px 24px rgba(255,107,53,0.45); }
+}
+.news-site-link {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.news-site-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+}
+.news-site-link a:hover {
+  text-decoration: underline;
+}
+
+ 
+.contact-modal .modal-content {
+  background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 44px 36px 36px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(79,70,229,0.15);
+}
+.contact-modal .close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #f1f3f5;
+  border-radius: 50%;
+  color: #94a3b8;
+  opacity: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.contact-modal .close:hover {
+  background: #e2e6ea;
+  color: #475569;
+}
+.contact-modal-icon {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+.contact-modal-icon svg {
+  filter: drop-shadow(0 4px 8px rgba(16,185,129,0.3));
+  animation: modal-check-bounce 0.5s ease;
+}
+@keyframes modal-check-bounce {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.contact-modal .modal-body h4 {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #1a2332;
+  margin-bottom: 12px;
+}
+.modal-phone {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #4f46e5;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+.modal-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+.contact-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btn-contact {
+  flex: 1;
+  max-width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e9ef;
+  background: #fff;
+  color: #1a2332;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.4;
+}
+.btn-contact .btn-icon {
+  font-size: 1.6rem;
+}
+.btn-contact:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(79,70,229,0.12);
+  text-decoration: none;
+}
+.btn-wechat:hover {
+  border-color: #07c160;
+  color: #07c160;
+}
+.btn-phone:hover {
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+
+ 
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+ 
+
+@media (max-width: 640px) {
+  .news-hero { padding: 100px 0 30px; }
+  .news-hero h1 { font-size: 22px; }
+  .news-hero-info { gap: 12px; font-size: 12px; }
+  .news-wrapper { margin-top: -12px; padding: 0 12px 24px; }
+  .news-cover-wrap { height: 220px; }
+  .news-body { padding: 24px 20px 20px; }
+  .news-summary { padding: 16px 18px; font-size: 14px; }
+  .news-content { font-size: 15px; }
+  .news-content h1 { font-size: 20px; }
+  .news-content h2 { font-size: 18px; }
+  .news-divider { margin: 0 20px; }
+  .news-author { padding: 20px 20px; flex-wrap: wrap; }
+  .news-share { padding: 16px 20px 24px; }
+  .news-footer { padding: 20px 20px 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top hkc-navbar" id="hkc-navbar">
+  <div class="container">
+    <a class="navbar-brand hkc-logo" href="https://www.huokecang.online/" target="_blank">
+      <span class="logo-icon">📦</span> 获客仓
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#hkc-nav" aria-controls="hkc-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="hkc-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a href="https://www.huokecang.online/#hero" target="_blank" class="nav-link">首屏</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#features" target="_blank" class="nav-link">核心功能</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#industries" target="_blank" class="nav-link">适用行业</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#advantages" target="_blank" class="nav-link">系统优势</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#pricing" target="_blank" class="nav-link">产品价格</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#faq" target="_blank" class="nav-link">常见问题</a></li>
+        <li class="nav-item"><a href="https://news.huokecang.online/center/index.html" target="_blank" class="nav-link active">资讯中心</a></li>
+        <li class="nav-item"><a href="https://www.huokecang.online/#contact" target="_blank" class="nav-link">联系我们</a></li>
+        <li class="nav-item cta"><a href="http://admin-h5.huokecang.online/" target="_blank" class="nav-link nav-cta"><span>进入后台</span></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="news-hero">
+  <div class="news-hero-inner">
+    <div class="news-hero-meta">
+      <span class="category">操作说明</span>
+      
+    </div>
+    <h1>百度OCPC_api高级回传</h1>
+    <div class="news-hero-info">
+      <span><span class="icon">✍️</span> kebo</span>
+      <span><span class="icon">🕐</span> 2026-07-20 23:14:25</span>
+      <span><span class="icon">👁️</span> 365 次浏览</span>
+      
+    </div>
+  </div>
+</div>
+
+<div class="news-wrapper">
+  <div class="news-card">
+    
+
+    <div class="news-body">
+      
+      <div class="news-content"><p>OCPC_api回传，因为在回传数据给百度服务器之前，我们还有很多事情可以做，比如筛选哪些是有效咨询，哪些回传是无效的，那么对于这种无效的回传，我们要把他去掉，避免干扰ocpc 智能投放模型。</p><p>上一次，获客仓网络做出来了撤销回传的接口，但是这个操作起来还是需要大量的人力来判断。</p><p><br><span style="color:rgb(165,42,42);"><strong>这一次，上新了一个时间限制功能。</strong></span><br>用意：通过获客仓网络的统计系统，来判断这个访客进入页面到复制号码所花费的时间来判断这个访客的质量度，从而限制OCPC回传与否。</p><figure class="image"><img style="aspect-ratio:477/1044;" src="https://admin-h5.huokecang.online/api/uploads/file/78805a221a988e79ef3f42d7c5bfd418_20260720231253.png" width="477" height="1044"></figure><p>如上面：如果OCPC转化时间，设置为16秒，那么图里面的那个15秒的OCPC数据 系统就会默认屏蔽，不回传给百度服务器。<br>因为，这个时长15秒，是从访客进入页面 到复制你页面里面的号码 所花费的时间。<br>15秒钟就复制号码的，那肯定是不科学的，大家可以根据自己的分析 判断···来修改数值，让OCPC模型得到趋于完美的数据。</p><p>当然，整个后台的OCPC开发计划完全不止这么点，到时候会设置访客识别码禁止回传，IP段禁止回传，让OCPC的流量准确到令人发指！敬请期待...</p></div>
+    </div>
+
+    <div class="news-divider"></div>
+
+    <div class="news-author">
+      <div class="news-author-avatar">📝</div>
+      <div class="news-author-info">
+        <div class="news-author-name">kebo</div>
+        <div class="news-author-meta">
+          发布于 2026-07-20 23:14:25
+           · 操作说明
+          · 365 次阅读
+        </div>
+      </div>
+    </div>
+
+    <div class="news-divider"></div>
+
+    <div class="news-share">
+      <span class="news-share-label">分享到：</span>
+      <a class="news-share-btn wechat" href="javascript:;" onclick="copyLink()">
+        <span class="ico">💬</span> 微信
+      </a>
+      <a class="news-share-btn weibo" href="https://service.weibo.com/share/share.php?title=%e7%99%be%e5%ba%a6OCPC_api%e9%ab%98%e7%ba%a7%e5%9b%9e%e4%bc%a0&url=https%3a%2f%2fnews.huokecang.online%2f9%2findex.html" target="_blank" rel="noopener">
+        <span class="ico">🔴</span> 微博
+      </a>
+      <a class="news-share-btn copy" href="javascript:;" onclick="copyLink()">
+        <span class="ico">🔗</span> 复制链接
+      </a>
+    </div>
+
+    <div class="news-divider"></div>
+
+    <div class="news-footer">
+      
+      <div class="news-footer-brand">
+        Copyright &copy; 2026 <span>获客仓</span> All Rights Reserved.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="float-free-account" id="floatFreeAccount">
+  <div class="float-free-inner">
+    <span class="free-text">点击</span>
+    <span class="free-tag">免费</span>
+    <span class="free-text">领取账号</span>
+    <span class="free-phone-hidden" id="freePhone">+v 18028414502</span>
+  </div>
+</div>
+
+
+<div class="modal fade contact-modal" id="contactModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <button type="button" class="close" data-dismiss="modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-body text-center">
+        <div class="contact-modal-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h4>已复制号码</h4>
+        <p class="modal-phone">18028414502</p>
+        <p class="modal-hint">+v领取系统账号密码</p>
+        <div class="contact-modal-actions">
+          <button class="btn btn-contact btn-wechat" data-action="wechat">
+            <span class="btn-icon">💬</span>
+            <span>去微信</span>
+          </button>
+          <a class="btn btn-contact btn-phone" href="tel:18028414502">
+            <span class="btn-icon">📞</span>
+            <span>拨打电话</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script>
+var NEWS_ID =  9 ;
+(function incrementView() {
+  fetch('https:\/\/admin-h5.huokecang.online/api/promotion/incrementNewsViewCount', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: NEWS_ID })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.code === 0 && res.data && res.data.viewCount) {
+      var count = res.data.viewCount;
+      document.querySelectorAll('.news-hero-info span').forEach(function(el) {
+        if (el.textContent.indexOf('浏览') > -1) {
+          el.innerHTML = '<span class="icon">👁️</span> ' + count + ' 次浏览';
+        }
+      });
+      document.querySelectorAll('.news-author-meta').forEach(function(el) {
+        el.textContent = el.textContent.replace(/\d+ 次阅读/, count + ' 次阅读');
+      });
+    }
+  }).catch(function() {});
+})();
+
+var phoneNumber = '18028414502';
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  var $temp = $('<input>');
+  $('body').append($temp);
+  $temp.val(text).select();
+  document.execCommand('copy');
+  $temp.remove();
+  return Promise.resolve();
+}
+
+$('#floatFreeAccount').on('click', function () {
+  copyToClipboard(phoneNumber).then(function () {
+    $('#contactModal').modal('show');
+  });
+});
+
+$('#contactModal .btn-wechat').on('click', function () {
+  $('#contactModal').modal('hide');
+  window.location.href = 'weixin://';
+});
+
+function copyLink() {
+  const url = window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() {
+      showToast('链接已复制到剪贴板 ✅');
+    }, function() {
+      fallbackCopy(url);
+    });
+  } else {
+    fallbackCopy(url);
+  }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('链接已复制到剪贴板 ✅');
+  } catch(e) {
+    showToast('复制失败，请手动复制链接');
+  }
+  document.body.removeChild(ta);
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+</script>
+</body>
+</html>

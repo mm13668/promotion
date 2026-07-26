@@ -131,6 +131,33 @@ func (a *NewsApi) PublishNewsCenter(c *gin.Context) {
 	response.OkWithDetailed(gin.H{"publishedPath": publishedPath}, "生成成功", c)
 }
 
+type SubmitToBaiduRequest struct {
+	URLs []string `json:"urls"`
+}
+
+// SubmitToBaidu 提交URL到百度收录
+func (a *NewsApi) SubmitToBaidu(c *gin.Context) {
+	var req SubmitToBaiduRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if len(req.URLs) == 0 {
+		response.FailWithMessage("请提供待提交的URL", c)
+		return
+	}
+	result, err := newsService.SubmitUrlsToBaidu(req.URLs)
+	if err != nil {
+		global.GVA_LOG.Error("提交百度收录失败", zap.Error(err))
+		response.FailWithMessage("提交失败："+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(gin.H{
+		"success": result.Success,
+		"remain":  result.Remain,
+	}, "百度收录提交成功", c)
+}
+
 // PublishNews 发布新闻，生成静态HTML页面
 func (a *NewsApi) PublishNews(c *gin.Context) {
 	var e request.GetById
