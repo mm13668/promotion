@@ -3,6 +3,7 @@ package promotion
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/promotion"
@@ -270,12 +271,20 @@ func (l *LandingVisitService) GetLandingVisitList(info promotion.LandingVisitSea
 		db = db.Where("clicked_assist_at <= ?", info.ClickedAssistAtEnd+" 23:59:59")
 	}
 
-	// 创建时间范围筛选
+	// 创建时间范围筛选（支持精确到时分秒）
 	if info.StartTime != "" {
-		db = db.Where("created_at >= ?", info.StartTime+" 00:00:00")
+		if strings.Contains(info.StartTime, ":") {
+			db = db.Where("created_at >= ?", info.StartTime)
+		} else {
+			db = db.Where("created_at >= ?", info.StartTime+" 00:00:00")
+		}
 	}
 	if info.EndTime != "" {
-		db = db.Where("created_at <= ?", info.EndTime+" 23:59:59")
+		if strings.Contains(info.EndTime, ":") {
+			db = db.Where("created_at <= ?", info.EndTime)
+		} else {
+			db = db.Where("created_at <= ?", info.EndTime+" 23:59:59")
+		}
 	}
 
 	err = db.Count(&total).Error
