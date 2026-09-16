@@ -79,11 +79,12 @@
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="search.dates"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 280px"
+            start-placeholder="开始日期时间"
+            end-placeholder="结束日期时间"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            style="width: 360px"
           />
         </el-form-item>
         <el-form-item>
@@ -119,7 +120,7 @@
         <el-table-column prop="domainName" label="域名" width="180" v-if="visibleColumns.includes('domainName')" />
         <el-table-column prop="ip" label="IP地址" width="140" v-if="visibleColumns.includes('ip')" />
         <el-table-column prop="region" label="地区" width="120" v-if="visibleColumns.includes('region')" />
-        <el-table-column label="关键词" width="180" show-overflow-tooltip v-if="visibleColumns.includes('keyword')">
+        <el-table-column label="搜索词" width="180" show-overflow-tooltip v-if="visibleColumns.includes('keyword')">
           <template #default="{ row }">
             {{ extractKeyword(row.requestReferer, row.referer) }}
           </template>
@@ -207,7 +208,7 @@ const allColumns = [
   { key: 'domainName', label: '域名' },
   { key: 'ip', label: 'IP地址' },
   { key: 'region', label: '地区' },
-  { key: 'keyword', label: '关键词' },
+  { key: 'keyword', label: '搜索词' },
   { key: 'referer', label: '来源链接' },
   { key: 'requestReferer', label: '访问链接' },
   { key: 'duration', label: '浏览时长(秒)' },
@@ -308,8 +309,8 @@ const getTableData = async () => {
   }
   if (search.dates && search.dates.length === 2) {
     const [s, e] = search.dates
-    params.startTime = s ? formatDate(s) : undefined
-    params.endTime = e ? formatDate(e) : undefined
+    params.startTime = s || undefined
+    params.endTime = e || undefined
   }
 
   try {
@@ -405,8 +406,8 @@ const exportExcel = async () => {
     }
     if (search.dates && search.dates.length === 2) {
       const [s, e] = search.dates
-      params.startTime = s ? formatDate(s) : undefined
-      params.endTime = e ? formatDate(e) : undefined
+      params.startTime = s || undefined
+      params.endTime = e || undefined
     }
 
     const res = await getLandingVisitList(params)
@@ -420,7 +421,7 @@ const exportExcel = async () => {
       return
     }
 
-    const headers = ['ID', '推广链接ID', '所属分类', '域名', 'IP地址', '地区', '关键词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '回传时间', '复制客服号码', '复制客服昵称', '创建时间']
+    const headers = ['ID', '推广链接ID', '所属分类', '域名', 'IP地址', '地区', '搜索词', '来源链接', '访问链接', '浏览时长(秒)', '是否复制', '复制时间', '是否点击获客助手', '点击获客助手时间', '是否回传', '回传时间', '复制客服号码', '复制客服昵称', '创建时间']
     const csvRows = [headers.join(',')]
     for (const row of data) {
       csvRows.push([
