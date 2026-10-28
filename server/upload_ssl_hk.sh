@@ -49,6 +49,12 @@ sudo chown -R root:root $REMOTE_DIR
 sudo chmod -R 644 $REMOTE_DIR
 sudo find $REMOTE_DIR -type d -exec chmod 755 {} \;
 
+echo "校验 nginx 配置"
+sudo nginx -t
+
+echo "重新加载 nginx"
+sudo nginx -s reload
+
 echo "上传完成"
 
 EOF
